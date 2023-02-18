@@ -1,5 +1,8 @@
 import express, {Request, Response, Router} from "express";
 import {validateRequest} from "./utils/validateRequestMethods";
+import {IInvalidRequestData, IValidRequestData} from "../interfaces/request";
+import {getUserDataByLogin} from "./databaseMethods/users";
+import {db} from '../index';
 
 const auth: Router = express.Router();
 
@@ -35,7 +38,14 @@ const auth: Router = express.Router();
  *      "message": "BAD_AUTH"
  *  }
  */
-auth.post('/pass', (req: Request, res: Response) => {
+auth.get('/pass', (req: Request, res: Response) => {
+    validateRequest(req)
+        .then((data: IValidRequestData) => {
+            getUserDataByLogin(db, 'login').then();
+        })
+        .catch((data: IInvalidRequestData) => {
+
+        });
 
 });
 

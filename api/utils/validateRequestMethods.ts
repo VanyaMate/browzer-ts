@@ -1,19 +1,15 @@
-import {IRequestHeader} from "../../interfaces/requestInterfaces";
+import {
+    IInvalidRequestData,
+    IRequestHeader,
+    IValidRequestData,
+    stringOrNull
+} from "../../interfaces/request";
 import {ResponseError} from "../../enums/responses";
 import {validLogin} from "../../utils/validationMethods";
 import {Request} from "express";
 
-interface IValidRequestData {
-    auth: string,
-    body: unknown
-}
-
-interface IInvalidRequestData {
-    message: ResponseError
-}
-
 const authHeadersExits = function (headers: IRequestHeader): boolean {
-    const [login, key]: string[] = headers.auth.split(':');
+    const [login, key]: string[] = headers.auth?.split(':') || [];
     return (key && validLogin(login)) as boolean;
 }
 
@@ -21,24 +17,24 @@ const validateRequestHeaders = function (headers: IRequestHeader): boolean {
     return authHeadersExits(headers);
 }
 
-const validateRequestBody = function (body: string): boolean {
-    return typeof(body) === 'string';
+const validateRequestBody = function (body: unknown): JSON {
+    return typeof(body) === 'string' ? JSON.parse(body) : body;
 }
 
-export function validateRequest (request: Request): any {
-    return new Promise((resolve: (data: IValidRequestData) => void, reject: (data: IInvalidRequestData) => void) => {
-        const headers: IRequestHeader = (request.headers as unknown) as IRequestHeader;
-        const validHeaders = validateRequestHeaders(headers);
-        const validBody = validateRequestBody(request.body);
+export function validateRequest (request: Request): Promise<IValidRequestData> {
+    return new Promise<IValidRequestData>((resolve: (data: IValidRequestData) => void, reject: (data: IInvalidRequestData) => void) => {
+        try {
+            const headers: IRequestHeader = (request.headers as unknown) as IRequestHeader;
+            const validHeaders = validateRequestHeaders(headers);
+            const validBody = validateRequestBody(request.body);
 
-        if (validHeaders && validBody) {
             resolve({
-                auth: headers.auth,
-                body: request.body
+                auth: validHeaders ? headers.auth : null,
+                body: validBody ? request.body : null
             })
-        } else {
+        } catch (_: unknown) {
             reject({
-                message: ResponseError.BAD_AUTH
+                message: ResponseError.BAD_REQUEST
             })
         }
     });
