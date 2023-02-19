@@ -1,10 +1,9 @@
 import {IPublicUserData, IUserData, IUserDataForCreate, IUserRequestCreateData} from "../../interfaces/users";
-import {AccessType, IUserPersonalInfo} from "../../interfaces/user";
-import {firestore} from "firebase-admin";
-import Firestore = firestore.Firestore;
-import {USERS} from "../databaseMethods/collectionsNames";
+import {IUserPersonalInfo} from "../../interfaces/user";
 import {validEmail, validLogin, validName, validPassword} from "../../utils/validationMethods";
-import {encrypt} from "./bcrypt";
+import {encrypt} from "../utils/bcrypt";
+import {AccessType} from "../../enums/user";
+import {convertJsonTo} from "../../utils/helpers";
 
 export const getPublicPersonalInfo = function (userPersonalInfo: IUserPersonalInfo): IUserPersonalInfo {
     const publicPersonalInfo = JSON.parse(JSON.stringify(userPersonalInfo));
@@ -16,22 +15,15 @@ export const getPublicPersonalInfo = function (userPersonalInfo: IUserPersonalIn
     return publicPersonalInfo;
 }
 
-export const convertToPublic = function (userData: IUserData): IPublicUserData {
-    return {
-        login: userData.login,
-        personalInfo: getPublicPersonalInfo(userData.personalInfo),
-    };
-}
-
 export const createUserData = function (data: IUserDataForCreate): IUserData {
     return {
         login: data.login,
         password: data.password,
-        sessionId: data.sessionId,
+        sessionKey: data.sessionKey,
         conversations: [],
         notifications: [],
         preferences: {
-            conversation: AccessType.ALL,
+            conversations: AccessType.ALL,
             friends: AccessType.ALL
         },
         personalInfo: {
@@ -41,21 +33,13 @@ export const createUserData = function (data: IUserDataForCreate): IUserData {
                 value: '',
                 hidden: false,
             },
-            email: data.personalInfo.telephone || {
+            email: data.personalInfo.email || {
                 value: '',
                 hidden: false,
             },
             friends: {
                 value: [],
                 hidden: false
-            },
-            friendsRequestIn: {
-                value: [],
-                hidden: false
-            },
-            friendsRequestOut: {
-                value: [],
-                hidden: true
             },
             musics: {
                 value: [],
@@ -66,6 +50,8 @@ export const createUserData = function (data: IUserDataForCreate): IUserData {
                 hidden: false
             },
         },
+        friendsRequestIn: [],
+        friendsRequestOut: [],
     };
 }
 
@@ -86,9 +72,7 @@ export const createHashes = function (data: IUserRequestCreateData): Promise<[st
 }
 
 export const validateUserDataForCreate = function (body: unknown): IUserRequestCreateData | null {
-    const data: IUserRequestCreateData = typeof(body) === 'string'
-        ? JSON.parse(body) as IUserRequestCreateData
-        : body as IUserRequestCreateData;
+    const data: IUserRequestCreateData = convertJsonTo<IUserRequestCreateData>(body);
 
     const validationList: [string, (val: string) => boolean][] = [
         [ data.login, validLogin ],

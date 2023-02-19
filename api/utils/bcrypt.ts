@@ -10,7 +10,7 @@ export const encrypt = function (value: string, rounds: number = defaultRounds):
 
 export const compare = function (first: string, second: string): Promise<boolean> {
     return new Promise<boolean>(async (resolve: (result: boolean) => void, reject) => {
-        await bcrypt.compare(first, second, (error: any, result: boolean) => {
+        bcrypt.compare(first, second, (error: any, result: boolean) => {
             if (error) reject(error)
             else resolve(result);
         })

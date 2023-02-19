@@ -1,8 +1,11 @@
 import express, {Request, Response, Router} from "express";
 import {validateRequest} from "./utils/validateRequestMethods";
-import {IInvalidRequestData, IValidRequestData} from "../interfaces/request";
-import {getUserDataByLogin} from "./databaseMethods/users";
+import {IError, IValidRequestData} from "../interfaces/request";
 import {db} from '../index';
+import {AuthType, checkUserAccess} from "./databaseMethods/auth";
+import {IPrivateUserData, IUserData} from "../interfaces/users";
+import {ResponseError} from "../enums/responses";
+import {getPrivateUserData} from "./methods/user";
 
 const auth: Router = express.Router();
 
@@ -38,19 +41,26 @@ const auth: Router = express.Router();
  *      "message": "BAD_AUTH"
  *  }
  */
-auth.get('/pass', (req: Request, res: Response) => {
-    validateRequest(req)
+auth.post('/pass', (req: Request, res: Response) => {
+    validateRequest(req, res)
         .then((data: IValidRequestData) => {
-            getUserDataByLogin(db, 'login').then();
+            checkUserAccess(db, data.auth, AuthType.PASSWORD)
+                .then((userData: IUserData) => {
+                    res.status(200).send({ error: false, data: getPrivateUserData(userData) });
+                })
+                .catch((error: IError) => {
+                    res.status(200).send({ error: true, message: error.message })
+                })
         })
-        .catch((data: IInvalidRequestData) => {
-
-        });
-
 });
 
 auth.post('/sessionId', (req: Request, res: Response) => {
+    validateRequest(req, res)
+        .then((data: IValidRequestData) => {
+            if (data.auth) {
 
+            }
+        })
 });
 
 export default auth;

@@ -1,4 +1,10 @@
-import {IUserNotification, IUserPersonalInfo, IUserPersonalInfoItem, IUserPreferences} from "./user";
+import {
+    IUserNotification,
+    IUserPersonalInfo,
+    IUserPersonalInfoItem,
+    IUserPersonalInfoList,
+    IUserPreferences
+} from "./user";
 
 export interface IUserData extends IPrivateUserData {
     password: string
@@ -7,21 +13,25 @@ export interface IUserData extends IPrivateUserData {
 export interface IPublicUserData {
     login: string,
     personalInfo: IUserPersonalInfo,
+    friends?: IUserPersonalInfoList<string>
 }
 
 export interface IPrivateUserData {
     login: string,
-    sessionId: string,
+    sessionKey: string,
 
     preferences: IUserPreferences,
     personalInfo: IUserPersonalInfo,
     notifications: IUserNotification[],
 
     conversations: string[],
+
+    friendsRequestIn: IPublicUserData[],
+    friendsRequestOut: IPublicUserData[],
 }
 
 export interface IUserDataForCreate extends IUserRequestCreateData {
-    sessionId: string,
+    sessionKey: string,
 }
 
 export interface IUserRequestCreateData {

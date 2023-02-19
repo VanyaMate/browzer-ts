@@ -55,7 +55,7 @@ export const validName = function (name: string): boolean {
         return false;
     }
 
-    if (name.match(/[а-яa-z\s]/gi)?.join('') !== name) {
+    if (name.match(/^[а-яa-z]+$/i)?.join('') !== name) {
         return false;
     }
 
