@@ -11,5 +11,6 @@ export interface INotification {
     type: NotificationType,
     data: INotificationData,
     status: boolean,
-    id: string
+    id: string,
+    creationTime: number
 }

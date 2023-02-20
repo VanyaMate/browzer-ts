@@ -20,6 +20,7 @@ export const createUserData = function (data: IUserDataForCreate): IUserData {
         login: data.login,
         password: data.password,
         sessionKey: data.sessionKey,
+        creationTime: Date.now(),
         conversations: [],
         notifications: [],
         preferences: {
@@ -55,14 +56,18 @@ export const createUserData = function (data: IUserDataForCreate): IUserData {
     };
 }
 
-export const createHashes = function (data: IUserRequestCreateData): Promise<[string, string]> {
+export const getHashByLogin = async function (login: string) {
+    return await encrypt(login + Date.now()).then((hash) => hash)
+}
+
+export const createHashes = function (password: string, login: string): Promise<[string, string]> {
     return new Promise<[string, string]>((resolve, reject) => {
         let hashPassword: string | null = null;
         let hashSessionId: string | null = null;
 
         Promise.all([
-            encrypt(data.password).then((hash) => hashPassword = hash),
-            encrypt(data.login + Date.now()).then((hash) => hashSessionId = hash),
+            encrypt(password).then((hash) => hashPassword = hash),
+            getHashByLogin(login).then((hash) => hashSessionId = hash),
         ])
             .then(() => {
                 resolve([hashPassword as string, hashSessionId as string]);

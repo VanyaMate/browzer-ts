@@ -5,7 +5,8 @@ export interface IUserNotification {
     id: string,
     status: boolean,
     type: NotificationType,
-    data: any
+    data: any,
+    creationTime: number
 }
 
 // Personal Info

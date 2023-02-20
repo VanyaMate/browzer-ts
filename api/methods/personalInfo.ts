@@ -1,5 +1,4 @@
 import {IUserPersonalInfoItem, IUserPersonalInfoList} from "../../interfaces/user";
-import {ResponseError} from "../../enums/responses";
 
 export const changePersonalInfoItem =
     function (

@@ -20,7 +20,7 @@ users.post('/create', (req: Request, res: Response) => {
         .then(async (data: IValidRequestData) => {
             const validData: IUserRequestCreateData | null = validateUserDataForCreate(data.body);
             if (validData && await checkLoginExist(db, validData.login)) {
-                const [password, sessionKey]: string[] = await createHashes(validData);
+                const [password, sessionKey]: string[] = await createHashes(validData.password, validData.login);
                 const userData: IUserData = createUserData({ ...validData, sessionKey, password });
 
                 return createUser(db, userData).then((data: IPrivateUserData) =>

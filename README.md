@@ -1,12 +1,15 @@
-# browzer-ts
+# Browzer-TS
 
-Frontend
-  - typescript
-  - react
-  - scss
+Сборщик: **Vite**
+
+### Frontend
+  - **typescript**
+  - **react**
+  - **scss**
   
-Backend 
-  - typescript 
-  - vite
-  - apidoc
-  - express
+### Backend 
+  - **typescript**
+  - **express**
+  - **firebase / firestore**
+  - **bcrypt**
+  - **apidoc**
