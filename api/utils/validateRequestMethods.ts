@@ -7,6 +7,11 @@ import {
 import {ResponseError} from "../../enums/responses";
 import {validLogin} from "../../utils/validationMethods";
 import {Request, Response} from "express";
+import {AuthType, checkUserAccess} from "../databaseMethods/auth";
+import {IUserData} from "../../interfaces/users";
+import {firestore} from "firebase-admin";
+import Firestore = firestore.Firestore;
+import {convertJsonTo} from "../../utils/helpers";
 
 const authHeadersExits = function (headers: IRequestHeader): [string, string] | null {
     const [login, key]: string[] = headers.auth?.split(':') || [];
@@ -35,5 +40,22 @@ export function validateRequest (request: Request, response: Response): Promise<
         } catch (_: unknown) {
             response.status(200).send({ error: true, message: ResponseError.BAD_REQUEST });
         }
+    });
+}
+
+export const validateRequestWithAccess = function<T> (
+    req: Request,
+    res: Response,
+    db: Firestore,
+    authType: AuthType
+): Promise<{userData: IUserData, body: T}> {
+    return new Promise((resolve, reject) => {
+        validateRequest(req, res).then(async (data: IValidRequestData) => {
+            return await checkUserAccess(db, data.auth, authType)
+                .then((userData: IUserData) => {
+                    resolve({userData, body: convertJsonTo<T>(data.body)})
+                })
+                .catch((error: IError) => res.status(200).send({error: true, message: error.message}) || reject())
+        });
     });
 }

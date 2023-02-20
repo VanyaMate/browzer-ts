@@ -18,7 +18,6 @@ export const checkUserAccess = function (db: Firestore, auth: [string, string] |
             const document: DocumentData = await db.collection(USERS).doc(login).get();
             const userData: IUserData = document.data();
             const dbKey = userData[type];
-
             if ((type === AuthType.PASSWORD) ? await compare(authKey, dbKey) : (authKey === dbKey)) {
                 resolve(userData);
                 return;

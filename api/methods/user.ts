@@ -4,6 +4,7 @@ import {getPublicPersonalInfo} from "./users";
 export const getPublicUserData = function (ud: IUserData): IPublicUserData {
     return {
         login: ud.login,
+        avatar: ud.avatar,
         personalInfo: getPublicPersonalInfo(ud.personalInfo),
         creationTime: ud.creationTime
     }
@@ -12,6 +13,7 @@ export const getPublicUserData = function (ud: IUserData): IPublicUserData {
 export const getPrivateUserData = function (ud: IUserData): IPrivateUserData {
     return {
         login: ud.login,
+        avatar: ud.avatar,
         sessionKey: ud.sessionKey,
         creationTime: ud.creationTime,
         conversations: ud.conversations,

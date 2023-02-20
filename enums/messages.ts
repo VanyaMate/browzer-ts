@@ -1,12 +1,13 @@
 export enum SourceType {
-    GROUP,
-    USER
+    GROUP="GROUP",
+    USER="USER"
 }
 
 export enum MessageAdditionalType {
-    MUSIC,
-    MESSAGE,
-    FILE,
-    IMAGE,
-    VIDEO
+    MUSIC="MUSIC",
+    MESSAGE="MESSAGE",
+    FILE="FILE",
+    IMAGE="IMAGE",
+    VIDEO="VIDEO",
+    LINK="LINK"
 }

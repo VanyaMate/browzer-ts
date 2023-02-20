@@ -1,10 +1,10 @@
 export enum ConversationType {
-    SINGLE = 'single',
-    GROUP = 'group'
+    SINGLE="SINGLE",
+    GROUP="GROUP"
 }
 
 export enum ConversationMemberRole {
-    OWNER,
-    MODERATOR,
-    SIMPLE
+    OWNER="OWNER",
+    MODERATOR="MODERATOR",
+    SIMPLE="SIMPLE"
 }

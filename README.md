@@ -12,4 +12,5 @@
   - **express**
   - **firebase / firestore**
   - **bcrypt**
+  - **crypto**
   - **apidoc**

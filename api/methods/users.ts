@@ -18,6 +18,8 @@ export const getPublicPersonalInfo = function (userPersonalInfo: IUserPersonalIn
 export const createUserData = function (data: IUserDataForCreate): IUserData {
     return {
         login: data.login,
+        // TODO: Заменить на локальное изображение
+        avatar: 'https://static.vecteezy.com/system/resources/thumbnails/005/544/718/small/profile-icon-design-free-vector.jpg',
         password: data.password,
         sessionKey: data.sessionKey,
         creationTime: Date.now(),

@@ -12,6 +12,7 @@ export interface IUserData extends IPrivateUserData {
 
 export interface IPublicUserData {
     login: string,
+    avatar: string,
     creationTime: number,
 
     personalInfo: IUserPersonalInfo,
@@ -20,6 +21,7 @@ export interface IPublicUserData {
 
 export interface IPrivateUserData {
     login: string,
+    avatar: string,
     sessionKey: string,
     creationTime: number,
 
