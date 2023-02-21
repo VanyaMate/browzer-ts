@@ -12,10 +12,18 @@ export interface IMessageAdditional {
 }
 
 export interface IMessage {
+    id: string,
     conversationId: string,
     from: IMessageSource,
     text: string,
     additional?: IMessageAdditional[],
     creationTime: number,
-    changed: false,
+    changed: boolean,
+}
+
+export interface IMessageCreateData {
+    conversationId: string,
+    from: IMessageSource,
+    text: string,
+    additional?: IMessageAdditional[]
 }

@@ -4,4 +4,5 @@ export enum ResponseError {
     NO_VALID_DATA = "NO_VALID_DATA",
     NO_FIND = "NO_FIND",
     NO_ACCESS = "NO_ACCESS",
+    SERVER_ERROR = "SERVER_ERROR"
 }
