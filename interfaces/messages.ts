@@ -23,7 +23,6 @@ export interface IMessage {
 
 export interface IMessageCreateData {
     conversationId: string,
-    from: IMessageSource,
     text: string,
     additional?: IMessageAdditional[]
 }

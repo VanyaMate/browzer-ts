@@ -49,7 +49,7 @@ export const checkGrossRole = function (firstRole: ConversationMemberRole, secon
     return false;
 }
 
-export const checkRoleAccess = function (userRole: ConversationMemberRole, accessRole: ConversationMemberRole) {
+export const checkRoleAccess = function (userRole: ConversationMemberRole, accessRole: ConversationMemberRole): boolean {
     if (userRole === ConversationMemberRole.OWNER) return true;
     if (userRole === ConversationMemberRole.MODERATOR) {
         if (

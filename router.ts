@@ -4,6 +4,7 @@ import doc from "./api/doc";
 import users from "./api/users";
 import user from "./api/user";
 import conversations from "./api/conversations";
+import messages from "./api/messages";
 
 const router = express.Router();
 
@@ -11,6 +12,7 @@ router.use('/auth', auth);
 router.use('/users', users);
 router.use('/user', user);
 router.use('/conversations', conversations);
+router.use('/messages', messages);
 router.get('/doc', doc);
 
 export default router;
