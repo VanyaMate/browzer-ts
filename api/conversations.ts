@@ -1,6 +1,5 @@
 import express, {Request, Response} from "express";
 import change from "./conversation-api/change";
-import members from "./conversation-api/members";
 import {validateRequestWithAccess} from "./utils/validateRequestMethods";
 import {AuthType} from "./databaseMethods/auth";
 import {db} from "../index";
@@ -40,13 +39,13 @@ conversations.post('/create', (req: Request, res: Response) => {
         } else {
             res.status(200).send({ error: true, message: ResponseError.NO_VALID_DATA })
         }
-    })
+    }).catch(() => res.status(200).send({ error: true, message: ResponseError.NO_VALID_DATA }))
 })
 
 conversations.post('/get', (req: Request, res: Response) => {
     validateRequestWithAccess<{ id: string }>(req, res, db, AuthType.SESSION_KEY)
         .then(({ userData, body }) => {
-            getConversationData(db, body.id, userData.login)
+            return getConversationData(db, body.id, userData.login)
                 .then((conversation) => res.status(200).send({ error: false, conversation }))
                 .catch((_) => res.status(200).send({ error: true, message: ResponseError.NO_VALID_DATA }));
         });
@@ -65,18 +64,17 @@ conversations.post('/getAll', (req: Request, res: Response) => {
         .catch(() => {
             res.status(200).send({ error: true, message: ResponseError.NO_VALID_DATA })
         })
-    });
+    }).catch(() => res.status(200).send({ error: true, message: ResponseError.NO_VALID_DATA }))
 })
 
 conversations.post('/remove', (req: Request, res: Response) => {
     validateRequestWithAccess<{ id: string }>(req, res, db, AuthType.SESSION_KEY).then(({ userData, body}) => {
-        deleteConversation(db, body.id, userData.login)
+        return deleteConversation(db, body.id, userData.login)
             .then(() => res.status(200).send({ error: false, success: true }))
-            .catch(() => res.status(200).send({ error: true, message: ResponseError.BAD_AUTH }))
+            .catch(() => res.status(200).send({ error: true, message: ResponseError.NO_ACCESS }))
     });
 })
 
 conversations.use('/change', change);
-conversations.use('/members', members);
 
 export default conversations;

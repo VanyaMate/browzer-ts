@@ -7,6 +7,8 @@ import {ResponseError} from "../../enums/responses";
 import {IUserData} from "../../interfaces/users";
 import {AccessType} from "../../enums/user";
 import {updateUserData} from "./user";
+import {IError} from "../../interfaces/request";
+import {checkGrossRole, getConversationDataForCreate, getMemberDataByLogin} from "../methods/conversation";
 import Firestore = firestore.Firestore;
 
 export const createConversation = function (
@@ -19,13 +21,9 @@ export const createConversation = function (
     return new Promise<IConversation>(async (resolve, reject) => {
         try {
             const id = crypto.randomUUID();
-            const conversation: IConversation = {
-                id, type, members,
-                icon: icon || '',
-                name: name || '',
-                messages: [],
-                creationTime: Date.now()
-            };
+            const conversation: IConversation = getConversationDataForCreate(
+                id, type, members, icon, name
+            );
             members.forEach((member: IConversationMember) => member.addedTime = Date.now())
 
             await db.collection(CONVERSATIONS).doc(id).set(conversation);
@@ -70,10 +68,13 @@ export const getConversationData = function (
     withLogin: string
 ): Promise<IConversation> {
     return new Promise(async (resolve, reject) => {
-        const conversation: IConversation = (await db.collection(CONVERSATIONS).doc(id).get()).data() as IConversation;
-        return conversation.members.some((member: IConversationMember) => member.login === withLogin)
-            ? resolve(conversation)
-            : reject(false);
+        if (id && withLogin) {
+            const conversation: IConversation = (await db.collection(CONVERSATIONS).doc(id).get()).data() as IConversation;
+            return conversation && conversation.members.some((member: IConversationMember) => member.login === withLogin)
+                ? resolve(conversation)
+                : reject();
+        }
+        reject();
     })
 }
 
@@ -92,6 +93,35 @@ export const setConversationToAllMembers = function (
 
         resolve(true);
     })
+}
+
+export const updateConversationData = function (
+    db: Firestore,
+    conversation: IConversation
+): Promise<boolean> {
+    return new Promise<boolean>(async (resolve, reject) => {
+        try {
+            await db.collection(CONVERSATIONS).doc(conversation.id).set(conversation);
+            resolve(true);
+        } catch (error: unknown) {
+            reject({ message: (error as IError).message })
+        }
+    });
+}
+
+export const updateConversationField = function (
+    db: Firestore,
+    conversationId: string,
+    field: { [key: string]: string }
+): Promise<boolean> {
+    return new Promise<boolean>(async (resolve, reject) => {
+        try {
+            await db.collection(CONVERSATIONS).doc(conversationId).update(field);
+            resolve(true);
+        } catch (error: unknown) {
+            reject({ message: (error as IError).message })
+        }
+    });
 }
 
 export const deleteConversationFromAllMembers = function (
@@ -118,15 +148,19 @@ export const deleteConversation = function (
 ): Promise<boolean> {
     return new Promise<boolean>(async (resolve, reject) => {
         const conversation = await getConversationData(db, conversationId, ownerLogin);
-        if (conversation.members.some((member) =>
-            member.login === ownerLogin && member.role === ConversationMemberRole.OWNER)
+        const owner = getMemberDataByLogin(conversation.members, ownerLogin);
+
+        if ( owner && (
+                owner.role === ConversationMemberRole.OWNER ||
+                checkGrossRole(owner.role, conversation.preferences.delete)
+            )
         ) {
             await deleteConversationFromAllMembers(db, conversation.members, conversationId);
             await db.collection(CONVERSATIONS).doc(conversationId).delete();
             resolve(true);
-        } else {
-            reject();
+            return;
         }
 
+        reject();
     });
 }

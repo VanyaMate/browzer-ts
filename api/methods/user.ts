@@ -1,5 +1,6 @@
 import {IPrivateUserData, IPublicUserData, IUserData} from "../../interfaces/users";
 import {getPublicPersonalInfo} from "./users";
+import {IUserPersonalInfoList} from "../../interfaces/user";
 
 export const getPublicUserData = function (ud: IUserData): IPublicUserData {
     return {
@@ -23,4 +24,8 @@ export const getPrivateUserData = function (ud: IUserData): IPrivateUserData {
         friendsRequestIn: ud.friendsRequestIn,
         friendsRequestOut: ud.friendsRequestOut
     }
+}
+
+export const checkIsFriendOf = function (login: string, friends: IUserPersonalInfoList<string>) {
+    return friends.value.some((friend) => friend === login);
 }
