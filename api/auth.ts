@@ -12,10 +12,10 @@ const auth: Router = express.Router();
 /**
  * @api {post} /api/auth/pass Авторизация через логин:пароль
  * @apiName AuthByPass
- * @apiGroup Auth
+ * @apiGroup auth
  * @apiVersion 0.0.0
  *
- * @apiUse DefaultAuthHeader
+ * @apiUse authPass
  *
  * @apiSuccess {Boolean} error Статус
  * @apiSuccess {Object} data Данные авторизации
@@ -35,11 +35,7 @@ const auth: Router = express.Router();
  * @apiError {Boolean} error Статус
  * @apiError {String} message Сообщение/код ошибки
  * @apiError {String} message.BAD_AUTH Неправильный логин/пароль
- * @apiErrorExample {json} Error-Body:
- *  {
- *      "error": true,
- *      "message": "BAD_AUTH"
- *  }
+ * @apiUse nae
  */
 auth.post('/pass', (req: Request, res: Response) => {
     validateRequest(req, res)

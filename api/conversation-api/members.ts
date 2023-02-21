@@ -14,6 +14,43 @@ import {checkConversationRole} from "../utils/checkEnums";
 
 const members = express.Router();
 
+/**
+ *  @api {post} /api/conversations/change/members/role Изменение роли члена беседы
+ *  @apiName ChangeConversationMemberRole
+ *  @apiGroup conversations/change/members
+ *  @apiVersion 0.0.0
+ *
+ *  @apiExample {String} Роли
+ *     "OWNER" - владелец беседы. имеет все права. невозможно снять / удалить
+ *     "MODERATOR" - модератор беседы. имеет права основанные на настройках беседы
+ *     "SIMPLE" - гражданин рф
+ *
+ *  @apiUse authSession
+ *
+ *  @apiBody {String} conversationId id беседы
+ *  @apiBody {String} changeMemberLogin login члена беседы
+ *  @apiBody {String} role роль
+ *
+ *
+ *  @apiSuccess {Boolean} error Статус запроса
+ *  @apiSuccess {Boolean} success Статус
+ *  @apiSuccessExample {json} Response-Body
+ *  {
+ *      "error": false,
+ *      "success": true
+ *  }
+ *
+ *  @apiError {Boolean} error Статус запроса
+ *  @apiError {String} message Причина ошибки
+ *  @apiErrorExample {json} NO_VALID_DATA
+ *  {
+ *      "error": true,
+ *      "message": "NO_VALID_DATA" // conversationId || changeMemberLogin || role - не верны
+ *  }
+ *  @apiUse nae
+ *  @apiUse bre
+ *  @apiUse bae
+ */
 members.post('/role', (req: Request, res: Response) => {
     validateRequestWithAccess<{
         conversationId: string,
@@ -50,6 +87,36 @@ members.post('/role', (req: Request, res: Response) => {
     });
 })
 
+/**
+ *  @api {post} /api/conversations/change/members/remove Удаление пользователя из беседы
+ *  @apiName RemoveUserFromConversation
+ *  @apiGroup conversations/change/members
+ *  @apiVersion 0.0.0
+ *
+ *  @apiUse authSession
+ *
+ *  @apiBody {String} conversationId id беседы
+ *  @apiBody {String} removeMemberLogin login члена беседы
+ *
+ *  @apiSuccess {Boolean} error Статус запроса
+ *  @apiSuccess {Boolean} success Статус
+ *  @apiSuccessExample {json} Response-Body
+ *  {
+ *      "error": false,
+ *      "success": true
+ *  }
+ *
+ *  @apiError {Boolean} error Статус запроса
+ *  @apiError {String} message Причина ошибки
+ *  @apiErrorExample {json} NO_VALID_DATA
+ *  {
+ *      "error": true,
+ *      "message": "NO_VALID_DATA" // conversationId || removeMemberLogin - не верны
+ *  }
+ *  @apiUse nae
+ *  @apiUse bre
+ *  @apiUse bae
+ */
 members.post('/remove', (req: Request, res: Response) => {
     validateRequestWithAccess<{
         conversationId: string,
@@ -84,6 +151,36 @@ members.post('/remove', (req: Request, res: Response) => {
     })
 })
 
+/**
+ *  @api {post} /api/conversations/change/members/add Добавление пользователя в беседу
+ *  @apiName AddUserToConversation
+ *  @apiGroup conversations/change/members
+ *  @apiVersion 0.0.0
+ *
+ *  @apiUse authSession
+ *
+ *  @apiBody {String} conversationId id беседы
+ *  @apiBody {String} addedUserLogin login члена беседы
+ *
+ *  @apiSuccess {Boolean} error Статус запроса
+ *  @apiSuccess {Boolean} success Статус
+ *  @apiSuccessExample {json} Response-Body
+ *  {
+ *      "error": false,
+ *      "success": true
+ *  }
+ *
+ *  @apiError {Boolean} error Статус запроса
+ *  @apiError {String} message Причина ошибки
+ *  @apiErrorExample {json} NO_VALID_DATA
+ *  {
+ *      "error": true,
+ *      "message": "NO_VALID_DATA" // conversationId || addedUserLogin - не верны
+ *  }
+ *  @apiUse nae
+ *  @apiUse bre
+ *  @apiUse bae
+ */
 members.post('/add', (req: Request, res: Response) => {
     validateRequestWithAccess<{
         conversationId: string,

@@ -9,20 +9,22 @@ export interface IConversationMember {
     addedTime?: number
 }
 
+export interface IConversationPreferences {
+    members: {
+        add: ConversationMemberRole,
+        remove: ConversationMemberRole,
+        role: ConversationMemberRole
+    }
+    delete: ConversationMemberRole,
+    change: ConversationMemberRole,
+}
+
 export interface IConversation {
     id: string,
     type: ConversationType,
     members: IConversationMember[],
     messages: IMessage[],
-    preferences: {
-        members: {
-            add: ConversationMemberRole,
-            remove: ConversationMemberRole,
-            role: ConversationMemberRole
-        }
-        delete: ConversationMemberRole,
-        change: ConversationMemberRole
-    }
+    preferences: IConversationPreferences,
     icon?: string,
     name?: string,
     creationTime: number
