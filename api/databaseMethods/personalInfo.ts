@@ -30,7 +30,7 @@ export const changeItem = function (
                     })
                     .catch((error) => res.status(200).send({error: true, message: error.message}))
             } else {
-                res.status(200).send({error: true, message: ResponseError.BAD_REQUEST })
+                res.status(200).send({error: true, message: ResponseError.NO_VALID_DATA })
             }
         })
 }

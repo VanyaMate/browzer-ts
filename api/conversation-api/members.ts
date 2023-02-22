@@ -2,8 +2,13 @@ import express, {Request, Response} from "express";
 import {validateRequestWithAccess} from "../utils/validateRequestMethods";
 import {ConversationMemberRole} from "../../enums/conversations";
 import {db} from "../../index";
-import {AuthType, getUserData} from "../databaseMethods/auth";
-import {getConversationData, updateConversationData} from "../databaseMethods/conversations";
+import {AuthType} from "../databaseMethods/auth";
+import {
+    checkAccessToAddToConversation,
+    getConversationData,
+    updateConversationData,
+    updateConversationWithAddedUser
+} from "../databaseMethods/conversations";
 import {ResponseError} from "../../enums/responses";
 import {checkGrossRole, checkRoleAccess, getMemberDataByLogin} from "../methods/conversation";
 import {IConversationMember} from "../../interfaces/conversations";
@@ -11,6 +16,8 @@ import {IError} from "../../interfaces/request";
 import {AccessType} from "../../enums/user";
 import {checkIsFriendOf} from "../methods/user";
 import {checkConversationRole} from "../utils/checkEnums";
+import {removeConversationFromLogin, updateUserData} from "../databaseMethods/user";
+import {getUserDataByLogin} from "../databaseMethods/users";
 
 const members = express.Router();
 
@@ -28,7 +35,7 @@ const members = express.Router();
  *  @apiUse authSession
  *
  *  @apiBody {String} conversationId id беседы
- *  @apiBody {String} changeMemberLogin login члена беседы
+ *  @apiBody {String} userLoginToChange login члена беседы
  *  @apiBody {String} role роль
  *
  *
@@ -54,14 +61,14 @@ const members = express.Router();
 members.post('/role', (req: Request, res: Response) => {
     validateRequestWithAccess<{
         conversationId: string,
-        changeMemberLogin: string,
+        userLoginToChange: string,
         role: ConversationMemberRole
     }>(req, res, db, AuthType.SESSION_KEY).then(async ({ userData, body}) => {
         const validRole = checkConversationRole(body.role);
 
         if (validRole) {
             const conversation = await getConversationData(db, body.conversationId, userData.login);
-            const changeMember = getMemberDataByLogin(conversation.members, body.changeMemberLogin);
+            const changeMember = getMemberDataByLogin(conversation.members, body.userLoginToChange);
             const user = getMemberDataByLogin(conversation.members, userData.login);
 
             if (
@@ -96,7 +103,7 @@ members.post('/role', (req: Request, res: Response) => {
  *  @apiUse authSession
  *
  *  @apiBody {String} conversationId id беседы
- *  @apiBody {String} removeMemberLogin login члена беседы
+ *  @apiBody {String} userLoginToRemove login члена беседы
  *
  *  @apiSuccess {Boolean} error Статус запроса
  *  @apiSuccess {Boolean} success Статус
@@ -120,13 +127,13 @@ members.post('/role', (req: Request, res: Response) => {
 members.post('/remove', (req: Request, res: Response) => {
     validateRequestWithAccess<{
         conversationId: string,
-        removeMemberLogin: string
+        userLoginToRemove: string
     }>(req, res, db, AuthType.SESSION_KEY).then(async ({ userData, body }) => {
         const conversation = await getConversationData(db, body.conversationId, userData.login);
         const user: IConversationMember | null =
             getMemberDataByLogin(conversation.members, userData.login);
         const removedMember: IConversationMember | null =
-            getMemberDataByLogin(conversation.members, body.removeMemberLogin);
+            getMemberDataByLogin(conversation.members, body.userLoginToRemove);
 
         if (user && removedMember) {
             if(
@@ -134,12 +141,22 @@ members.post('/remove', (req: Request, res: Response) => {
                 checkRoleAccess(user.role, conversation.preferences.members.remove)
             ) {
                 conversation.members = conversation.members.filter(
-                    (member) => member.login !== body.removeMemberLogin
+                    (member) => member.login !== body.userLoginToRemove
                 );
 
                 updateConversationData(db, conversation)
-                    .then(() => res.status(200)
-                        .send({ error: false, success: true }))
+                    .then(async () => {
+                        const removed = await removeConversationFromLogin(
+                            db, body.userLoginToRemove, body.conversationId
+                        );
+
+                        if (removed) {
+                            res.status(200)
+                                .send({ error: false, success: true })
+                            return;
+                        }
+                        throw new Error(ResponseError.BAD_REQUEST);
+                    })
                     .catch((error: unknown) => res.status(200)
                         .send({ error: true, message: (error as IError).message }))
             } else {
@@ -160,7 +177,7 @@ members.post('/remove', (req: Request, res: Response) => {
  *  @apiUse authSession
  *
  *  @apiBody {String} conversationId id беседы
- *  @apiBody {String} addedUserLogin login члена беседы
+ *  @apiBody {String} userLoginToAdd login члена беседы
  *
  *  @apiSuccess {Boolean} error Статус запроса
  *  @apiSuccess {Boolean} success Статус
@@ -184,40 +201,21 @@ members.post('/remove', (req: Request, res: Response) => {
 members.post('/add', (req: Request, res: Response) => {
     validateRequestWithAccess<{
         conversationId: string,
-        addedUserLogin: string,
+        userLoginToAdd: string,
     }>(req, res, db, AuthType.SESSION_KEY).then(async ({ userData, body }) => {
-        const conversation = await getConversationData(db, body.conversationId, userData.login);
-        const user = getMemberDataByLogin(conversation.members, userData.login);
+        try {
+            const conversation = await getConversationData(db, body.conversationId, userData.login);
+            const user = getMemberDataByLogin(conversation.members, userData.login);
+            const addedUserData = await checkAccessToAddToConversation(user, conversation, body.userLoginToAdd);
 
-        if (user && checkRoleAccess(user.role, conversation.preferences.members.add)) {
-            const addedUserData = await getUserData(db, body.addedUserLogin);
-            if (addedUserData.preferences.conversations === AccessType.NO_ONE) {
-                res.status(200).send({ error: true, message: ResponseError.NO_ACCESS });
-            } else if (addedUserData.preferences.conversations === AccessType.FRIENDS) {
-                if (checkIsFriendOf(user.login, addedUserData.personalInfo.friends)) {
-                    conversation.members.push({
-                        login: addedUserData.login,
-                        avatar: addedUserData.avatar,
-                        role: ConversationMemberRole.SIMPLE,
-                        addedTime: Date.now(),
-                    });
-                    await updateConversationData(db, conversation);
-                    res.status(200).send({ error: false, success: true });
-                } else {
-                    res.status(200).send({ error: true, message: ResponseError.NO_ACCESS });
-                }
-            } else {
-                conversation.members.push({
-                    login: addedUserData.login,
-                    avatar: addedUserData.avatar,
-                    role: ConversationMemberRole.SIMPLE,
-                    addedTime: Date.now(),
-                });
-                await updateConversationData(db, conversation);
+            if (addedUserData) {
+                await updateConversationWithAddedUser(conversation, addedUserData);
                 res.status(200).send({ error: false, success: true });
+            } else {
+                res.status(200).send({ error: true, message: ResponseError.NO_ACCESS });
             }
-        } else {
-            res.status(200).send({ error: true, message: ResponseError.NO_ACCESS });
+        } catch (_) {
+            res.status(200).send({ error: true, message: ResponseError.NO_VALID_DATA });
         }
     })
 })

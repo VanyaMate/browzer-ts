@@ -10,9 +10,8 @@ import DocumentData = firestore.DocumentData;
 export const checkLoginExist = function (db: Firestore, login: string): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
         try {
-            const query: DocumentReference = db.collection(USERS).doc(login);
-            const userData: IUserData = (await query.get()).data() as IUserData;
-            resolve(userData === undefined);
+            const userData = await getUserDataByLogin(db, login);
+            resolve(userData !== undefined);
         } catch (_) {
             reject({ message: ResponseError.BAD_REQUEST });
         }
@@ -22,12 +21,29 @@ export const checkLoginExist = function (db: Firestore, login: string): Promise<
 export const getPublicUserDataByLogin = function (db: Firestore, login: string): Promise<IPublicUserData> {
     return new Promise(async (resolve: (data: IPublicUserData) => void, reject) => {
         try {
-            const query: DocumentReference = db.collection(USERS).doc(login);
-            const userData: IUserData = (await query.get()).data() as IUserData;
+            const userData = await getUserDataByLogin(db, login);
 
             if (userData !== undefined) {
                 const publicData = getPublicUserData(userData);
                 resolve(publicData);
+            } else {
+                reject({ message: ResponseError.NO_FIND })
+            }
+        }
+        catch (_) {
+            reject({ message: ResponseError.NO_FIND })
+        }
+    });
+}
+
+export const getUserDataByLogin = function (db: Firestore, login: string): Promise<IUserData> {
+    return new Promise<IUserData>(async (resolve, reject) => {
+        try {
+            const query: DocumentReference = db.collection(USERS).doc(login);
+            const userData: IUserData = (await query.get()).data() as IUserData;
+
+            if (userData !== undefined) {
+                resolve(userData);
             } else {
                 reject({ message: ResponseError.NO_FIND })
             }

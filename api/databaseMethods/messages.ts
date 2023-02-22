@@ -113,5 +113,6 @@ export const updateMessage = function (db: Firestore, message: IMessage): Promis
 export const deleteMessage = function (db: Firestore, messageId: string): Promise<boolean> {
     return new Promise<boolean>(async (resolve, reject) => {
         await db.collection(MESSAGES).doc(messageId).delete();
+        resolve(true);
     })
 }

@@ -56,8 +56,7 @@ const conversations = express.Router();
 conversations.post('/create', (req: Request, res: Response) => {
     validateRequestWithAccess<{
         type: ConversationType,
-        members: string[],
-        icon?: string,
+        members: string[]
         name?: string
     }>(req, res, db, AuthType.SESSION_KEY).then(async ({ userData, body }) => {
         if (checkConversationType(body.type)) {
@@ -66,15 +65,16 @@ conversations.post('/create', (req: Request, res: Response) => {
             if (membersToConversation) {
                 membersToConversation.push({
                     login: userData.login,
-                    avatar: userData.avatar,
                     role: ConversationMemberRole.OWNER
                 });
 
-                return await createConversation(db, body.type, membersToConversation, body.icon, body.name).then(async (conversation: IConversation) =>
-                    await setConversationToAllMembers(db, membersToConversation, conversation.id).then(() => {
-                        res.status(200).send({error: false, conversation})
-                        return true;
-                    })
+                return await createConversation(db, body.type, membersToConversation, body.name)
+                    .then(async (conversation: IConversation) =>
+                        await setConversationToAllMembers(db, membersToConversation, conversation.id)
+                            .then(() => {
+                                res.status(200).send({error: false, conversation})
+                                return true;
+                            })
                 )
             }
         }

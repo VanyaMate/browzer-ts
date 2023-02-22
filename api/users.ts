@@ -19,7 +19,7 @@ users.post('/create', (req: Request, res: Response) => {
     validateRequest(req, res)
         .then(async (data: IValidRequestData) => {
             const validData: IUserRequestCreateData | null = validateUserDataForCreate(data.body);
-            if (validData && await checkLoginExist(db, validData.login)) {
+            if (validData && !(await checkLoginExist(db, validData.login))) {
                 const [password, sessionKey]: string[] = await createHashes(validData.password, validData.login);
                 const userData: IUserData = createUserData({ ...validData, sessionKey, password });
 

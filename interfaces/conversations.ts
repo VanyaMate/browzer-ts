@@ -1,11 +1,12 @@
 import {ConversationMemberRole, ConversationType} from "../enums/conversations";
 import {IMessage} from "./messages";
 import {AccessType} from "../enums/user";
+import {IPublicUserData} from "./users";
 
 export interface IConversationMember {
     login: string,
-    avatar: string,
     role: ConversationMemberRole,
+    data?: IPublicUserData,
     addedTime?: number
 }
 

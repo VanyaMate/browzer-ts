@@ -5,12 +5,10 @@ export const getConversationDataForCreate = function (
     id: string,
     type: ConversationType,
     members: IConversationMember[],
-    icon?: string,
     name?: string,
 ): IConversation {
     return {
         id, type, members,
-        icon: icon || '',
         name: name || '',
         messages: [],
         preferences: {

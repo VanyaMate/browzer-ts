@@ -1,10 +1,7 @@
 import express, {Request, Response, Router} from "express";
-import {validateRequest} from "./utils/validateRequestMethods";
-import {IError, IValidRequestData} from "../interfaces/request";
+import {validateRequestWithAccess} from "./utils/validateRequestMethods";
 import {db} from '../index';
-import {AuthType, checkUserAccess} from "./databaseMethods/auth";
-import {IPrivateUserData, IUserData} from "../interfaces/users";
-import {ResponseError} from "../enums/responses";
+import {AuthType} from "./databaseMethods/auth";
 import {getPrivateUserData} from "./methods/user";
 
 const auth: Router = express.Router();
@@ -38,25 +35,13 @@ const auth: Router = express.Router();
  * @apiUse nae
  */
 auth.post('/pass', (req: Request, res: Response) => {
-    validateRequest(req, res)
-        .then((data: IValidRequestData) => {
-            checkUserAccess(db, data.auth, AuthType.PASSWORD)
-                .then((userData: IUserData) => {
-                    res.status(200).send({ error: false, data: getPrivateUserData(userData) });
-                })
-                .catch((error: IError) => {
-                    res.status(200).send({ error: true, message: error.message })
-                })
-        })
+    validateRequestWithAccess(req, res, db, AuthType.PASSWORD)
+        .then(({ userData }) => res.status(200).send({ error: false, data: getPrivateUserData(userData) }))
 });
 
 auth.post('/sessionId', (req: Request, res: Response) => {
-    validateRequest(req, res)
-        .then((data: IValidRequestData) => {
-            if (data.auth) {
-
-            }
-        })
+    validateRequestWithAccess(req, res, db, AuthType.SESSION_KEY)
+        .then(({ userData }) => res.status(200).send({ error: false, data: getPrivateUserData(userData) }))
 });
 
 export default auth;

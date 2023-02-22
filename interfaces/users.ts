@@ -5,6 +5,7 @@ import {
     IUserPersonalInfoList,
     IUserPreferences
 } from "./user";
+import {IConversation} from "./conversations";
 
 export interface IUserData extends IPrivateUserData {
     password: string
