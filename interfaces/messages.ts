@@ -2,8 +2,7 @@ import {MessageAdditionalType, SourceType} from "../enums/messages";
 
 export interface IMessageSource {
     type: SourceType,
-    name: string,
-    icon: string
+    name: string
 }
 
 export interface IMessageAdditional {

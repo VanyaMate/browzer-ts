@@ -8,11 +8,10 @@ import {SourceType} from "../../enums/messages";
 export const createMessageData = function (
     data: IMessageCreateData,
     type: SourceType,
-    name: string,
-    icon: string
+    name: string
 ): IMessage {
     const { conversationId, text, additional } = data;
-    const from: IMessageSource = { type, name, icon };
+    const from: IMessageSource = { type, name };
 
     return {
         id: crypto.randomUUID(),

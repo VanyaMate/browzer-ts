@@ -24,7 +24,7 @@ messages.post('/create', (req: Request, res: Response) => {
     validateRequestWithAccess<IMessageCreateData>(req, res, db, AuthType.SESSION_KEY)
         .then(async ({ userData, body }) => {
             if (body.text && body.conversationId) {
-                const data = createMessageData(body, SourceType.USER, userData.login, userData.avatar);
+                const data = createMessageData(body, SourceType.USER, userData.login);
                 const conversation: IConversation = await getConversationData(db, body.conversationId, userData.login);
 
                 if (conversation) {
