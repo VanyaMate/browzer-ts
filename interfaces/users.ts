@@ -32,8 +32,8 @@ export interface IPrivateUserData {
 
     conversations: string[],
 
-    friendsRequestIn: IPublicUserData[],
-    friendsRequestOut: IPublicUserData[],
+    friendsRequestIn: string[],
+    friendsRequestOut: string[],
 }
 
 export interface IUserDataForCreate extends IUserRequestCreateData {
