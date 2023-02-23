@@ -4,7 +4,7 @@ import {IConversation, IConversationMember} from "../../interfaces/conversations
 import {CONVERSATIONS, USERS} from "./COLLECTION_NAMES";
 import * as crypto from "crypto";
 import {ResponseError} from "../../enums/responses";
-import {IUserData} from "../../interfaces/users";
+import {IPublicUserData, IUserData} from "../../interfaces/users";
 import {AccessType} from "../../enums/user";
 import {updateUserData} from "./user";
 import {IError} from "../../interfaces/request";
@@ -15,23 +15,25 @@ import {
     getMemberDataByLogin
 } from "../methods/conversation";
 import {db} from "../../index";
-import {getUserDataByLogin} from "./users";
+import {getPublicUserDataByLoginList, getUserDataByLogin} from "./users";
 import {checkIsFriendOf} from "../methods/user";
 import Firestore = firestore.Firestore;
+import QuerySnapshot = firestore.QuerySnapshot;
+import members from "../conversation-api/members";
 
 export const createConversation = function (
     db: Firestore,
     type: ConversationType,
-    members: IConversationMember[],
+    members: IConversationMember<any>[],
     name?: string
-): Promise<IConversation> {
-    return new Promise<IConversation>(async (resolve, reject) => {
+): Promise<IConversation<any>> {
+    return new Promise<IConversation<any>>(async (resolve, reject) => {
         try {
             const id = crypto.randomUUID();
-            const conversation: IConversation = getConversationDataForCreate(
+            const conversation: IConversation<any> = getConversationDataForCreate(
                 id, type, members, name
             );
-            members.forEach((member: IConversationMember) => member.addedTime = Date.now())
+            members.forEach((member: IConversationMember<any>) => member.addedTime = Date.now())
 
             await db.collection(CONVERSATIONS).doc(id).set(conversation);
             resolve(conversation);
@@ -46,8 +48,8 @@ export const checkMembersToCreateConversation = async function (
     db: Firestore,
     members: string[],
     withLogin: string
-): Promise<IConversationMember[] | false> {
-    const conversationMembers: (IConversationMember|boolean)[] = await Promise.all(members.map(async (login: string) => {
+): Promise<IConversationMember<any>[] | false> {
+    const conversationMembers: (IConversationMember<any>|boolean)[] = await Promise.all(members.map(async (login: string) => {
         const document = await db.collection(USERS).doc(login).get();
         const user: IUserData<string, string, string> = document.data() as IUserData<string, string, string>;
         if (user === undefined) return false;
@@ -62,7 +64,7 @@ export const checkMembersToCreateConversation = async function (
     }));
 
     if (conversationMembers.every((member) => member)) {
-        return conversationMembers as IConversationMember[];
+        return conversationMembers as IConversationMember<any>[];
     } else {
         return false;
     }
@@ -72,11 +74,11 @@ export const getConversationData = function (
     db: Firestore,
     id: string,
     withLogin: string
-): Promise<IConversation> {
+): Promise<IConversation<any>> {
     return new Promise(async (resolve, reject) => {
         if (id && withLogin) {
-            const conversation: IConversation = (await db.collection(CONVERSATIONS).doc(id).get()).data() as IConversation;
-            return (conversation && conversation.members.some((member: IConversationMember) => member.login === withLogin))
+            const conversation: IConversation<any> = (await db.collection(CONVERSATIONS).doc(id).get()).data() as IConversation<any>;
+            return (conversation && conversation.members.some((member: IConversationMember<any>) => member.login === withLogin))
                 ? resolve(conversation)
                 : reject();
         }
@@ -86,11 +88,11 @@ export const getConversationData = function (
 
 export const setConversationToAllMembers = function (
     db: Firestore,
-    members: IConversationMember[],
+    members: IConversationMember<any>[],
     conversationId: string
 ): Promise<boolean> {
     return new Promise<boolean>(async (resolve, reject) => {
-        await Promise.all(members.map(async (member: IConversationMember) => {
+        await Promise.all(members.map(async (member: IConversationMember<any>) => {
             const document = await db.collection(USERS).doc(member.login).get();
             const user: IUserData<string, string, string> = document.data() as IUserData<string, string, string>;
             !user.conversations.some((id: string) => id === conversationId) && user.conversations.push(conversationId);
@@ -103,7 +105,7 @@ export const setConversationToAllMembers = function (
 
 export const updateConversationData = function (
     db: Firestore,
-    conversation: IConversation
+    conversation: IConversation<any>
 ): Promise<boolean> {
     return new Promise<boolean>(async (resolve, reject) => {
         try {
@@ -132,11 +134,11 @@ export const updateConversationField = function (
 
 export const deleteConversationFromAllMembers = function (
     db: Firestore,
-    members: IConversationMember[],
+    members: IConversationMember<any>[],
     conversationId: string
 ): Promise<boolean> {
     return new Promise<boolean>(async (resolve, reject) => {
-        await Promise.all(members.map(async (member: IConversationMember) => {
+        await Promise.all(members.map(async (member: IConversationMember<any>) => {
             const document = await db.collection(USERS).doc(member.login).get();
             const user: IUserData<string, string, string> = document.data() as IUserData<string, string, string>;
             user.conversations = user.conversations.filter((id: string) => id !== conversationId);
@@ -154,7 +156,7 @@ export const deleteConversation = function (
 ): Promise<boolean> {
     return new Promise<boolean>(async (resolve, reject) => {
         try {
-            const conversation: IConversation = await getConversationData(db, conversationId, ownerLogin);
+            const conversation = await getConversationData(db, conversationId, ownerLogin);
             const owner = getMemberDataByLogin(conversation.members, ownerLogin);
 
             if ( owner && (
@@ -174,7 +176,7 @@ export const deleteConversation = function (
 }
 
 export const updateConversationWithAddedUser = async function (
-    conversation: IConversation,
+    conversation: IConversation<any>,
     addedUserData: IUserData<string, string, string>
 ) {
     if (conversation.members.every((member) => member.login !== addedUserData.login)) {
@@ -194,8 +196,8 @@ export const updateConversationWithAddedUser = async function (
 }
 
 export const checkAccessToAddToConversation = async function (
-    userWhoAdds: IConversationMember | null,
-    conversation: IConversation,
+    userWhoAdds: IConversationMember<any> | null,
+    conversation: IConversation<any>,
     userLoginToAdd: string
 ) {
     if (userWhoAdds && checkRoleAccess(userWhoAdds.role, conversation.preferences.members.add)) {
@@ -216,4 +218,63 @@ export const checkAccessToAddToConversation = async function (
     }
 
     return false;
+}
+
+export const getConversationsData = function (
+    db: Firestore,
+    conversationList: string[]
+): Promise<IConversation<string>[]> {
+    return new Promise<IConversation<string>[]>(async (resolve, reject) => {
+        try {
+            const documents = await db.collection(CONVERSATIONS)
+                .where('id', 'in', conversationList)
+                .get();
+
+            resolve(documents.docs.map((doc) => doc.data() as IConversation<string>))
+        } catch (_) {
+            reject();
+        }
+    })
+}
+
+export const getFullConversationsData = function (
+    db: Firestore,
+    conversationsList: string[]
+): Promise<IConversation<string>[]> {
+    return new Promise<IConversation<string>[]>(async (resolve, reject) => {
+        try {
+            const documents: QuerySnapshot = await db.collection(CONVERSATIONS)
+                .where('id', 'in', conversationsList)
+                .get();
+
+            const conversationsData: IConversation<string>[] = documents.docs.map(
+                (doc) => doc.data() as IConversation<string>
+            );
+            const loginList = [...new Set(...conversationsData.map(
+                (conversation) => conversation.members.map((member) => member.login))
+            )]
+            const usersPublicData = await getPublicUserDataByLoginList(db, loginList);
+
+            for (let j = 0; j < conversationsData.length; j++) {
+                const conversation = conversationsData[j];
+
+                for (let x = 0; x < conversation.members.length; x++) {
+                    const member = conversation.members[x];
+
+                    for (let i = 0; i < usersPublicData.length; i++) {
+                        const userData: IPublicUserData<string> = usersPublicData[i];
+
+                        if (member.login === userData.login) {
+                            member.data = userData;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            resolve(conversationsData);
+        } catch (_) {
+            reject();
+        }
+    })
 }

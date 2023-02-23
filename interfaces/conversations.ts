@@ -3,10 +3,10 @@ import {IMessage} from "./messages";
 import {AccessType} from "../enums/user";
 import {IPublicUserData} from "./users";
 
-export interface IConversationMember {
+export interface IConversationMember<F> {
     login: string,
     role: ConversationMemberRole,
-    data?: IPublicUserData,
+    data?: IPublicUserData<F>,
     addedTime?: number
 }
 
@@ -20,10 +20,10 @@ export interface IConversationPreferences {
     change: ConversationMemberRole,
 }
 
-export interface IConversation {
+export interface IConversation<F> {
     id: string,
     type: ConversationType,
-    members: IConversationMember[],
+    members: IConversationMember<F>[],
     messages: IMessage[],
     preferences: IConversationPreferences,
     icon?: string,

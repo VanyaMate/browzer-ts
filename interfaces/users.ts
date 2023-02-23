@@ -1,7 +1,6 @@
 import {
     IUserPersonalInfo,
     IUserPersonalInfoItem,
-    IUserPersonalInfoList,
     IUserPreferences
 } from "./user";
 

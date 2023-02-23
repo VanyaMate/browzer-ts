@@ -9,15 +9,15 @@ import * as crypto from "crypto";
 import {ResponseError} from "../../enums/responses";
 
 export const createNotificationData = function (
-    targetId: string,
+    target: string,
     type: NotificationType,
     data: INotificationData
-): INotification | null {
+): INotification<string> | null {
     if (!type || !data) return null;
     return {
         type,
         data,
-        targetId,
+        target,
         status: false,
         id: crypto.randomUUID(),
         creationTime: Date.now()
@@ -26,18 +26,19 @@ export const createNotificationData = function (
 
 export const addNotification = function (
     db: Firestore,
-    user: IUserData | string,
+    user: IUserData<string, string, string> | string,
     type: NotificationType,
     data: INotificationData
-): Promise<INotification> {
-    return new Promise<INotification>(async (resolve, reject) => {
+): Promise<INotification<string>> {
+    return new Promise<INotification<string>>(async (resolve, reject) => {
         try {
             const userData = typeof(user) === 'string' ?
                 await getUserDataByLogin(db, user) : user;
-            const notification: INotification | null = createNotificationData(userData.login, type, data);
+            const notification: INotification<string> | null = createNotificationData(userData.login, type, data);
 
             if (notification) {
-                await db.collection(NOTIFICATIONS).doc(notification.id).set(data);
+                await db.collection(NOTIFICATIONS).doc(notification.id).set(notification);
+                userData.notifications.push(notification.id);
 
                 resolve(notification);
             } else {
@@ -56,7 +57,7 @@ export const changeNotificationStatus = function (
 ): Promise<boolean> {
     return new Promise<boolean>(async (resolve, reject) => {
         const document = await db.collection(NOTIFICATIONS).doc(id).get();
-        const data: INotification = document.data() as INotification;
+        const data = document.data() as INotification<string>;
         data.status = status;
         await db.collection(NOTIFICATIONS).doc(id).set(data);
         resolve(true);

@@ -3,6 +3,8 @@ import Firestore = firestore.Firestore;
 import {updateUserData} from "./user";
 import {IUserData} from "../../interfaces/users";
 import {addUniqueValueTo, getWithoutValue} from "../../utils/helpers";
+import {NotificationType} from "../../enums/notifications";
+import {addNotification} from "./notifications";
 
 export const addToFriends = async function (
     db: Firestore,
@@ -15,10 +17,19 @@ export const addToFriends = async function (
     userData.personalInfo.friends.value = addUniqueValueTo<string>(userData.personalInfo.friends.value, userToAdd.login);
     userToAdd.personalInfo.friends.value = addUniqueValueTo<string>(userToAdd.personalInfo.friends.value, userData.login);
 
-    return await Promise.all([
+    const notification = await addNotification(db, userToAdd, NotificationType.FRIEND_ACCEPT, {
+        icon: userData.avatar,
+        title: userData.login,
+        message: 'Теперь друзья',
+        data: {}
+    })
+
+    await Promise.all([
         updateUserData(db, userData),
         updateUserData(db, userToAdd)
     ]);
+
+    return notification;
 }
 
 export const addToRequests = async function (
@@ -29,10 +40,19 @@ export const addToRequests = async function (
     userData.friendsRequestOut = addUniqueValueTo<string>(userData.friendsRequestOut, userToAdd.login);
     userToAdd.friendsRequestIn = addUniqueValueTo<string>(userToAdd.friendsRequestIn, userData.login);
 
-    return await Promise.all([
+    const notification = await addNotification(db, userToAdd, NotificationType.FRIEND_IN_REQUEST, {
+        icon: userData.avatar,
+        title: userData.login,
+        message: 'Хочет дружить',
+        data: {}
+    })
+
+    await Promise.all([
         updateUserData(db, userData),
         updateUserData(db, userToAdd)
     ])
+
+    return notification;
 }
 
 export const removeFromFriends = async function (
@@ -49,10 +69,19 @@ export const removeFromFriends = async function (
     userData.friendsRequestIn = addUniqueValueTo<string>(userData.friendsRequestOut, userToRemove.login);
     userToRemove.friendsRequestOut = addUniqueValueTo<string>(userToRemove.friendsRequestIn, userData.login);
 
-    return await Promise.all([
+    const notification = await addNotification(db, userToRemove, NotificationType.FRIEND_REMOVE, {
+        icon: userData.avatar,
+        title: userData.login,
+        message: 'Больше не друг',
+        data: {}
+    })
+
+    await Promise.all([
         updateUserData(db, userData),
         updateUserData(db, userToRemove)
     ])
+
+    return notification;
 }
 
 export const removeFromRequestOut = async function (
@@ -63,10 +92,19 @@ export const removeFromRequestOut = async function (
     userData.friendsRequestOut = getWithoutValue<string>(userData.friendsRequestOut, userToRemove.login);
     userToRemove.friendsRequestIn = getWithoutValue<string>(userToRemove.friendsRequestIn, userData.login);
 
-    return await Promise.all([
+    const notification = await addNotification(db, userToRemove, NotificationType.FRIEND_IN_REQUEST_CANCELED, {
+        icon: userData.avatar,
+        title: userData.login,
+        message: 'Отменил заявку в друзья',
+        data: {}
+    })
+
+    await Promise.all([
         updateUserData(db, userData),
         updateUserData(db, userToRemove)
     ])
+
+    return notification;
 }
 
 export const removeFromRequestIn = async function (
@@ -77,8 +115,17 @@ export const removeFromRequestIn = async function (
     userData.friendsRequestIn = getWithoutValue<string>(userData.friendsRequestIn, userToRemove.login);
     userToRemove.friendsRequestOut = getWithoutValue<string>(userToRemove.friendsRequestOut, userData.login);
 
-    return await Promise.all([
+    const notification = await addNotification(db, userToRemove, NotificationType.FRIEND_OUT_REQUEST_CANCELED, {
+        icon: userData.avatar,
+        title: userData.login,
+        message: 'Отменил вашу заявку в друзья',
+        data: {}
+    })
+
+    await Promise.all([
         updateUserData(db, userData),
         updateUserData(db, userToRemove)
     ])
+
+    return notification;
 }

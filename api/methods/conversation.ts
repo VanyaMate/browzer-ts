@@ -4,9 +4,9 @@ import {ConversationMemberRole, ConversationType} from "../../enums/conversation
 export const getConversationDataForCreate = function (
     id: string,
     type: ConversationType,
-    members: IConversationMember[],
+    members: IConversationMember<any>[],
     name?: string,
-): IConversation {
+): IConversation<any> {
     return {
         id, type, members,
         name: name || '',
@@ -24,13 +24,13 @@ export const getConversationDataForCreate = function (
     };
 }
 
-export const checkUserIsOwner = function (members: IConversationMember[], login: string): boolean {
+export const checkUserIsOwner = function (members: IConversationMember<any>[], login: string): boolean {
     return members.some((member) =>
         (member.login === login) &&
         (member.role === ConversationMemberRole.OWNER))
 }
 
-export const checkUserIsModerator = function (members: IConversationMember[], login: string): boolean {
+export const checkUserIsModerator = function (members: IConversationMember<any>[], login: string): boolean {
     return members.some((member) =>
         (member.login === login) &&
         (member.role !== ConversationMemberRole.SIMPLE)
@@ -61,7 +61,7 @@ export const checkRoleAccess = function (userRole: ConversationMemberRole, acces
     return false;
 }
 
-export const getMemberDataByLogin = function (members: IConversationMember[], login: string): IConversationMember | null {
+export const getMemberDataByLogin = function (members: IConversationMember<any>[], login: string): IConversationMember<any> | null {
     for (let i = 0; i < members.length; i++) {
         if (members[i].login === login) {
             return members[i];

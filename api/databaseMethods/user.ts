@@ -29,7 +29,7 @@ export const removeConversationFromLogin = function (
 
             if (userData) {
                 userData.conversations = userData.conversations.filter(
-                    (id: IConversation|string) => id !== conversationId
+                    (id: IConversation<any>|string) => id !== conversationId
                 );
             }
 

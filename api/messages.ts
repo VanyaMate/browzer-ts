@@ -25,7 +25,7 @@ messages.post('/create', (req: Request, res: Response) => {
         .then(async ({ userData, body }) => {
             if (body.text && body.conversationId) {
                 const data = createMessageData(body, SourceType.USER, userData.login);
-                const conversation: IConversation = await getConversationData(db, body.conversationId, userData.login);
+                const conversation = await getConversationData(db, body.conversationId, userData.login);
 
                 if (conversation) {
                     createMessage(db, data)
@@ -87,7 +87,7 @@ messages.post('/getFromConversation', (req: Request, res: Response) => {
         offset: number
     }>(req, res, db, AuthType.SESSION_KEY)
         .then(async ({ userData, body}) => {
-            const conversation: IConversation = await getConversationData(db, body.conversationId, userData.login);
+            const conversation = await getConversationData(db, body.conversationId, userData.login);
             if (conversation && getMemberDataByLogin(conversation.members, userData.login)) {
                 getMessagesFromConversation(db, body.conversationId, body.limit, body.offset)
                     .then((messages: IMessage[]) => res.status(200).send({ error: false, messages }))

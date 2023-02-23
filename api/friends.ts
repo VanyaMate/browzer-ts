@@ -5,7 +5,6 @@ import {db} from "../index";
 import {getUserDataByLogin} from "./databaseMethods/users";
 import {AccessType} from "../enums/user";
 import {ResponseError} from "../enums/responses";
-import {updateUserData} from "./databaseMethods/user";
 import {
     addToFriends,
     addToRequests,
@@ -13,6 +12,7 @@ import {
     removeFromRequestIn,
     removeFromRequestOut
 } from "./databaseMethods/friends";
+import {addNotification} from "./databaseMethods/notifications";
 
 const friends = express.Router();
 
@@ -31,7 +31,9 @@ friends.post('/add', (req: Request, res: Response) => {
                         ? addToFriends
                         : addToRequests
                     )(db, userData, userToAdd)
-                        .then(() => res.status(200).send({ error: false, success: true }))
+                        .then(() => {
+                            res.status(200).send({ error: false, success: true })
+                        })
                         .catch(() => res.status(200).send({ error: true, message: ResponseError.SERVER_ERROR }))
                 } else res.status(200).send({ error: true, message: ResponseError.NO_ACCESS })
             } else res.status(200).send({ error: true, message: ResponseError.NO_VALID_DATA })

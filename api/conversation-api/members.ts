@@ -130,9 +130,9 @@ members.post('/remove', (req: Request, res: Response) => {
         userLoginToRemove: string
     }>(req, res, db, AuthType.SESSION_KEY).then(async ({ userData, body }) => {
         const conversation = await getConversationData(db, body.conversationId, userData.login);
-        const user: IConversationMember | null =
+        const user: IConversationMember<any> | null =
             getMemberDataByLogin(conversation.members, userData.login);
-        const removedMember: IConversationMember | null =
+        const removedMember: IConversationMember<any> | null =
             getMemberDataByLogin(conversation.members, body.userLoginToRemove);
 
         if (user && removedMember) {

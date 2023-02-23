@@ -7,7 +7,9 @@ import {ConversationMemberRole, ConversationType} from "../enums/conversations";
 import {IConversation} from "../interfaces/conversations";
 import {
     checkMembersToCreateConversation,
-    createConversation, deleteConversation, getConversationData,
+    createConversation,
+    deleteConversation,
+    getConversationData, getConversationsData, getFullConversationsData,
     setConversationToAllMembers
 } from "./databaseMethods/conversations";
 import {ResponseError} from "../enums/responses";
@@ -69,7 +71,7 @@ conversations.post('/create', (req: Request, res: Response) => {
                 });
 
                 return await createConversation(db, body.type, membersToConversation, body.name)
-                    .then(async (conversation: IConversation) =>
+                    .then(async (conversation: IConversation<any>) =>
                         await setConversationToAllMembers(db, membersToConversation, conversation.id)
                             .then(() => {
                                 res.status(200).send({error: false, conversation})
@@ -152,19 +154,24 @@ conversations.post('/get', (req: Request, res: Response) => {
  */
 conversations.post('/getAll', (req: Request, res: Response) => {
     validateRequestWithAccess(req, res, db, AuthType.SESSION_KEY).then(({ userData }) => {
-        const conversationsIds = userData.conversations;
-
-        Promise.all(conversationsIds.map(async(id) => {
-            return await getConversationData(db, id as string, userData.login);
-        }))
-        .then((conversations) => {
-            res.status(200).send({ error: false, conversations })
-        })
-        .catch(() => {
-            res.status(200).send({ error: true, message: ResponseError.NO_VALID_DATA })
-        })
+        getConversationsData(db, userData.conversations)
+            .then((conversations) =>
+                res.status(200).send({ error: false, conversations }))
+            .catch(() =>
+                res.status(200).send({ error: true, message: ResponseError.NO_VALID_DATA }))
     }).catch(() => res.status(200).send({ error: true, message: ResponseError.NO_VALID_DATA }))
 })
+
+conversations.post('/getFullInfoAll', (req: Request, res: Response) => {
+    validateRequestWithAccess(req, res, db, AuthType.SESSION_KEY)
+        .then(({ userData }) => {
+            getFullConversationsData(db, userData.conversations)
+                .then((conversations) =>
+                    res.status(200).send({ error: false, conversations }))
+                .catch(() =>
+                    res.status(200).send({ error: true, message: ResponseError.NO_VALID_DATA }))
+        })
+});
 
 /**
  *  @api {post} /api/conversations/delete Удалить беседу
