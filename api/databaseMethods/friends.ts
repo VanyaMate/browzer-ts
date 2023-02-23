@@ -4,7 +4,11 @@ import {updateUserData} from "./user";
 import {IUserData} from "../../interfaces/users";
 import {addUniqueValueTo, getWithoutValue} from "../../utils/helpers";
 
-export const addToFriends = async function (db: Firestore, userData: IUserData, userToAdd: IUserData) {
+export const addToFriends = async function (
+    db: Firestore,
+    userData: IUserData<string, string, string>,
+    userToAdd: IUserData<string, string, string>
+) {
     userData.friendsRequestIn = getWithoutValue<string>(userData.friendsRequestIn, userToAdd.login);
     userToAdd.friendsRequestOut = getWithoutValue<string>(userToAdd.friendsRequestOut, userData.login);
 
@@ -17,7 +21,11 @@ export const addToFriends = async function (db: Firestore, userData: IUserData, 
     ]);
 }
 
-export const addToRequests = async function (db: Firestore, userData: IUserData, userToAdd: IUserData) {
+export const addToRequests = async function (
+    db: Firestore,
+    userData: IUserData<string, string, string>,
+    userToAdd: IUserData<string, string, string>
+) {
     userData.friendsRequestOut = addUniqueValueTo<string>(userData.friendsRequestOut, userToAdd.login);
     userToAdd.friendsRequestIn = addUniqueValueTo<string>(userToAdd.friendsRequestIn, userData.login);
 
@@ -27,7 +35,11 @@ export const addToRequests = async function (db: Firestore, userData: IUserData,
     ])
 }
 
-export const removeFromFriends = async function (db: Firestore, userData: IUserData, userToRemove: IUserData) {
+export const removeFromFriends = async function (
+    db: Firestore,
+    userData: IUserData<string, string, string>,
+    userToRemove: IUserData<string, string, string>
+) {
     const userFriends = userData.personalInfo.friends.value;
     const userToRemoveFriends = userToRemove.personalInfo.friends.value;
 
@@ -43,7 +55,11 @@ export const removeFromFriends = async function (db: Firestore, userData: IUserD
     ])
 }
 
-export const removeFromRequestOut = async function (db: Firestore, userData: IUserData, userToRemove: IUserData) {
+export const removeFromRequestOut = async function (
+    db: Firestore,
+    userData: IUserData<string, string, string>,
+    userToRemove: IUserData<string, string, string>
+) {
     userData.friendsRequestOut = getWithoutValue<string>(userData.friendsRequestOut, userToRemove.login);
     userToRemove.friendsRequestIn = getWithoutValue<string>(userToRemove.friendsRequestIn, userData.login);
 
@@ -53,7 +69,11 @@ export const removeFromRequestOut = async function (db: Firestore, userData: IUs
     ])
 }
 
-export const removeFromRequestIn = async function (db: Firestore, userData: IUserData, userToRemove: IUserData) {
+export const removeFromRequestIn = async function (
+    db: Firestore,
+    userData: IUserData<string, string, string>,
+    userToRemove: IUserData<string, string, string>
+) {
     userData.friendsRequestIn = getWithoutValue<string>(userData.friendsRequestIn, userToRemove.login);
     userToRemove.friendsRequestOut = getWithoutValue<string>(userToRemove.friendsRequestOut, userData.login);
 

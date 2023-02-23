@@ -5,7 +5,7 @@ import {encrypt} from "../utils/bcrypt";
 import {AccessType} from "../../enums/user";
 import {convertJsonTo} from "../../utils/helpers";
 
-export const getPublicPersonalInfo = function (userPersonalInfo: IUserPersonalInfo): IUserPersonalInfo {
+export const getPublicPersonalInfo = function (userPersonalInfo: IUserPersonalInfo<string>): IUserPersonalInfo<string> {
     const publicPersonalInfo = JSON.parse(JSON.stringify(userPersonalInfo));
     for (const key in publicPersonalInfo) {
         if (publicPersonalInfo[key].hidden) {
@@ -15,7 +15,7 @@ export const getPublicPersonalInfo = function (userPersonalInfo: IUserPersonalIn
     return publicPersonalInfo;
 }
 
-export const createUserData = function (data: IUserDataForCreate): IUserData {
+export const createUserData = function (data: IUserDataForCreate): IUserData<string, string, string> {
     return {
         login: data.login,
         // TODO: Заменить на локальное изображение

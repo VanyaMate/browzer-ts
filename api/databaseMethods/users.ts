@@ -6,6 +6,7 @@ import {IPrivateUserData, IPublicUserData, IUserData} from "../../interfaces/use
 import {ResponseError} from "../../enums/responses";
 import {getPrivateUserData, getPublicUserData} from "../methods/user";
 import DocumentData = firestore.DocumentData;
+import QuerySnapshot = firestore.QuerySnapshot;
 
 export const checkLoginExist = function (db: Firestore, login: string): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
@@ -18,8 +19,11 @@ export const checkLoginExist = function (db: Firestore, login: string): Promise<
     })
 }
 
-export const getPublicUserDataByLogin = function (db: Firestore, login: string): Promise<IPublicUserData> {
-    return new Promise(async (resolve: (data: IPublicUserData) => void, reject) => {
+export const getPublicUserDataByLogin = function (
+    db: Firestore,
+    login: string
+): Promise<IPublicUserData<string>> {
+    return new Promise<IPublicUserData<string>>(async (resolve, reject) => {
         try {
             const userData = await getUserDataByLogin(db, login);
 
@@ -36,11 +40,14 @@ export const getPublicUserDataByLogin = function (db: Firestore, login: string):
     });
 }
 
-export const getUserDataByLogin = function (db: Firestore, login: string): Promise<IUserData> {
-    return new Promise<IUserData>(async (resolve, reject) => {
+export const getUserDataByLogin = function (
+    db: Firestore,
+    login: string
+): Promise<IUserData<string, string, string>> {
+    return new Promise<IUserData<string, string, string>>(async (resolve, reject) => {
         try {
             const query: DocumentReference = db.collection(USERS).doc(login);
-            const userData: IUserData = (await query.get()).data() as IUserData;
+            const userData = (await query.get()).data() as IUserData<string, string, string>;
 
             if (userData !== undefined) {
                 resolve(userData);
@@ -54,17 +61,22 @@ export const getUserDataByLogin = function (db: Firestore, login: string): Promi
     });
 }
 
-export const getPublicUsersDataByLogin = function (db: Firestore, login: string, limit: number = 5, offset: number = 0): Promise<IPublicUserData[]> {
-    return new Promise<IPublicUserData[]>(async (resolve, reject) => {
+export const getPublicUsersDataByLogin = function (
+    db: Firestore,
+    login: string,
+    limit: number = 5,
+    offset: number = 0
+): Promise<IPublicUserData<string>[]> {
+    return new Promise<IPublicUserData<string>[]>(async (resolve, reject) => {
         try {
-            const document: DocumentData = await db.collection(USERS)
+            const document: QuerySnapshot = await db.collection(USERS)
                 .where('login', '>=', login)
                 .where('login', '<=', login + '\uf8ff')
                 .get();
 
-            const users: IPublicUserData[] = [];
+            const users: IPublicUserData<string>[] = [];
             for (let i = offset; (i < document.docs.length) && (i < (offset + limit)); i++) {
-                users.push(getPublicUserData(document.docs[i].data()));
+                users.push(getPublicUserData(document.docs[i].data() as IUserData<string, string, string>));
             }
 
             if (users.length) {
@@ -78,8 +90,34 @@ export const getPublicUsersDataByLogin = function (db: Firestore, login: string,
     })
 }
 
-export const createUser = function (db: Firestore, userData: IUserData): Promise<IPrivateUserData> {
-    return new Promise<IPrivateUserData>(async (resolve: (data: IPrivateUserData) => void) => {
+export const getPublicUserDataByLoginList = function (db: Firestore, loginList: string[]): Promise<IPublicUserData<string>[]> {
+    return new Promise<IPublicUserData<string>[]>(async (resolve, reject) => {
+        try {
+            const document: QuerySnapshot = await db.collection(USERS)
+                .where('login', 'in', loginList)
+                .get();
+
+            const users: IPublicUserData<string>[] = document.docs.map(
+                (doc: DocumentData) => getPublicUserData(doc.data())
+            );
+
+            if (users.length) {
+                resolve(users);
+            } else {
+                reject({ message: ResponseError.NO_FIND })
+            }
+
+        } catch (_) {
+            reject({ message: ResponseError.NO_VALID_DATA })
+        }
+    })
+}
+
+export const createUser = function (
+    db: Firestore,
+    userData: IUserData<string, string, string>
+): Promise<IPrivateUserData<string, string, string>> {
+    return new Promise<IPrivateUserData<string, string, string>>(async (resolve) => {
         await db.collection(USERS).doc(userData.login).set(userData);
         resolve(getPrivateUserData(userData));
     });

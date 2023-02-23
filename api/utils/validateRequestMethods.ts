@@ -48,11 +48,11 @@ export const validateRequestWithAccess = function<T> (
     res: Response,
     db: Firestore,
     authType: AuthType
-): Promise<{userData: IUserData, body: T}> {
+): Promise<{userData: IUserData<string, string, string>, body: T}> {
     return new Promise((resolve, reject) => {
         validateRequest(req, res).then(async (data: IValidRequestData) => {
             return await checkUserAccess(db, data.auth, authType)
-                .then((userData: IUserData) => {
+                .then((userData: IUserData<string, string, string>) => {
                     resolve({userData, body: convertJsonTo<T>(data.body)})
                 })
                 .catch((error: IError) => res.status(200).send({error: true, message: error.message}) || reject())

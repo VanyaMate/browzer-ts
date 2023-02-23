@@ -49,7 +49,7 @@ export const checkMembersToCreateConversation = async function (
 ): Promise<IConversationMember[] | false> {
     const conversationMembers: (IConversationMember|boolean)[] = await Promise.all(members.map(async (login: string) => {
         const document = await db.collection(USERS).doc(login).get();
-        const user: IUserData = document.data() as IUserData;
+        const user: IUserData<string, string, string> = document.data() as IUserData<string, string, string>;
         if (user === undefined) return false;
         if (user.preferences.friends === AccessType.NO_ONE) return false;
         if (user.preferences.friends === AccessType.FRIENDS) {
@@ -92,7 +92,7 @@ export const setConversationToAllMembers = function (
     return new Promise<boolean>(async (resolve, reject) => {
         await Promise.all(members.map(async (member: IConversationMember) => {
             const document = await db.collection(USERS).doc(member.login).get();
-            const user: IUserData = document.data() as IUserData;
+            const user: IUserData<string, string, string> = document.data() as IUserData<string, string, string>;
             !user.conversations.some((id: string) => id === conversationId) && user.conversations.push(conversationId);
             return await updateUserData(db, user);
         }))
@@ -138,7 +138,7 @@ export const deleteConversationFromAllMembers = function (
     return new Promise<boolean>(async (resolve, reject) => {
         await Promise.all(members.map(async (member: IConversationMember) => {
             const document = await db.collection(USERS).doc(member.login).get();
-            const user: IUserData = document.data() as IUserData;
+            const user: IUserData<string, string, string> = document.data() as IUserData<string, string, string>;
             user.conversations = user.conversations.filter((id: string) => id !== conversationId);
             return await updateUserData(db, user);
         }))
@@ -175,7 +175,7 @@ export const deleteConversation = function (
 
 export const updateConversationWithAddedUser = async function (
     conversation: IConversation,
-    addedUserData: IUserData
+    addedUserData: IUserData<string, string, string>
 ) {
     if (conversation.members.every((member) => member.login !== addedUserData.login)) {
         conversation.members.push({

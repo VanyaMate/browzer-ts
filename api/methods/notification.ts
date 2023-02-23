@@ -3,7 +3,7 @@ import {ResponseError} from "../../enums/responses";
 
 export const changeNotificationStatus =
     function (
-        notificationsList: IUserNotification[],
+        notificationsList: (IUserNotification<any>|string)[],
         id: string,
         status: boolean
     ): Promise<boolean> {
@@ -11,7 +11,7 @@ export const changeNotificationStatus =
             if (id && status !== undefined) {
                 for (let i = 0; i < notificationsList.length; i++) {
                     const notification = notificationsList[i];
-                    if (notification.id === id) {
+                    if ((typeof notification !== 'string') && (notification.id === id)) {
                         notification.status = status;
                         break;
                     }

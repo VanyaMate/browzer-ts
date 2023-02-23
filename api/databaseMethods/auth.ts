@@ -10,11 +10,15 @@ export enum AuthType {
     PASSWORD = 'password'
 }
 
-export const checkUserAccess = function (db: Firestore, auth: [string, string] | null, type: AuthType): Promise<IUserData> {
-    return new Promise<IUserData>(async (resolve, reject) => {
+export const checkUserAccess = function (
+    db: Firestore,
+    auth: [string, string] | null,
+    type: AuthType
+): Promise<IUserData<string, string, string>> {
+    return new Promise<IUserData<string, string, string>>(async (resolve, reject) => {
         if (auth) {
             const [login, authKey] = auth;
-            const userData: IUserData = await getUserDataByLogin(db, login);
+            const userData = await getUserDataByLogin(db, login);
             const dbKey = userData[type];
             if ((type === AuthType.PASSWORD) ? await compare(authKey, dbKey) : (authKey === dbKey)) {
                 resolve(userData);

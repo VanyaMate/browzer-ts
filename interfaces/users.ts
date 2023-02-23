@@ -1,39 +1,37 @@
 import {
-    IUserNotification,
     IUserPersonalInfo,
     IUserPersonalInfoItem,
     IUserPersonalInfoList,
     IUserPreferences
 } from "./user";
-import {IConversation} from "./conversations";
 
-export interface IUserData extends IPrivateUserData {
+export interface IUserData<F, N, C> extends IPrivateUserData<F, N, C> {
     password: string
 }
 
-export interface IPublicUserData {
+export interface IPublicUserData<F> {
     login: string,
     avatar: string,
     creationTime: number,
 
-    personalInfo: IUserPersonalInfo,
-    friends?: IUserPersonalInfoList<string>
+    personalInfo: IUserPersonalInfo<F>,
+    preferences: IUserPreferences
 }
 
-export interface IPrivateUserData {
+export interface IPrivateUserData<F, N, C> {
     login: string,
     avatar: string,
     sessionKey: string,
     creationTime: number,
 
     preferences: IUserPreferences,
-    personalInfo: IUserPersonalInfo,
-    notifications: IUserNotification[],
+    personalInfo: IUserPersonalInfo<F>,
+    notifications: N[],
 
-    conversations: string[],
+    conversations: C[],
 
-    friendsRequestIn: string[],
-    friendsRequestOut: string[],
+    friendsRequestIn: F[],
+    friendsRequestOut: F[],
 }
 
 export interface IUserDataForCreate extends IUserRequestCreateData {

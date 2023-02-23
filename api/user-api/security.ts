@@ -16,7 +16,7 @@ security.post('/changePass', (req: Request, res: Response) => {
     validateRequest(req, res)
         .then((data: IValidRequestData) => {
             checkUserAccess(db, data.auth, AuthType.PASSWORD)
-                .then(async (userData: IUserData) => {
+                .then(async (userData) => {
                     const {password} = convertJsonTo<{password: string}>(data.body);
                     if (validPassword(password)) {
                         const [hashPassword, hashSessionKey] = await createHashes(password, userData.login);
@@ -35,7 +35,7 @@ security.post('/changePass', (req: Request, res: Response) => {
 security.post('/resetSessionKey', (req: Request, res: Response) => {
     validateRequest(req, res).then((data: IValidRequestData) => {
         checkUserAccess(db, data.auth, AuthType.PASSWORD)
-            .then(async (userData: IUserData) => {
+            .then(async (userData) => {
                 return getHashByLogin(userData.login)
                     .then((hash) => userData.sessionKey = hash)
                     .then(() => updateUserData(db, userData))

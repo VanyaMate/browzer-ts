@@ -7,10 +7,11 @@ export interface INotificationData {
     data: any
 }
 
-export interface INotification {
+export interface INotification<T> {
     type: NotificationType,
     data: INotificationData,
     status: boolean,
+    target: T,
     id: string,
     creationTime: number
 }

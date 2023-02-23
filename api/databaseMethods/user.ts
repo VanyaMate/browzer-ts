@@ -7,7 +7,7 @@ import {IConversation} from "../../interfaces/conversations";
 import {getUserDataByLogin} from "./users";
 import user from "../user";
 
-export const updateUserData = function (db: Firestore, userData: IUserData): Promise<boolean> {
+export const updateUserData = function (db: Firestore, userData: IUserData<string, string, string>): Promise<boolean> {
     return new Promise<boolean>(async (resolve, reject) => {
         try {
             await db.collection(USERS).doc(userData.login).set(userData);
@@ -28,7 +28,9 @@ export const removeConversationFromLogin = function (
             const userData = await getUserDataByLogin(db, login);
 
             if (userData) {
-                userData.conversations = userData.conversations.filter((id: string) => id !== conversationId);
+                userData.conversations = userData.conversations.filter(
+                    (id: IConversation|string) => id !== conversationId
+                );
             }
 
             await updateUserData(db, userData);

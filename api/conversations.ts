@@ -155,7 +155,7 @@ conversations.post('/getAll', (req: Request, res: Response) => {
         const conversationsIds = userData.conversations;
 
         Promise.all(conversationsIds.map(async(id) => {
-            return await getConversationData(db, id, userData.login);
+            return await getConversationData(db, id as string, userData.login);
         }))
         .then((conversations) => {
             res.status(200).send({ error: false, conversations })

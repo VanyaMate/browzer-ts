@@ -1,11 +1,12 @@
 import {NotificationType} from "../enums/notifications";
 import {AccessType} from "../enums/user";
+import {IPublicUserData} from "./users";
 
-export interface IUserNotification {
+export interface IUserNotification<T> {
     id: string,
     status: boolean,
     type: NotificationType,
-    data: any,
+    data: T,
     creationTime: number
 }
 
@@ -20,12 +21,12 @@ export interface IUserPersonalInfoList<T> {
     hidden: boolean
 }
 
-export interface IUserPersonalInfo {
+export interface IUserPersonalInfo<F> {
     firstName: IUserPersonalInfoItem,
     lastName: IUserPersonalInfoItem,
     telephone: IUserPersonalInfoItem,
     email: IUserPersonalInfoItem,
-    friends: IUserPersonalInfoList<string>,
+    friends: IUserPersonalInfoList<F>,
     musics: IUserPersonalInfoList<string>,
     photos: IUserPersonalInfoList<string>,
 }

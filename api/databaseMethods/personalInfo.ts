@@ -15,7 +15,7 @@ export const changeItem = function (
     req: Request,
     res: Response,
     db: Firestore,
-    itemName: keyof IUserPersonalInfo,
+    itemName: keyof IUserPersonalInfo<string>,
     validMethod: (val: string) => boolean
 ) {
     validateRequest(req, res)
@@ -23,8 +23,9 @@ export const changeItem = function (
             const body: IUserPersonalInfoItem = convertJsonTo<IUserPersonalInfoItem>(data.body);
             if (validMethod(body.value)) {
                 checkUserAccess(db, data.auth, AuthType.SESSION_KEY)
-                    .then((userData: IUserData) => {
-                        return changePersonalInfoItem(userData.personalInfo[itemName], body)
+                    .then((userData: IUserData<string, string, string>) => {
+                        const personalItem = userData.personalInfo[itemName];
+                        return changePersonalInfoItem(personalItem, body)
                             .then(() => updateUserData(db, userData))
                             .then(() => res.status(200).send({error: false, success: true}))
                     })

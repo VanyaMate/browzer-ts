@@ -2,6 +2,7 @@ import express, {Request, Response} from "express";
 import {changeItem} from "../databaseMethods/personalInfo";
 import {validEmail, validName} from "../../utils/validationMethods";
 import {db} from '../../index';
+import {IUserPersonalInfoItem} from "../../interfaces/user";
 
 const personalInfo = express.Router();
 

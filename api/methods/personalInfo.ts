@@ -1,8 +1,9 @@
 import {IUserPersonalInfoItem, IUserPersonalInfoList} from "../../interfaces/user";
+import {IPublicUserData} from "../../interfaces/users";
 
 export const changePersonalInfoItem =
     function (
-        personalItem: IUserPersonalInfoItem|IUserPersonalInfoList<string>,
+        personalItem: IUserPersonalInfoItem|IUserPersonalInfoList<IPublicUserData<string>|string>,
         data: IUserPersonalInfoItem|IUserPersonalInfoList<string>
     ): Promise<boolean> {
         return new Promise<boolean>((resolve) => {
