@@ -5,6 +5,7 @@ import preference from "./user-api/preference";
 import photo from "./user-api/photo";
 import music from "./user-api/music";
 import notification from "./user-api/notification";
+import block from './user-api/block';
 
 const user = express.Router();
 
@@ -14,6 +15,7 @@ user.use('/preference', preference);
 user.use('/photo', photo);
 user.use('/music', music);
 user.use('/notification', notification);
+user.use('/block', block);
 
 
 export default user;

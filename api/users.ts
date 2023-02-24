@@ -29,6 +29,7 @@ users.post('/create', (req: Request, res: Response) => {
             }
             res.status(200).send({ error: true, message: ResponseError.NO_VALID_DATA });
         })
+        .catch((error) => res.status(200).send({ error: true, message: error.message }))
 });
 
 users.post('/get', (req: Request, res: Response) => {

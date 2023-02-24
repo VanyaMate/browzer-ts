@@ -3,6 +3,7 @@ import {
     IUserPersonalInfoItem,
     IUserPreferences
 } from "./user";
+import {IBlock} from "./block";
 
 export interface IUserData<F, N, C> extends IPrivateUserData<F, N, C> {
     password: string
@@ -26,6 +27,8 @@ export interface IPrivateUserData<F, N, C> {
     preferences: IUserPreferences,
     personalInfo: IUserPersonalInfo<F>,
     notifications: N[],
+
+    blocks: IBlock[],
 
     conversations: C[],
 

@@ -11,10 +11,12 @@ import QuerySnapshot = firestore.QuerySnapshot;
 export const checkLoginExist = function (db: Firestore, login: string): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
         try {
+            console.log('BEFORE GET');
             const userData = await getUserDataByLogin(db, login);
+            console.log('CHECK');
             resolve(userData !== undefined);
         } catch (_) {
-            reject({ message: ResponseError.BAD_REQUEST });
+            resolve(false);
         }
     })
 }

@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.ts",
+    "dev": "nodemon index.ts --watch api --watch interfaces --watch enums --watch ../browzer sockets.ts",
     "apidoc": "apidoc -i api -o api/doc -c ./apidoc.json"
   },
   "keywords": [],

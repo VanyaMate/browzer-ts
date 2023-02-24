@@ -17,6 +17,8 @@ export default class SocketManager {
     private _io: SocketServer;
     private _db: Firestore;
 
+    private _previusUpdateTimer: number = Date.now();
+
     constructor(httpServer: Server, db: Firestore) {
         this._db = db;
         this._io = new socket.Server(httpServer, {
@@ -30,7 +32,7 @@ export default class SocketManager {
         this._io.on('connection', (socket) => {
             socket.on(SocketMessageType.AUTH, async (auth) => {
                 if (!auth || !auth[0] || !auth[1]) return;
-                checkUserAccess(this._db, auth, AuthType.SESSION_KEY)
+                return await checkUserAccess(this._db, auth, AuthType.SESSION_KEY)
                     .then(() => {
                         this.addConnection(auth[0], socket);
                         socket.emit(SocketMessageType.AUTH, true);
@@ -78,14 +80,15 @@ export default class SocketManager {
     public updateConnection (login: string, id: string) {
         if (this.connections[login] && this.connections[login][id]) {
             clearTimeout(this.connections[login][id].timer);
-            this.connections[login][id].timer = this._removeConnectionTimer(login, id, 50000);
+            setTimeout(() => {
+                this.connections[login][id].timer = this._removeConnectionTimer(login, id, 50000);
+            }, 0);
             return true;
         }
         return false;
     }
 
     public removeConnection (login: string, id: string) {
-        console.log('remove connection', login, id);
         if (this.connections[login] && this.connections[login][id]) {
             this.connections[login][id].socket.disconnect();
             clearTimeout(this.connections[login][id].timer);

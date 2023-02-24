@@ -25,6 +25,11 @@ export const createUserData = function (data: IUserDataForCreate): IUserData<str
         creationTime: Date.now(),
         conversations: [],
         notifications: [],
+        blocks: [
+            { containers: [], active: '' },
+            { containers: [], active: '' },
+            { containers: [], active: '' }
+        ],
         preferences: {
             conversations: AccessType.ALL,
             friends: AccessType.ALL

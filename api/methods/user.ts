@@ -20,6 +20,7 @@ export const getPrivateUserData = function (
     return {
         login: ud.login,
         avatar: ud.avatar,
+        blocks: ud.blocks,
         sessionKey: ud.sessionKey,
         creationTime: ud.creationTime,
         conversations: ud.conversations,
