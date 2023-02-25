@@ -36,11 +36,11 @@ const conversations = express.Router();
  *
  *
  *  @apiSuccess {Boolean} error Статус запроса
- *  @apiSuccess {Object} conversation беседа
+ *  @apiSuccess {Object} conversations беседа
  *  @apiSuccessExample {json} Response-Body
  *  {
  *      "error": false,
- *      "conversation": {
+ *      "conversations": {
  *          // ... данные беседы
  *      }
  *  }
@@ -96,11 +96,11 @@ conversations.post('/create', (req: Request, res: Response) => {
  *  @apiBody {String} id id беседы
  *
  *  @apiSuccess {Boolean} error Статус запроса
- *  @apiSuccess {Object} conversation беседа
+ *  @apiSuccess {Object} conversations беседа
  *  @apiSuccessExample {json} Response-Body
  *  {
  *      "error": false,
- *      "conversation": {
+ *      "conversations": {
  *          // ... данные беседы
  *      }
  *  }

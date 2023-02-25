@@ -1,0 +1,16 @@
+@import "/src/common/consts";
+
+.flexRow {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+
+    &_jcLeft {
+        justify-content: left;
+    }
+
+    &_jcRight {
+        justify-content: right;
+    }
+}

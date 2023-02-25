@@ -3,16 +3,17 @@
 Сборщик: **Vite**
 
 ### Frontend
-  - **typescript**
-  - **react**
-  - **socket.io-client**
-  - **scss**
+  - **Typescript**
+  - **React**
+  - **Redux**
+  - **Socket.IO-Client**
+  - **SCSS**
   
 ### Backend 
-  - **typescript**
-  - **express**
-  - **firebase / firestore**
-  - **socket.io**
-  - **bcrypt**
-  - **crypto**
-  - **apidoc**
+  - **Typescript**
+  - **Express**
+  - **Firebase / Firestore**
+  - **Socket.IO**
+  - **Bcrypt**
+  - **Crypto**
+  - **Apidoc**

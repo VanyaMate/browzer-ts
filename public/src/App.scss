@@ -1,0 +1,12 @@
+@import "/src/common/consts";
+
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    font-family: "Trebuchet MS", "Courier New", "Trebuchet MS";
+}
+
+body {
+    background: $darkBlue;
+}

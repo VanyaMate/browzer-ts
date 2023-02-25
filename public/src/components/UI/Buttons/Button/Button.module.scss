@@ -1,0 +1,24 @@
+@import "/src/common/consts";
+
+.button {
+    display: inline-flex;
+    font-size: 14px;
+    color: $whiteGray;
+    background: $darkGray;
+    transition: .1s;
+    padding: 0 10px;
+    height: $smallRowHeight;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+
+    &.active {
+        color: $white;
+        cursor: pointer;
+        pointer-events: auto;
+
+        &:hover {
+            background: $blue;
+        }
+    }
+}
