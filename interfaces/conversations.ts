@@ -6,7 +6,7 @@ import {IPublicUserData} from "./users";
 export interface IConversationMember<F> {
     login: string,
     role: ConversationMemberRole,
-    data?: IPublicUserData<F>,
+    data?: F,
     addedTime?: number
 }
 

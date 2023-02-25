@@ -5,7 +5,6 @@ import {USERS} from "./COLLECTION_NAMES";
 import {ResponseError} from "../../enums/responses";
 import {IConversation} from "../../interfaces/conversations";
 import {getUserDataByLogin} from "./users";
-import user from "../user";
 
 export const updateUserData = function (db: Firestore, userData: IUserData<string, string, string>): Promise<boolean> {
     return new Promise<boolean>(async (resolve, reject) => {

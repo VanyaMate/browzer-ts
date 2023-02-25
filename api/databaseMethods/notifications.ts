@@ -1,12 +1,13 @@
 import {firestore} from "firebase-admin";
 import Firestore = firestore.Firestore;
 import {INotification, INotificationData} from "../../interfaces/notifications";
-import {NOTIFICATIONS} from "./COLLECTION_NAMES";
+import {MESSAGES, NOTIFICATIONS} from "./COLLECTION_NAMES";
 import {IUserData} from "../../interfaces/users";
 import {NotificationType} from "../../enums/notifications";
 import {getUserDataByLogin} from "./users";
 import * as crypto from "crypto";
 import {ResponseError} from "../../enums/responses";
+import QuerySnapshot = firestore.QuerySnapshot;
 
 export const createNotificationData = function (
     target: string,
@@ -60,6 +61,32 @@ export const changeNotificationStatus = function (
         const data = document.data() as INotification<string>;
         data.status = status;
         await db.collection(NOTIFICATIONS).doc(id).set(data);
-        resolve(true);
+        resolve(status);
     });
+}
+
+export const getNotificationsById = function (
+    db: Firestore,
+    ids: string[]
+): Promise<INotification<string>[]> {
+    return new Promise<INotification<string>[]>(async (resolve, reject) => {
+        try {
+            const documents: QuerySnapshot = await db
+                .collection(NOTIFICATIONS)
+                .orderBy('creationTime', 'desc')
+                .where('id', 'in', ids)
+                .limit(25)
+                .get();
+
+            const notifications: INotification<string>[] = documents.docs.map((document) => {
+                return document.data() as INotification<string>;
+            })
+
+            resolve(notifications);
+        }
+        catch (_) {
+            console.log(_); //
+            reject();
+        }
+    })
 }

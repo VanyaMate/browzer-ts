@@ -7,6 +7,9 @@ import {ResponseError} from "../../enums/responses";
 import {getPrivateUserData, getPublicUserData} from "../methods/user";
 import DocumentData = firestore.DocumentData;
 import QuerySnapshot = firestore.QuerySnapshot;
+import {INotification} from "../../interfaces/notifications";
+import {IConversation} from "../../interfaces/conversations";
+import {getConversationsData, getFullConversationsData} from "./conversations";
 
 export const checkLoginExist = function (db: Firestore, login: string): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
@@ -61,6 +64,30 @@ export const getUserDataByLogin = function (
             reject({ message: ResponseError.NO_FIND })
         }
     });
+}
+
+export const getFullUserDataByLogin = function (
+    db: Firestore,
+    login: string
+): Promise<IUserData<IPublicUserData<string>, INotification<string>, IConversation<IPublicUserData<string>>>> {
+    return new Promise<IUserData<IPublicUserData<string>, INotification<string>, IConversation<IPublicUserData<string>>>>(
+        async (resolve, reject) => {
+            try {
+                const query: DocumentReference = db.collection(USERS).doc(login);
+                const userData = (await query.get()).data() as IUserData<string, string, string>;
+                const friendsData: IPublicUserData<string>[] = await getPublicUserDataByLoginList(
+                    db, userData.personalInfo.friends.value
+                );
+                const notificationsData: INotification<string>[] = [];
+                const conversationsData: IConversation<IPublicUserData<string>>[] = await getFullConversationsData(
+                    db, userData.conversations
+                );
+
+            } catch (_) {
+
+            }
+        }
+    )
 }
 
 export const getPublicUsersDataByLogin = function (

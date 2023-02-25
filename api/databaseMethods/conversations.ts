@@ -240,15 +240,15 @@ export const getConversationsData = function (
 export const getFullConversationsData = function (
     db: Firestore,
     conversationsList: string[]
-): Promise<IConversation<string>[]> {
-    return new Promise<IConversation<string>[]>(async (resolve, reject) => {
+): Promise<IConversation<IPublicUserData<string>>[]> {
+    return new Promise<IConversation<IPublicUserData<string>>[]>(async (resolve, reject) => {
         try {
             const documents: QuerySnapshot = await db.collection(CONVERSATIONS)
                 .where('id', 'in', conversationsList)
                 .get();
 
-            const conversationsData: IConversation<string>[] = documents.docs.map(
-                (doc) => doc.data() as IConversation<string>
+            const conversationsData: IConversation<IPublicUserData<string>>[] = documents.docs.map(
+                (doc) => doc.data() as IConversation<IPublicUserData<string>>
             );
             const loginList = [...new Set(...conversationsData.map(
                 (conversation) => conversation.members.map((member) => member.login))
