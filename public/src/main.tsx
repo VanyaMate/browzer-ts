@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import SocketClientManager from "./SocketClientManager";
 import {Provider} from "react-redux";
-import store from './store/store';
+import {store} from "./store/index";
+
 
 const socketClientManager = new SocketClientManager('localhost:3000');
 

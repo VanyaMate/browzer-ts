@@ -1,13 +1,13 @@
 @import "/src/common/consts";
 
 .button {
-    display: inline-flex;
+    display: flex;
     font-size: $mediumFontSize;
     color: $whiteGray;
     background: $darkGray;
     transition: .1s;
     padding: 0 10px;
-    height: $smallRowHeight;
+    height: $mediumRowHeight;
     align-items: center;
     justify-content: center;
     pointer-events: none;
@@ -19,6 +19,16 @@
 
         &:hover {
             background: $blue;
+        }
+    }
+
+    &.always {
+        background: $blue;
+        cursor: pointer;
+        color: $white;
+
+        &:hover {
+            box-shadow: $defaultBoxShadow;
         }
     }
 }

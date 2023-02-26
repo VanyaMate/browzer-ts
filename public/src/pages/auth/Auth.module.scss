@@ -1,0 +1,22 @@
+@import 'src/common/consts';
+
+.container {
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    & > * {
+        width: 300px;
+
+        &:first-child {
+            margin-right: 70px;
+        }
+
+        & > * {
+            margin-bottom: 10px;
+        }
+    }
+}

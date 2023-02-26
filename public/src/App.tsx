@@ -1,10 +1,16 @@
-import React from 'react';
-import TemplatesPage from "./components/pages/TemplatesPage";
+import React, {useEffect} from 'react';
 import './App.scss';
+import Auth from "./pages/auth/Auth";
+import {useMySelector} from "./hooks/redux";
+import Browzer from "./pages/browzer/Browzer";
 
 const App = () => {
+    const auth = useMySelector((state) => state.auth);
+
     return (
-        <TemplatesPage/>
+        <>
+            {auth.authKey ? <Browzer/> : <Auth/>}
+        </>
     );
 };
 

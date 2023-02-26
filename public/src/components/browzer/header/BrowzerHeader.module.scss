@@ -1,0 +1,17 @@
+@import 'src/common/consts';
+
+.container {
+    width: 100vw;
+    height: $mediumRowHeight;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    & > * {
+        margin-right: $mediumOffset;
+    }
+
+    &:last-child {
+        margin-right: 0;
+    }
+}

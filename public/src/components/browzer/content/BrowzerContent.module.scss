@@ -1,0 +1,16 @@
+@import 'src/common/consts';
+
+.container {
+    display: flex;
+    justify-content: center;
+    width: 100vw;
+    height: calc(100vh - #{$mediumRowHeight} - #{$mediumOffset * 2});
+
+    & > * {
+        margin-right: $mediumOffset;
+    }
+
+    &:last-child {
+        margin-right: 0;
+    }
+}

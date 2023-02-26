@@ -1,0 +1,11 @@
+@import 'src/common/consts';
+
+.title {
+    font-size: $bigFontSize;
+    font-weight: bold;
+
+    color: $blue;
+    padding-bottom: $mediumOffset;
+    margin-bottom: $mediumOffset;
+    border-bottom: 5px dotted $darkGray;
+}

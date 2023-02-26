@@ -1,0 +1,13 @@
+@import 'src/common/consts';
+
+.container {
+    width: $contentBlockWidth;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: $mediumOffset;
+    border: 2px dotted $darkGray;
+    overflow: hidden;
+    color: $gray;
+}

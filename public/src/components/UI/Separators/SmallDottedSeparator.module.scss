@@ -1,0 +1,7 @@
+@import 'src/common/consts';
+
+.sep {
+    margin-top: $smallOffset;
+    margin-bottom: calc(#{$smallOffset} + 5px);
+    border-bottom: 5px dotted $darkGray;
+}

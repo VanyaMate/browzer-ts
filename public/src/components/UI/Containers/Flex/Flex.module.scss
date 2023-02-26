@@ -1,0 +1,85 @@
+@import "/src/common/consts";
+
+.flexRow {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    &_cmhs {
+        & > * {
+            margin-right: $smallOffset;
+        }
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+
+    &_cmhm {
+        & > * {
+            margin-right: $mediumOffset;
+        }
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+
+    &_cmvs {
+        & > * {
+            margin-bottom: $smallOffset;
+        }
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    &_cmvm {
+        & > * {
+            margin-bottom: $mediumOffset;
+        }
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    &_jcLeft {
+        justify-content: left;
+    }
+
+    &_jcRight {
+        justify-content: right;
+    }
+
+    &_dr {
+        flex-direction: row;
+    }
+
+    &_dc {
+        flex-direction: column;
+    }
+
+    &_ps {
+        padding: $smallOffset;
+    }
+
+    &_pm {
+        padding: $mediumOffset;
+    }
+
+    &_pb {
+        padding: $bigOffset;
+    }
+
+    &_ms {
+        margin: $smallOffset;
+    }
+
+    &_mm {
+        margin: $mediumOffset;
+    }
+
+    &_mb {
+        margin: $bigOffset;
+    }
+}
