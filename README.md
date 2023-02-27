@@ -5,7 +5,8 @@
 ### Frontend
   - **Typescript**
   - **React**
-  - **Redux**
+  - **Redux Toolkit**
+  - **RTK Query**
   - **Socket.IO-Client**
   - **SCSS**
   
@@ -16,4 +17,4 @@
   - **Socket.IO**
   - **Bcrypt**
   - **Crypto**
-  - **Apidoc**
+  - **ApiDoc**
