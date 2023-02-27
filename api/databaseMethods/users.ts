@@ -14,9 +14,7 @@ import {getConversationsData, getFullConversationsData} from "./conversations";
 export const checkLoginExist = function (db: Firestore, login: string): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log('BEFORE GET');
             const userData = await getUserDataByLogin(db, login);
-            console.log('CHECK');
             resolve(userData !== undefined);
         } catch (_) {
             resolve(false);
@@ -122,6 +120,11 @@ export const getPublicUsersDataByLogin = function (
 export const getPublicUserDataByLoginList = function (db: Firestore, loginList: string[]): Promise<IPublicUserData<string>[]> {
     return new Promise<IPublicUserData<string>[]>(async (resolve, reject) => {
         try {
+            if (loginList.length === 0) {
+                resolve([]);
+                return;
+            }
+
             const document: QuerySnapshot = await db.collection(USERS)
                 .where('login', 'in', loginList)
                 .get();

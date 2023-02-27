@@ -26,6 +26,8 @@ export const checkUserAccess = function (
                     return;
                 }
             }
+
+            reject({message: ResponseError.BAD_AUTH });
         }
         catch (error) {
             reject({message: ResponseError.BAD_AUTH});

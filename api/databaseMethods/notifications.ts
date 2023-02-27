@@ -71,6 +71,11 @@ export const getNotificationsById = function (
 ): Promise<INotification<string>[]> {
     return new Promise<INotification<string>[]>(async (resolve, reject) => {
         try {
+            if (ids.length === 0) {
+                resolve([]);
+                return;
+            }
+
             const documents: QuerySnapshot = await db
                 .collection(NOTIFICATIONS)
                 .orderBy('creationTime', 'desc')
@@ -85,7 +90,6 @@ export const getNotificationsById = function (
             resolve(notifications);
         }
         catch (_) {
-            console.log(_); //
             reject();
         }
     })

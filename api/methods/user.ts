@@ -15,8 +15,8 @@ export const getPublicUserData = function (
 }
 
 export const getPrivateUserData = function (
-    ud: IUserData<string, string, string>
-): IPrivateUserData<string, string, string> {
+    ud: IUserData<any, any, any>
+): IPrivateUserData<any, any, any> {
     return {
         login: ud.login,
         avatar: ud.avatar,

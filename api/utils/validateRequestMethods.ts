@@ -52,14 +52,12 @@ export const validateRequestWithAccess = function<T> (
     return new Promise((resolve, reject) => {
         validateRequest(req, res)
             .then(async (data: IValidRequestData) => {
-                return await checkUserAccess(db, data.auth, authType)
+                checkUserAccess(db, data.auth, authType)
                     .then((userData: IUserData<string, string, string>) => {
                         resolve({userData, body: convertJsonTo<T>(data.body)})
                     })
-                    .catch((error: IError) => res.status(200).send({error: true, message: error.message}) || reject())
+                    .catch((error: IError) => reject(error.message))
             })
-            .catch((error) => {
-                res.status(200).send({error: true, message: error.message}) || reject()
-            });
+            .catch((error) =>  reject(error.message));
     });
 }

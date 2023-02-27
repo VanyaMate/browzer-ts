@@ -13,18 +13,26 @@ const LoginForm = () => {
     const [login, setLogin, loginValid, loginEmpty] = useInputValue('', validLogin);
     const [pass, setPass, passValid, passEmpty] = useInputValue('', validPassword);
     const [valid, setValid] = useState(false);
-    const [authPass, { isLoading, isError, isFetching, data: authData }] = useLazyAuthPassQuery();
-    const {setAuth} = useActions();
+    const [authPass, { isLoading, isError, isFetching, data: userData }] = useLazyAuthPassQuery();
+    const {
+        setFriends, setConversations, setNotifications, setAuth,
+        resetAuth
+    } = useActions();
 
     useEffect(() => {
         setValid(loginValid && passValid && !loginEmpty && !passEmpty);
     }, [loginValid, passValid]);
 
     useEffect(() => {
-        if (authData) {
-            setAuth({ login: authData.login, sessionKey: authData.sessionKey });
+        if (userData) {
+            setAuth({login: userData.login, sessionKey: userData.sessionKey});
+            setFriends(userData);
+            setNotifications(userData.notifications);
+            setConversations(userData.conversations);
+        } else if (userData === false) {
+            resetAuth();
         }
-    }, [authData])
+    }, [userData])
 
     return (
         <div className={css.container}>

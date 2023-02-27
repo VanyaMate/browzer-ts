@@ -25,7 +25,7 @@ export const authSlice = createSlice({
             state.authKey = state.login + ':' + action.payload;
             localStorage.setItem(authPrefix, JSON.stringify(state.authKey));
         },
-        reset: (state) => {
+        resetAuth: (state) => {
             state.login = '';
             state.sessionKey = '';
             state.authKey = '';

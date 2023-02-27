@@ -226,6 +226,11 @@ export const getConversationsData = function (
 ): Promise<IConversation<string>[]> {
     return new Promise<IConversation<string>[]>(async (resolve, reject) => {
         try {
+            if (conversationList.length === 0) {
+                resolve([]);
+                return;
+            }
+
             const documents = await db.collection(CONVERSATIONS)
                 .where('id', 'in', conversationList)
                 .get();
@@ -243,6 +248,11 @@ export const getFullConversationsData = function (
 ): Promise<IConversation<IPublicUserData<string>>[]> {
     return new Promise<IConversation<IPublicUserData<string>>[]>(async (resolve, reject) => {
         try {
+            if (conversationsList.length === 0) {
+                resolve([]);
+                return;
+            }
+
             const documents: QuerySnapshot = await db.collection(CONVERSATIONS)
                 .where('id', 'in', conversationsList)
                 .get();
