@@ -4,7 +4,7 @@ import {storagePrefix} from "../../common/consts";
 
 const authPrefix = `${storagePrefix}auth`;
 
-const savedData = JSON.parse(localStorage.getItem(authPrefix) ?? "");
+const savedData = JSON.parse(localStorage.getItem(authPrefix) || '""');
 
 export const authSlice = createSlice({
     name: 'auth',
@@ -16,7 +16,7 @@ export const authSlice = createSlice({
     reducers: {
         setAuth: (state, action: PayloadAction<{ login: string, sessionKey: string }>) => {
             state.login = action.payload.login;
-            state.sessionKey = action.payload.login;
+            state.sessionKey = action.payload.sessionKey;
             state.authKey = action.payload.login + ':' + action.payload.sessionKey;
             localStorage.setItem(authPrefix, JSON.stringify(state.authKey));
         },

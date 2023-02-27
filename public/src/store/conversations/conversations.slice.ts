@@ -4,19 +4,21 @@ import {IPublicUserData} from "../../../../interfaces/users";
 
 export const conversationsSlice = createSlice({
     name: 'conversations',
-    initialState: [] as IConversation<IPublicUserData<string>>[],
+    initialState: {
+        list: []
+    } as { list: IConversation<IPublicUserData<string>>[] },
     reducers: {
         setConversations: (state, action: PayloadAction<IConversation<IPublicUserData<string>>[]>) => {
-            state.concat(action.payload);
+            state.list.concat(action.payload);
         },
         addConversation: (state, action: PayloadAction<IConversation<IPublicUserData<string>>>) => {
-            state.push(action.payload);
+            state.list.push(action.payload);
         },
         removeConversation: (state, action: PayloadAction<string>) => {
-            state = state.filter((c) => c.id !== action.payload);
+            state.list = state.list.filter((c) => c.id !== action.payload);
         },
         resetConversations: (state) => {
-            state = [];
+            state.list = [];
         }
     }
 });

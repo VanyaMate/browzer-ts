@@ -34,7 +34,7 @@ export default class SocketClientManager {
         this._socket.emit(SocketMessageType.DISCONNECT, auth);
     }
 
-    public addHandlerOnSocket (handlerType: string, handler: (socket: Socket) => void) {
+    public addHandlerOnSocket (handlerType: NotificationType, handler: (socket: Socket) => void) {
         this._handlers.push([handlerType, handler]);
         this._socket.on(handlerType, handler);
     }

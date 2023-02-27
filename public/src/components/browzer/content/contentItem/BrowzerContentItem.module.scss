@@ -4,10 +4,15 @@
     width: $contentBlockWidth;
     height: 100%;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
     margin-top: $mediumOffset;
     border: 2px dotted $darkGray;
-    overflow: hidden;
+    overflow: auto;
     color: $gray;
+
+    & > * {
+        display: flex;
+        flex-direction: column;
+    }
 }

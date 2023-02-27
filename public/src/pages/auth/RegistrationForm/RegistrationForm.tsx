@@ -10,13 +10,13 @@ import {useActions} from "../../../hooks/redux";
 import {useLazyCreateUserQuery} from "../../../store/users/users.api";
 
 const RegistrationForm = () => {
-    const [login, setLogin, loginValid, loginEmpty] = useInputValue('', validLogin);
-    const [pass, setPass, passValid, passEmpty] = useInputValue('', validPassword);
-    const [samePass, setSamePass, samePassValid, samePassEmpty] = useInputValue('', (samePass: string) => {
-        return pass === samePass && validPassword(samePass);
+    const login = useInputValue('', validLogin);
+    const pass = useInputValue('', validPassword);
+    const samePass = useInputValue('', (samePass: string) => {
+        return pass.value === samePass && validPassword(samePass);
     });
-    const [firstName, setFirstName, firstNameValid, firstNameEmpty] = useInputValue('', validName);
-    const [lastName, setLastName, lastNameValid, lastNameEmpty] = useInputValue('', validName);
+    const firstName = useInputValue('', validName);
+    const lastName = useInputValue('', validName);
     const [dispatchRegistration, {isFetching, isError, data: registrationData }] = useLazyCreateUserQuery();
     const [valid, setValid] = useState(false);
     const {
@@ -26,15 +26,16 @@ const RegistrationForm = () => {
 
     useEffect(() => {
         setValid(
-            loginValid && !loginEmpty &&
-            passValid && !passEmpty &&
-            samePassValid && !samePassEmpty
+            login.valid && !login.empty &&
+            pass.valid && !pass.empty &&
+            samePass.valid && !samePass.empty  &&
+            firstName.valid && !firstName.empty  &&
+            lastName.valid && !lastName.empty
         );
-    }, [loginValid, passValid, samePassValid]);
+    }, [login.valid, pass.valid, samePass.valid, firstName.valid, lastName.valid]);
 
     useEffect(() => {
         if (registrationData) {
-            console.log('registrationData', registrationData);
             setAuth({login: registrationData.login, sessionKey: registrationData.sessionKey});
             setFriends(registrationData);
             setNotifications(registrationData.notifications);
@@ -47,15 +48,15 @@ const RegistrationForm = () => {
     const registration = () => {
         if (!isFetching) {
             dispatchRegistration({
-                login,
-                password: pass,
+                login: login.value,
+                password: pass.value,
                 personalInfo: {
                     firstName: {
-                        value: firstName,
+                        value: firstName.value,
                         hidden: false
                     },
                     lastName: {
-                        value: lastName,
+                        value: lastName.value,
                         hidden: false
                     }
                 }
@@ -66,42 +67,12 @@ const RegistrationForm = () => {
     return (
         <div className={css.container}>
             <MedTitle>Регистрация</MedTitle>
-            <Input
-                value={login}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setLogin(e.target.value)}
-                valid={loginValid}
-                empty={loginEmpty}
-                placeholder={"Логин"}
-            />
-            <Input
-                value={pass}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setPass(e.target.value)}
-                valid={passValid}
-                empty={passEmpty}
-                placeholder={"Пароль"}
-            />
-            <Input
-                value={samePass}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setSamePass(e.target.value)}
-                valid={samePassValid}
-                empty={samePassEmpty}
-                placeholder={"Повторный пароль"}
-            />
+            <Input hook={login} placeholder={"Логин"}/>
+            <Input hook={pass} placeholder={"Пароль"}/>
+            <Input hook={samePass} placeholder={"Повторный пароль"}/>
             <SmallDottedSeparator/>
-            <Input
-                value={firstName}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setFirstName(e.target.value)}
-                valid={firstNameValid}
-                empty={firstNameEmpty}
-                placeholder={"Имя"}
-            />
-            <Input
-                value={lastName}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setLastName(e.target.value)}
-                valid={lastNameValid}
-                empty={lastNameEmpty}
-                placeholder={"Фамилия"}
-            />
+            <Input hook={firstName} placeholder={"Имя"}/>
+            <Input hook={lastName} placeholder={"Фамилия"}/>
             <SmallDottedSeparator/>
             <BigButton
                 active={valid}

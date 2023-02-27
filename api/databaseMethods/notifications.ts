@@ -8,6 +8,8 @@ import {getUserDataByLogin} from "./users";
 import * as crypto from "crypto";
 import {ResponseError} from "../../enums/responses";
 import QuerySnapshot = firestore.QuerySnapshot;
+import {socketManager} from "../../index";
+import socket from "socket.io";
 
 export const createNotificationData = function (
     target: string,
@@ -76,21 +78,25 @@ export const getNotificationsById = function (
                 return;
             }
 
-            const documents: QuerySnapshot = await db
-                .collection(NOTIFICATIONS)
-                .orderBy('creationTime', 'desc')
-                .where('id', 'in', ids)
-                .limit(25)
-                .get();
+            const collection = db.collection(NOTIFICATIONS);
+            const batches = [];
 
-            const notifications: INotification<string>[] = documents.docs.map((document) => {
-                return document.data() as INotification<string>;
-            })
+            while (ids.length) {
+                const batch = ids.splice(0, 10);
+                batches.push(collection
+                    .where('id', 'in', batch)
+                    .get()
+                    .then((queryResult) =>
+                        queryResult.docs.map((notif) => notif.data() as INotification<string>)
+                    )
+                )
+            }
 
-            resolve(notifications);
+            const notifications: INotification<string>[] = await Promise.all(batches).then(batches => batches.flat())
+            resolve(notifications.sort((a, b) => a.creationTime - b.creationTime));
         }
         catch (_) {
-            reject();
+            reject(_);
         }
     })
 }

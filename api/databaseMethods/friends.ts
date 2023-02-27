@@ -5,6 +5,8 @@ import {IUserData} from "../../interfaces/users";
 import {addUniqueValueTo, getWithoutValue} from "../../utils/helpers";
 import {NotificationType} from "../../enums/notifications";
 import {addNotification} from "./notifications";
+import {socketManager} from "../../index";
+import {getPublicUserData} from "../methods/user";
 
 export const addToFriends = async function (
     db: Firestore,
@@ -22,6 +24,14 @@ export const addToFriends = async function (
         title: userData.login,
         message: 'Теперь друзья',
         data: {}
+    })
+
+    const userAddSocketConnect = socketManager.connections[userToAdd.login];
+    socketManager.sendMessage(userAddSocketConnect, {
+        type: NotificationType.FRIEND_ACCEPT,
+        data: {
+            user: getPublicUserData(userData), notification
+        }
     })
 
     await Promise.all([
@@ -45,6 +55,14 @@ export const addToRequests = async function (
         title: userData.login,
         message: 'Хочет дружить',
         data: {}
+    })
+
+    const userAddSocketConnect = socketManager.connections[userToAdd.login];
+    socketManager.sendMessage(userAddSocketConnect, {
+        type: NotificationType.FRIEND_IN_REQUEST,
+        data: {
+            user: getPublicUserData(userData), notification
+        }
     })
 
     await Promise.all([
@@ -76,6 +94,14 @@ export const removeFromFriends = async function (
         data: {}
     })
 
+    const userRemoveSocketConnect = socketManager.connections[userToRemove.login];
+    socketManager.sendMessage(userRemoveSocketConnect, {
+        type: NotificationType.FRIEND_REMOVE,
+        data: {
+            user: getPublicUserData(userData), notification
+        }
+    })
+
     await Promise.all([
         updateUserData(db, userData),
         updateUserData(db, userToRemove)
@@ -99,6 +125,14 @@ export const removeFromRequestOut = async function (
         data: {}
     })
 
+    const userRemoveSocketConnect = socketManager.connections[userToRemove.login];
+    socketManager.sendMessage(userRemoveSocketConnect, {
+        type: NotificationType.FRIEND_IN_REQUEST_CANCELED,
+        data: {
+            user: getPublicUserData(userData), notification
+        }
+    })
+
     await Promise.all([
         updateUserData(db, userData),
         updateUserData(db, userToRemove)
@@ -120,6 +154,14 @@ export const removeFromRequestIn = async function (
         title: userData.login,
         message: 'Отменил вашу заявку в друзья',
         data: {}
+    })
+
+    const userRemoveSocketConnect = socketManager.connections[userToRemove.login];
+    socketManager.sendMessage(userRemoveSocketConnect, {
+        type: NotificationType.FRIEND_OUT_REQUEST_CANCELED,
+        data: {
+            user: getPublicUserData(userData), notification
+        }
     })
 
     await Promise.all([

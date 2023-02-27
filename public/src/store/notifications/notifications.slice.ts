@@ -1,22 +1,23 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {INotification} from "../../../../interfaces/notifications";
-import {IPublicUserData} from "../../../../interfaces/users";
 
 export const notificationsSlice = createSlice({
     name: 'notifications',
-    initialState: [] as INotification<string>[],
+    initialState: {
+        list: []
+    } as {list: INotification<string>[]},
     reducers: {
         setNotifications: (state, action: PayloadAction<INotification<string>[]>) => {
-            state = action.payload;
+            state.list = action.payload;
         },
         addNotification: (state, action: PayloadAction<INotification<string>>) => {
-            state.push(action.payload);
+            state.list.push(action.payload);
         },
         removeNotification: (state, action: PayloadAction<string>) => {
-            state = state.filter((n) => n.id !== action.payload);
+            state.list = state.list.filter((n) => n.id !== action.payload);
         },
         resetNotifications: (state) => {
-            state = [];
+            state.list = [];
         }
     }
 })

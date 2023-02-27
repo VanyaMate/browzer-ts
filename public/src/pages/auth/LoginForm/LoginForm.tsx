@@ -1,7 +1,7 @@
 import React, {ChangeEvent, useEffect, useState} from 'react';
 import css from './LoginForm.module.scss';
 import MedTitle from "../../../components/UI/Titles/MedTitle/MedTitle";
-import {useInputValue} from "../../../hooks/useInputValue";
+import {IUserInputValue, useInputValue} from "../../../hooks/useInputValue";
 import {validLogin, validPassword} from "../../../../../utils/validationMethods";
 import Input from "../../../components/UI/Inputs/Input";
 import BigButton from "../../../components/UI/Buttons/BigButton/BigButton";
@@ -10,8 +10,8 @@ import SmallDottedSeparator from "../../../components/UI/Separators/SmallDottedS
 import {useActions} from "../../../hooks/redux";
 
 const LoginForm = () => {
-    const [login, setLogin, loginValid, loginEmpty] = useInputValue('', validLogin);
-    const [pass, setPass, passValid, passEmpty] = useInputValue('', validPassword);
+    const login: IUserInputValue = useInputValue('', validLogin);
+    const pass: IUserInputValue = useInputValue('', validPassword);
     const [valid, setValid] = useState(false);
     const [authPass, { isLoading, isError, isFetching, data: userData }] = useLazyAuthPassQuery();
     const {
@@ -20,8 +20,8 @@ const LoginForm = () => {
     } = useActions();
 
     useEffect(() => {
-        setValid(loginValid && passValid && !loginEmpty && !passEmpty);
-    }, [loginValid, passValid]);
+        setValid(!!login.value && !!pass.value && !login.empty && !pass.empty);
+    }, [login.value, pass.value]);
 
     useEffect(() => {
         if (userData) {
@@ -37,25 +37,13 @@ const LoginForm = () => {
     return (
         <div className={css.container}>
             <MedTitle>Вход</MedTitle>
-            <Input
-                value={login}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setLogin(e.target.value)}
-                valid={loginValid}
-                empty={loginEmpty}
-                placeholder={"Логин"}
-            />
-            <Input
-                value={pass}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setPass(e.target.value)}
-                valid={passValid}
-                empty={passEmpty}
-                placeholder={"Пароль"}
-            />
+            <Input hook={login} placeholder={"Логин"}/>
+            <Input hook={pass} placeholder={"Пароль"} type={"password"}/>
             <SmallDottedSeparator/>
             <BigButton
                 active={valid}
                 always={valid}
-                onClick={() => !isFetching && authPass(login + ':' + pass)}
+                onClick={() => !isFetching && authPass(login.value + ':' + pass.value)}
             >Вход</BigButton>
         </div>
     );

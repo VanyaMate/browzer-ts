@@ -11,6 +11,7 @@ import {INotification} from "../interfaces/notifications";
 import {getNotificationsById} from "./databaseMethods/notifications";
 import {firestore} from "firebase-admin";
 import Firestore = firestore.Firestore;
+import {ResponseError} from "../enums/responses";
 
 const auth: Router = express.Router();
 
@@ -26,7 +27,7 @@ const getFullData = function (
             const conversations: Promise<IConversation<IPublicUserData<string>>[]> = getFullConversationsData(db, userData.conversations);
             const notifications: Promise<INotification<string>[]> = getNotificationsById(db, userData.notifications);
 
-            Promise.all([
+            return Promise.all([
                 friendsRequestIn,
                 friendsRequestOut,
                 friends,
@@ -50,9 +51,9 @@ const getFullData = function (
                 }
 
                 resolve(getPrivateUserData(filledUserData as IUserData<any, any, any>));
-            }).catch(reject);
+            }).catch((e) => reject({ message: e.message }));
         } catch (e) {
-            reject(e);
+            reject({ message: ResponseError.BAD_REQUEST });
         }
     })
 }
@@ -88,7 +89,7 @@ const getFullData = function (
 auth.post('/pass', (req: Request, res: Response) => {
     validateRequestWithAccess(req, res, db, AuthType.PASSWORD)
         .then(({ userData }) => {
-            getFullData(db, userData)
+            return getFullData(db, userData)
                 .then((data) => res.status(200).send({ error: false, data }))
                 .catch(e => res.status(200).send({ error: true, message: e.message }))
         })
@@ -98,7 +99,7 @@ auth.post('/pass', (req: Request, res: Response) => {
 auth.post('/sessionKey', (req: Request, res: Response) => {
     validateRequestWithAccess(req, res, db, AuthType.SESSION_KEY)
         .then(({ userData }) => {
-            getFullData(db, userData)
+            return getFullData(db, userData)
                 .then((data) => res.status(200).send({ error: false, data }))
                 .catch(e => res.status(200).send({ error: true, message: e.message }))
         })

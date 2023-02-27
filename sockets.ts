@@ -31,13 +31,16 @@ export default class SocketManager {
 
         this._io.on('connection', (socket) => {
             socket.on(SocketMessageType.AUTH, async (auth) => {
+                console.log(auth);
                 if (!auth || !auth[0] || !auth[1]) return;
                 return await checkUserAccess(this._db, auth, AuthType.SESSION_KEY)
                     .then(() => {
+                        console.log('add connection');
                         this.addConnection(auth[0], socket);
                         socket.emit(SocketMessageType.AUTH, true);
                     })
                     .catch(() => {
+                        console.log('false connection');
                         socket.emit(SocketMessageType.AUTH, false);
                     })
             })
@@ -108,6 +111,12 @@ export default class SocketManager {
         }
 
         delete this.connections[login];
+    }
+
+    public sendMessage (connection: SocketConnection, message: any) {
+        for (let key in connection) {
+            connection[key].socket.emit(message.type, message.data);
+        }
     }
 
     private _removeConnectionTimer (login: string, id: string, delay: number): NodeJS.Timer {

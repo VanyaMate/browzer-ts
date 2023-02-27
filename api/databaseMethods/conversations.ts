@@ -19,7 +19,6 @@ import {getPublicUserDataByLoginList, getUserDataByLogin} from "./users";
 import {checkIsFriendOf} from "../methods/user";
 import Firestore = firestore.Firestore;
 import QuerySnapshot = firestore.QuerySnapshot;
-import members from "../conversation-api/members";
 
 export const createConversation = function (
     db: Firestore,
@@ -284,7 +283,7 @@ export const getFullConversationsData = function (
 
             resolve(conversationsData);
         } catch (_) {
-            reject();
+            reject(_);
         }
     })
 }
