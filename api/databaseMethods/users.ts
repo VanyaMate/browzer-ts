@@ -125,12 +125,21 @@ export const getPublicUserDataByLoginList = function (db: Firestore, loginList: 
                 return;
             }
 
-            const document: QuerySnapshot = await db.collection(USERS)
-                .where('login', 'in', loginList)
-                .get();
+            const collection = db.collection(USERS);
+            const batches = [];
 
-            const users: IPublicUserData<string>[] = document.docs.map(
-                (doc: DocumentData) => getPublicUserData(doc.data())
+            while (loginList.length) {
+                const batch = loginList.splice(0, 10);
+                batches.push(collection
+                    .where('login', 'in', batch)
+                    .get()
+                    .then((result) => result.docs.map((user) => user.data() as IUserData<string, string, string>))
+                )
+            }
+
+            const usersData = await Promise.all(batches).then((users) => users.flat());
+            const users: IPublicUserData<string>[] = usersData.map(
+                (user) => getPublicUserData(user)
             );
 
             if (users.length) {

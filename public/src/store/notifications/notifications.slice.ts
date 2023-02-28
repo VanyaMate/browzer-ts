@@ -1,5 +1,6 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {INotification} from "../../../../interfaces/notifications";
+import {IMessage} from "../../../../interfaces/messages";
 
 export const notificationsSlice = createSlice({
     name: 'notifications',

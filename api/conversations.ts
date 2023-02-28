@@ -7,13 +7,18 @@ import {ConversationMemberRole, ConversationType} from "../enums/conversations";
 import {IConversation} from "../interfaces/conversations";
 import {
     checkMembersToCreateConversation,
+    createAsyncNotifications,
     createConversation,
     deleteConversation,
-    getConversationData, getConversationsData, getFullConversationsData,
+    getConversationData,
+    getConversationsData,
+    getFullConversationsData,
     setConversationToAllMembers
 } from "./databaseMethods/conversations";
 import {ResponseError} from "../enums/responses";
 import {checkConversationType} from "./utils/checkEnums";
+import {NotificationType} from "../enums/notifications";
+import {IPublicUserData} from "../interfaces/users";
 
 const conversations = express.Router();
 
@@ -71,9 +76,22 @@ conversations.post('/create', (req: Request, res: Response) => {
                 });
 
                 return await createConversation(db, body.type, membersToConversation, body.name)
-                    .then(async (conversation: IConversation<any>) =>
+                    .then(async (conversation: IConversation<IPublicUserData<string>>) =>
                         await setConversationToAllMembers(db, membersToConversation, conversation.id)
                             .then(() => {
+                                createAsyncNotifications<IConversation<IPublicUserData<string>>>(
+                                    userData,
+                                    body.members,
+                                    {
+                                        type: NotificationType.NEW_CONVERSATION,
+                                        text: 'Добавил вас в беседу',
+                                        data: {
+                                            name: 'conversation',
+                                            value: conversation
+                                        }
+                                    }
+                                )
+
                                 res.status(200).send({error: false, conversation})
                                 return true;
                             })
@@ -200,7 +218,22 @@ conversations.post('/getFullInfoAll', (req: Request, res: Response) => {
 conversations.post('/delete', (req: Request, res: Response) => {
     validateRequestWithAccess<{ id: string }>(req, res, db, AuthType.SESSION_KEY).then(({ userData, body}) => {
         return deleteConversation(db, body.id, userData.login)
-            .then(() => res.status(200).send({ error: false, success: true }))
+            .then((members) => {
+                createAsyncNotifications<string>(
+                    userData,
+                    members,
+                    {
+                        type: NotificationType.CONVERSATION_REMOVED,
+                        text: 'Удалил беседу',
+                        data: {
+                            name: 'conversationId',
+                            value: body.id
+                        }
+                    }
+                )
+
+                res.status(200).send({ error: false, success: true })
+            })
             .catch(() => res.status(200).send({ error: true, message: ResponseError.NO_ACCESS }))
     });
 })

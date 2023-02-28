@@ -7,6 +7,7 @@ import {ResponseError} from "../enums/responses";
 import {IMessage, IMessageAdditional, IMessageCreateData} from "../interfaces/messages";
 import {createMessageData} from "./methods/messages";
 import {
+    addAsyncMessageNotification,
     createMessage,
     deleteMessage,
     getMessage,
@@ -14,9 +15,9 @@ import {
     updateMessage
 } from "./databaseMethods/messages";
 import {getConversationData} from "./databaseMethods/conversations";
-import {IConversation} from "../interfaces/conversations";
 import {getMemberDataByLogin} from "./methods/conversation";
 import {SourceType} from "../enums/messages";
+import {NotificationType} from "../enums/notifications";
 
 const messages = express.Router();
 
@@ -30,6 +31,9 @@ messages.post('/create', (req: Request, res: Response) => {
                 if (conversation) {
                     createMessage(db, data)
                         .then((message: IMessage) => {
+                            const members = conversation.members.filter((member) => member.login !== userData.login);
+                            addAsyncMessageNotification(db, userData, message, members.map((m) => m.login), NotificationType.NEW_MESSAGE);
+
                             res.status(200).send({error: false, message})
                         })
                         .catch((error: IError) => {

@@ -4,6 +4,11 @@ import {IMessage} from "../../interfaces/messages";
 import {MESSAGES} from "./COLLECTION_NAMES";
 import QueryDocumentSnapshot = firestore.QueryDocumentSnapshot;
 import conversations from "../conversations";
+import {addNotification} from "./notifications";
+import {NotificationType} from "../../enums/notifications";
+import {IConversationMember} from "../../interfaces/conversations";
+import {IUserData} from "../../interfaces/users";
+import {socketManager} from "../../index";
 
 export const getMessageSnapWithOffset = async function (
     db: Firestore,
@@ -115,4 +120,37 @@ export const deleteMessage = function (db: Firestore, messageId: string): Promis
         await db.collection(MESSAGES).doc(messageId).delete();
         resolve(true);
     })
+}
+
+export const addAsyncMessageNotification = async function (
+    db: Firestore,
+    userData: IUserData<string, string, string>,
+    message: IMessage,
+    members: string[],
+    type: NotificationType
+) {
+    Promise.all(
+        members.map(async (member) => await addNotification(db, member, type, {
+            icon: userData.avatar,
+            title: userData.login,
+            message: `Новое сообщение`,
+            data: {
+                conversationId: message.conversationId,
+                messageId: message.id
+            }
+        }))
+    ).then((notifications) => {
+        for (let i = 0; i < members.length; i++) {
+            const socketConnection = socketManager.connections[members[i]];
+            if (socketConnection) {
+                socketManager.sendMessage(socketConnection, {
+                    type,
+                    data: {
+                        message,
+                        notification: notifications[i]
+                    }
+                })
+            }
+        }
+    });
 }

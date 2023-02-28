@@ -31,16 +31,13 @@ export default class SocketManager {
 
         this._io.on('connection', (socket) => {
             socket.on(SocketMessageType.AUTH, async (auth) => {
-                console.log(auth);
                 if (!auth || !auth[0] || !auth[1]) return;
                 return await checkUserAccess(this._db, auth, AuthType.SESSION_KEY)
                     .then(() => {
-                        console.log('add connection');
                         this.addConnection(auth[0], socket);
                         socket.emit(SocketMessageType.AUTH, true);
                     })
                     .catch(() => {
-                        console.log('false connection');
                         socket.emit(SocketMessageType.AUTH, false);
                     })
             })
@@ -84,7 +81,9 @@ export default class SocketManager {
         if (this.connections[login] && this.connections[login][id]) {
             clearTimeout(this.connections[login][id].timer);
             setTimeout(() => {
-                this.connections[login][id].timer = this._removeConnectionTimer(login, id, 50000);
+                if (this.connections[login]) {
+                    this.connections[login][id].timer = this._removeConnectionTimer(login, id, 50000);
+                }
             }, 0);
             return true;
         }

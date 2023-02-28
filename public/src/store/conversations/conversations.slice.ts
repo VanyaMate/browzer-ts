@@ -1,6 +1,7 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {IConversation} from "../../../../interfaces/conversations";
 import {IPublicUserData} from "../../../../interfaces/users";
+import {IMessage} from "../../../../interfaces/messages";
 
 export const conversationsSlice = createSlice({
     name: 'conversations',
@@ -9,7 +10,7 @@ export const conversationsSlice = createSlice({
     } as { list: IConversation<IPublicUserData<string>>[] },
     reducers: {
         setConversations: (state, action: PayloadAction<IConversation<IPublicUserData<string>>[]>) => {
-            state.list.concat(action.payload);
+            state.list = action.payload;
         },
         addConversation: (state, action: PayloadAction<IConversation<IPublicUserData<string>>>) => {
             state.list.push(action.payload);

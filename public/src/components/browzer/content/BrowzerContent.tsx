@@ -7,6 +7,7 @@ const BrowzerContent = () => {
     const friends = useMySelector((state) => state.friends);
     const conversations = useMySelector((state) => state.conversations);
     const notifications = useMySelector((state) => state.notifications);
+    const messages = useMySelector((state) => state.messages);
 
     return (
         <div className={css.container}>
@@ -37,7 +38,25 @@ const BrowzerContent = () => {
                 <div>[ BrowzerContentItem #2 - Conversations ]</div>
                 {
                     conversations.list.map((conversation) => {
-                        return <div key={conversation.id}>{conversation.id} | {conversation.messages.length}</div>;
+                        return <div key={conversation.id} style={{marginTop: 10}}>
+                            <div>id: {conversation.id}</div>
+                            <div>type: {conversation.type}</div>
+                            <div>members:
+                                {
+                                    conversation.members.map(member => {
+                                        return <div key={member.login}>
+                                            <div>--- login: {member.login}</div>
+                                            <div>--- role: {member.role}</div>
+                                            <div>***</div>
+                                        </div>
+                                    })
+                                }
+                            </div>
+                            <div>messages amount: {conversation.messages.length}</div>
+                            <div>lastMessage: {messages[conversation.id].messages[messages[conversation.id].messages.length - 1]?.text || 'Нет сообщений'}</div>
+                            <div>name: {conversation.name}</div>
+                            <div>creationTime: {conversation.creationTime}</div>
+                        </div>;
                     })
                 }
             </BrowzerContentItem>

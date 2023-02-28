@@ -10,6 +10,7 @@ import {ResponseError} from "../../enums/responses";
 import QuerySnapshot = firestore.QuerySnapshot;
 import {socketManager} from "../../index";
 import socket from "socket.io";
+import {updateUserData} from "./user";
 
 export const createNotificationData = function (
     target: string,
@@ -40,10 +41,14 @@ export const addNotification = function (
             const notification: INotification<string> | null = createNotificationData(userData.login, type, data);
 
             if (notification) {
-                await db.collection(NOTIFICATIONS).doc(notification.id).set(notification);
                 userData.notifications.push(notification.id);
 
-                resolve(notification);
+                Promise.all([
+                    db.collection(NOTIFICATIONS).doc(notification.id).set(notification),
+                    updateUserData(db, userData)
+                ])
+                    .then(() => resolve(notification))
+                    .catch((_) => reject(_));
             } else {
                 reject({ message: ResponseError.NO_VALID_DATA })
             }

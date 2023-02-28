@@ -1,7 +1,7 @@
 import {firestore} from "firebase-admin";
 import {ConversationMemberRole, ConversationType} from "../../enums/conversations";
 import {IConversation, IConversationMember} from "../../interfaces/conversations";
-import {CONVERSATIONS, USERS} from "./COLLECTION_NAMES";
+import {CONVERSATIONS, MESSAGES, USERS} from "./COLLECTION_NAMES";
 import * as crypto from "crypto";
 import {ResponseError} from "../../enums/responses";
 import {IPublicUserData, IUserData} from "../../interfaces/users";
@@ -14,11 +14,15 @@ import {
     getConversationDataForCreate,
     getMemberDataByLogin
 } from "../methods/conversation";
-import {db} from "../../index";
+import {db, socketManager} from "../../index";
 import {getPublicUserDataByLoginList, getUserDataByLogin} from "./users";
-import {checkIsFriendOf} from "../methods/user";
+import {checkIsFriendOf, getPublicUserData} from "../methods/user";
 import Firestore = firestore.Firestore;
 import QuerySnapshot = firestore.QuerySnapshot;
+import {addNotification} from "./notifications";
+import {NotificationType} from "../../enums/notifications";
+import {IMessage} from "../../interfaces/messages";
+import {getMessagesFromConversation} from "./messages";
 
 export const createConversation = function (
     db: Firestore,
@@ -32,9 +36,15 @@ export const createConversation = function (
             const conversation: IConversation<any> = getConversationDataForCreate(
                 id, type, members, name
             );
-            members.forEach((member: IConversationMember<any>) => member.addedTime = Date.now())
+            const membersData = members.map((member: IConversationMember<any>) => {
+                const data = member.data;
+                member.addedTime = Date.now()
+                delete member.data;
+                return data;
+            })
 
             await db.collection(CONVERSATIONS).doc(id).set(conversation);
+            members.forEach((member, index) => member.data = membersData[index]);
             resolve(conversation);
         }
         catch (error) {
@@ -47,7 +57,7 @@ export const checkMembersToCreateConversation = async function (
     db: Firestore,
     members: string[],
     withLogin: string
-): Promise<IConversationMember<any>[] | false> {
+): Promise<IConversationMember<IPublicUserData<string>>[] | false> {
     const conversationMembers: (IConversationMember<any>|boolean)[] = await Promise.all(members.map(async (login: string) => {
         const document = await db.collection(USERS).doc(login).get();
         const user: IUserData<string, string, string> = document.data() as IUserData<string, string, string>;
@@ -58,7 +68,8 @@ export const checkMembersToCreateConversation = async function (
         }
         return {
             login: user.login,
-            role: ConversationMemberRole.SIMPLE
+            role: ConversationMemberRole.SIMPLE,
+            data: getPublicUserData(user)
         };
     }));
 
@@ -152,8 +163,8 @@ export const deleteConversation = function (
     db: Firestore,
     conversationId: string,
     ownerLogin: string
-): Promise<boolean> {
-    return new Promise<boolean>(async (resolve, reject) => {
+): Promise<string[]> {
+    return new Promise<string[]>(async (resolve, reject) => {
         try {
             const conversation = await getConversationData(db, conversationId, ownerLogin);
             const owner = getMemberDataByLogin(conversation.members, ownerLogin);
@@ -165,7 +176,7 @@ export const deleteConversation = function (
             ) {
                 await deleteConversationFromAllMembers(db, conversation.members, conversationId);
                 await db.collection(CONVERSATIONS).doc(conversationId).delete();
-                resolve(true);
+                resolve(conversation.members.map((member) => member.login));
                 return;
             }
         } catch (_) {
@@ -230,11 +241,20 @@ export const getConversationsData = function (
                 return;
             }
 
-            const documents = await db.collection(CONVERSATIONS)
-                .where('id', 'in', conversationList)
-                .get();
+            const collection = db.collection(CONVERSATIONS);
+            const batches = [];
 
-            resolve(documents.docs.map((doc) => doc.data() as IConversation<string>))
+            while (conversationList.length) {
+                const batch = conversationList.splice(0, 10);
+                batches.push(collection
+                    .where('id', 'in', batch)
+                    .get()
+                    .then((result) => result.docs.map((conv) => conv.data() as IConversation<string>))
+                );
+            }
+
+            const conversations: IConversation<string>[] = await Promise.all(batches).then(batches => batches.flat())
+            resolve(conversations)
         } catch (_) {
             reject();
         }
@@ -252,13 +272,35 @@ export const getFullConversationsData = function (
                 return;
             }
 
-            const documents: QuerySnapshot = await db.collection(CONVERSATIONS)
-                .where('id', 'in', conversationsList)
-                .get();
+            const messagesList = [...conversationsList];
 
-            const conversationsData: IConversation<IPublicUserData<string>>[] = documents.docs.map(
-                (doc) => doc.data() as IConversation<IPublicUserData<string>>
-            );
+            const conversationsCollection = db.collection(CONVERSATIONS);
+            const conversationsBatches = [];
+
+            while (conversationsList.length) {
+                const batch = conversationsList.splice(0, 10);
+                conversationsBatches.push(conversationsCollection
+                    .where('id', 'in', batch)
+                    .get()
+                    .then((result) => result.docs.map((conv) => conv.data() as IConversation<IPublicUserData<string>>))
+                );
+            }
+
+            const messagesPromises = [];
+            for (let i = 0; i < messagesList.length; i++) {
+                messagesPromises.push(getMessagesFromConversation(db, messagesList[i], 1, 0));
+            }
+
+            const conversationsData: IConversation<IPublicUserData<string>>[] = await Promise.all(conversationsBatches).then(batches => batches.flat())
+            const messagesData = await Promise.all(messagesPromises).then(batches => batches.flat());
+
+            for (let i = 0; i < conversationsData.length; i++) {
+                const message = messagesData[i];
+                if (message) {
+                    conversationsData[i].messages.push(message);
+                }
+            }
+
             const loginList = [...new Set(...conversationsData.map(
                 (conversation) => conversation.members.map((member) => member.login))
             )]
@@ -283,7 +325,44 @@ export const getFullConversationsData = function (
 
             resolve(conversationsData);
         } catch (_) {
+            console.log(_);
             reject(_);
         }
     })
+}
+
+export const createAsyncNotifications = function<T> (
+    userData: IUserData<string, string, string>,
+    members: string[],
+    props: {
+        type: NotificationType,
+        text: string,
+        data: {
+            name: string,
+            value: T
+        }
+    }
+) {
+    Promise.all(members.map((login) => {
+        return addNotification(db, login, props.type, {
+            icon: userData.avatar,
+            title: userData.login,
+            message: props.text,
+            data: {}
+        })
+    }))
+        .then((notifications) => {
+            for (let i = 0; i < members.length; i++) {
+                const socketConnection = socketManager.connections[members[i]];
+                if (socketConnection) {
+                    socketManager.sendMessage(socketConnection, {
+                        type: props.type,
+                        data: {
+                            [props.data.name]: props.data.value,
+                            notification: notifications[i]
+                        }
+                    })
+                }
+            }
+        })
 }
