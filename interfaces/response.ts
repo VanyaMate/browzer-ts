@@ -1,6 +1,7 @@
 export interface IResponseBody {
     error: boolean,
-    data?: any
+    data?: any,
+    success?: boolean
 }
 
 export interface IErrorResponseBody {

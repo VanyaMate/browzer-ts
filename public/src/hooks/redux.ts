@@ -6,13 +6,15 @@ import {friendsActions} from "../store/friends/friends.slice";
 import {conversationsActions} from "../store/conversations/conversations.slice";
 import {notificationsActions} from "../store/notifications/notifications.slice";
 import {messagesActions} from "../store/messages/messages.slice";
+import {blocksActions} from "../store/blocks/blocks.slice";
 
 const actions = {
     ...authActions,
     ...friendsActions,
     ...conversationsActions,
     ...notificationsActions,
-    ...messagesActions
+    ...messagesActions,
+    ...blocksActions
 }
 
 export const useMySelector: TypedUseSelectorHook<StoreType> = useSelector;

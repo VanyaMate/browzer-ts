@@ -1,15 +1,21 @@
-import React from 'react';
+import React, {memo} from 'react';
 import css from './Button.module.scss';
 
-const Button = (props: any) => {
+const Button = memo((props: any) => {
+    console.log(props.css?.active);
+
     return (
         <div
-            className={[css.button, props.active ? css.active : ''].join(' ')}
+            className={[
+                props.css ? props.css.button : css.button,
+                props.active ? (props.css?.active || css.active) : '',
+                props.always ? (props.css?.always || css.always) : '',
+            ].join(' ')}
             onClick={props.onClick}
         >
             {props.children}
         </div>
     );
-};
+});
 
 export default Button;

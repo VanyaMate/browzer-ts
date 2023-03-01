@@ -11,7 +11,7 @@ export const authSlice = createSlice({
     initialState: {
         login: '',
         sessionKey: '',
-        authKey: savedData || ''
+        authKey: (savedData || '') as string
     },
     reducers: {
         setAuth: (state, action: PayloadAction<{ login: string, sessionKey: string }>) => {

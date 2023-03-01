@@ -5,17 +5,19 @@ import {db} from "../../index";
 import {createContainerData, getContainer, removeContainerFrom, reorder} from "../methods/block";
 import {updateUserData} from "../databaseMethods/user";
 import {ResponseError} from "../../enums/responses";
+import {ComponentType} from "../../enums/blocks";
 
 const block = express.Router();
 
 block.post('/add', (req: Request, res: Response) => {
-    validateRequestWithAccess<{blockIndex: number, name: string, link: string}>(req, res, db, AuthType.SESSION_KEY)
+    validateRequestWithAccess<{blockIndex: number, name: string, type: ComponentType}>(req, res, db, AuthType.SESSION_KEY)
         .then(({ userData, body }) => {
             const block = userData.blocks[body.blockIndex];
             if (block) {
-                block.containers.push(createContainerData(body.name, body.link));
+                const component = createContainerData(body.name, body.type);
+                block.components.push(component);
                 updateUserData(db, userData)
-                    .then(() => res.status(200).send({ error: false, success: true }))
+                    .then(() => res.status(200).send({ error: false, component }))
                     .catch(() => res.status(200).send({ error: true, message: ResponseError.SERVER_ERROR }))
             } else {
                 throw new Error();
@@ -29,7 +31,7 @@ block.post('/delete', (req: Request, res: Response) => {
         .then(({ userData, body }) => {
             const block = userData.blocks[body.blockIndex];
             if (block) {
-                block.containers = removeContainerFrom(block.containers, body.id)
+                block.components = removeContainerFrom(block.components, body.id)
                 updateUserData(db, userData)
                     .then(() => res.status(200).send({ error: false, success: true }))
                     .catch(() => res.status(200).send({ error: true, message: ResponseError.SERVER_ERROR }))
@@ -45,7 +47,7 @@ block.post('/rename', (req: Request, res: Response) => {
         .then(({ userData, body }) => {
             const block = userData.blocks[body.blockIndex];
             if (block) {
-                const container = getContainer(block.containers, body.id);
+                const container = getContainer(block.components, body.id);
 
                 if (container) {
                     container.name = body.name;
@@ -66,7 +68,7 @@ block.post('/reorder', (req: Request, res: Response) => {
         .then(({ userData, body }) => {
             const block = userData.blocks[body.blockIndex];
             if (block) {
-                block.containers = reorder(block.containers, body.id, body.order);
+                block.components = reorder(block.components, body.id, body.order);
                 updateUserData(db, userData)
                     .then(() => res.status(200).send({error: false, success: true}))
                     .catch(() => res.status(200).send({error: true, message: ResponseError.SERVER_ERROR}))
@@ -83,7 +85,7 @@ block.post('/activate', (req: Request, res: Response) => {
         .then(({ userData, body }) => {
             const block = userData.blocks[body.blockIndex];
             if (block) {
-                const conversation = getContainer(block.containers, body.id);
+                const conversation = getContainer(block.components, body.id);
                 if (conversation) {
                     block.active = body.id;
 

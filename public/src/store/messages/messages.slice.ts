@@ -3,8 +3,6 @@ import {IMessage} from "../../../../interfaces/messages";
 import {IConversation} from "../../../../interfaces/conversations";
 
 export interface IMessagesData {
-    loaded: boolean,
-    loading: boolean,
     end: boolean,
     offset: number,
     additionalLimit: number,
@@ -14,8 +12,6 @@ export interface IMessagesData {
 
 const getMessagesData = (message?: IMessage): IMessagesData => {
     return {
-        loaded: false,
-        loading: false,
         end: false,
         offset: 0,
         additionalLimit: 0,
@@ -38,6 +34,19 @@ export const messagesSlice = createSlice({
                 state[action.payload.conversationId] = getMessagesData(action.payload);
             } else {
                 state[action.payload.conversationId].messages.push(action.payload);
+            }
+        },
+        addMessagesToEnd: (state, action: PayloadAction<IMessage[]>) => {
+            const conversationId = action.payload[0].conversationId;
+            if (action.payload) {
+                const messages = [...action.payload];
+                messages.reverse();
+                state[conversationId].messages = [...messages, ...state[conversationId].messages];
+                if (action.payload.length !== state[conversationId].defaultLimit) {
+                    state[conversationId].end = true;
+                }
+            } else {
+                state[conversationId].end = true;
             }
         },
         removeMessage: (state, action: PayloadAction<IMessage>) => {

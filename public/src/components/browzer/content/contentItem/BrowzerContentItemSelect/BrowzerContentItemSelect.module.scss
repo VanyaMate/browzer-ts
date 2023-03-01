@@ -1,0 +1,20 @@
+@import './src/common/consts';
+
+$buttonWidth: calc(#{$contentBlockWidth - 20px - $smallRowHeight * 2}/3);
+
+.container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+    & > * {
+        min-width: $buttonWidth;
+        max-width: $buttonWidth;
+
+        margin-right: $smallOffset;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}

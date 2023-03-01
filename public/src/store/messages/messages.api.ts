@@ -10,7 +10,7 @@ export const messagesApi = createApi({
     }),
     endpoints: (build) => ({
         getFromConversation: build.query<
-            IMessage[],
+            IMessage[] | false,
             { auth: string, conversationId: string, limit: number, offset: number }
         >({
             query: (props) => ({
@@ -26,9 +26,9 @@ export const messagesApi = createApi({
                     offset: props.offset
                 }
             }),
-            transformResponse: (response: { error: boolean, data: any }) => {
+            transformResponse: (response: { error: boolean, messages: IMessage[] }) => {
                 if (response.error) return false;
-                return response.data;
+                return response.messages;
             },
         })
     })

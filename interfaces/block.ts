@@ -1,10 +1,13 @@
-export interface IContainer {
+import {ComponentType} from "../enums/blocks";
+
+export interface IComponent {
     name: string,
-    link: string,
+    type: ComponentType,
+    data: { [key: string]: any },
     id: string,
 }
 
 export interface IBlock {
-    containers: IContainer[],
+    components: IComponent[],
     active: string
 }

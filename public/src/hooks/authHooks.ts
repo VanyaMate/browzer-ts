@@ -10,7 +10,8 @@ export const useLogIn = function () {
         setConversations,
         setFriends,
         setNotifications,
-        setMessages
+        setMessages,
+        setBlocks
     } = useActions();
     const socketAuth = useSocketAuth();
 
@@ -25,12 +26,20 @@ export const useLogIn = function () {
         setNotifications(authData.notifications);
         setConversations(authData.conversations);
         setMessages(authData.conversations);
+        setBlocks(authData.blocks);
         socketAuth({ login: authData.login, sessionKey: authData.sessionKey });
     }
 }
 
 export const useLogOut = function () {
-    const {resetAuth, resetMessages, resetConversations, resetFriends, resetNotifications} = useActions();
+    const {
+        resetAuth,
+        resetMessages,
+        resetConversations,
+        resetFriends,
+        resetNotifications,
+        resetBlocks
+    } = useActions();
     const socketDisconnect = useSocketDisconnect();
 
     return () => {
@@ -40,5 +49,6 @@ export const useLogOut = function () {
         resetFriends();
         resetNotifications();
         resetMessages();
+        resetBlocks();
     }
 }

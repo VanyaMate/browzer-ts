@@ -1,19 +1,11 @@
-import React from 'react';
+import React, {memo} from 'react';
 import css from './BigButton.module.scss';
+import Button from "../Button/Button";
 
-const BigButton = (props: any) => {
+const BigButton = memo((props: any) => {
     return (
-        <div
-            className={[
-                css.button,
-                props.active ? css.active : '',
-                props.always ? css.always : ''
-            ].join(' ')}
-            onClick={props.onClick}
-        >
-            {props.children}
-        </div>
+        <Button css={css} {...props}>{ props.children }</Button>
     );
-};
+});
 
 export default BigButton;

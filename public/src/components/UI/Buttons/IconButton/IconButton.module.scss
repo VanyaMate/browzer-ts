@@ -1,12 +1,13 @@
-@import "/src/common/consts";
+@import "./src/common/consts";
 
 .button {
     display: inline-flex;
-    font-size: $mediumFontSize;
-    color: $whiteGray;
     background: $darkGray;
     transition: .1s;
     padding: 0 10px;
+    width: $smallRowHeight;
+    min-width: $smallRowHeight;
+    max-width: $smallRowHeight;
     height: $smallRowHeight;
     align-items: center;
     justify-content: center;

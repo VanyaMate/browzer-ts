@@ -1,27 +1,29 @@
-import {IBlock, IContainer} from "../../interfaces/block";
+import {IBlock, IComponent} from "../../interfaces/block";
 import * as crypto from "crypto";
+import {ComponentType} from "../../enums/blocks";
 
-export const createContainerData = function (name: string, link: string): IContainer {
+export const createContainerData = function (name: string, type: ComponentType): IComponent {
     return {
         name,
-        link,
+        type,
+        data: {},
         id: crypto.randomUUID()
     }
 }
 
-export const removeContainerFrom = function (containers: IContainer[], id: string): IContainer[] {
+export const removeContainerFrom = function (containers: IComponent[], id: string): IComponent[] {
     return containers.filter((container) => container.id !== id);
 }
 
-export const addContainerTo = function (containers: IContainer[], container: IContainer): IContainer[] {
+export const addContainerTo = function (containers: IComponent[], container: IComponent): IComponent[] {
     return [...containers, container];
 }
 
-export const getContainer = function (containers: IContainer[], id: string) {
+export const getContainer = function (containers: IComponent[], id: string) {
     return containers.filter((container) => container.id === id)[0];
 }
 
-export const reorder = function (containers: IContainer[], id: string, order: number): IContainer[] {
+export const reorder = function (containers: IComponent[], id: string, order: number): IComponent[] {
     for (let i = 0; i < containers.length; i++) {
         if (containers[i].id === id) {
             const container = containers.splice(i, 1)[0];

@@ -1,7 +1,8 @@
 @import 'src/common/consts';
 
 .container {
-    width: $contentBlockWidth;
+    min-width: $contentBlockWidth;
+    max-width: $contentBlockWidth;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -11,8 +12,13 @@
     overflow: auto;
     color: $gray;
 
+    &.noBorder {
+        border: none;
+    }
+
     & > * {
         display: flex;
         flex-direction: column;
+        width: 100%;
     }
 }

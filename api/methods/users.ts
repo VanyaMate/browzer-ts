@@ -26,9 +26,9 @@ export const createUserData = function (data: IUserDataForCreate): IUserData<str
         conversations: [],
         notifications: [],
         blocks: [
-            { containers: [], active: '' },
-            { containers: [], active: '' },
-            { containers: [], active: '' }
+            { components: [], active: '' },
+            { components: [], active: '' },
+            { components: [], active: '' }
         ],
         preferences: {
             conversations: AccessType.ALL,
