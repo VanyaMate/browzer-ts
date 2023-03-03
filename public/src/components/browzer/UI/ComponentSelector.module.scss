@@ -1,0 +1,40 @@
+@import './src/common/consts';
+
+.dropdown {
+    padding: $smallOffset;
+    box-shadow: none;
+}
+
+.inputName {
+    background: $darkBlue;
+}
+
+.componentOption {
+    background: $darkBlue;
+}
+
+.addComponentButton {
+    background: $darkBlue;
+}
+
+.button {
+    height: $smallRowHeight;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.always {
+    background: $blue;
+}
+
+.active {
+    pointer-events: auto;
+    opacity: 1;
+    color: $white;
+    cursor: pointer;
+
+    &:hover {
+        background: $blue;
+    }
+}

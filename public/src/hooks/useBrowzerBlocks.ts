@@ -1,5 +1,5 @@
 import {useActions, useMySelector} from "./redux";
-import {useLazyAddComponentQuery} from "../store/blocks/blocks.api";
+import {useLazyAddComponentQuery, useLazyDeleteComponentQuery} from "../store/blocks/blocks.api";
 import {ComponentType} from "../../../enums/blocks";
 import {IResponseBody} from "../../../interfaces/response";
 import {IComponent} from "../../../interfaces/block";
@@ -12,10 +12,11 @@ export const useBrowzerBlocks = function () {
         removeComponent,
         changeComponent
     } = useActions();
-    const [dispatchAddComponent, {isError, isLoading, data: componentData }] = useLazyAddComponentQuery();
+    const [dispatchAddComponent, {data: componentAddData }] = useLazyAddComponentQuery();
+    const [dispatchRemoveComponent, {data: any }] = useLazyDeleteComponentQuery();
 
     return {
-        addComponent: (blockIndex: number, name: string, type: ComponentType) => {
+        addComponent: (blockIndex: number, name: string, type: ComponentType, handler: (error: boolean) => void) => {
             dispatchAddComponent({
                 auth: auth.authKey,
                 blockIndex,
@@ -23,20 +24,35 @@ export const useBrowzerBlocks = function () {
                 type
             })
                 .then(({ data }) => {
-                    console.log(data);
                     if (data?.component) {
                         addComponent({
                             blockIndex,
                             component: data.component as IComponent
                         })
+                        handler(false);
                     }
                 })
                 .catch((_) => {
-                    console.log('catch', _);
+                    handler(true);
                 })
         },
-        removeComponent: () => {
+        removeComponent: (blockIndex: number, id: string) => {
+            dispatchRemoveComponent({
+                auth: auth.authKey,
+                blockIndex,
+                id
+            })
+                .then(({ data }) => {
+                    if (data?.success) {
+                        removeComponent({
+                            blockIndex,
+                            componentId: id
+                        })
+                    }
+                })
+                .catch((_) => {
 
+                })
         },
         changeComponent: () => {
 

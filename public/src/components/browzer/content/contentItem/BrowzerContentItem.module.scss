@@ -7,10 +7,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: $mediumOffset;
-    border: 2px dotted $darkGray;
-    overflow: auto;
+    //border: 2px dotted $darkGray;
     color: $gray;
+    position: relative;
 
     &.noBorder {
         border: none;

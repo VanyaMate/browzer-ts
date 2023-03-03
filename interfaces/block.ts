@@ -4,7 +4,7 @@ export interface IComponent {
     name: string,
     type: ComponentType,
     data: { [key: string]: any },
-    id: string,
+    id: string
 }
 
 export interface IBlock {

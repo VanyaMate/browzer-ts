@@ -11,6 +11,7 @@
     align-items: center;
     justify-content: center;
     pointer-events: none;
+    position: relative;
 
     &.active {
         color: $white;
@@ -30,5 +31,10 @@
         &:hover {
             box-shadow: $defaultBoxShadow;
         }
+    }
+
+    &.loading {
+        opacity: .4;
+        pointer-events: none;
     }
 }

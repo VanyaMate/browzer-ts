@@ -1,10 +1,14 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Button from "../../../UI/Buttons/Button/Button";
+import {ComponentType} from "../../../../../../enums/blocks";
+import {useBrowzerBlocks} from "../../../../hooks/useBrowzerBlocks";
+import css from './NoComponentsContent.module.scss';
+import ComponentSelector from "../../UI/ComponentSelector";
 
-const NoComponentsContent = () => {
+const NoComponentsContent = (props: { index: number }) => {
     return (
-        <div>
-            <Button>Добавить CONVERSATIONS</Button>
+        <div className={css.container}>
+            <ComponentSelector hide={false} index={props.index}/>
         </div>
     );
 };

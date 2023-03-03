@@ -3,13 +3,16 @@ import css from './Input.module.scss';
 
 const Input = memo((props: any) => {
     const { value, setValue, valid, empty } = props.hook;
+    const { reff } = props;
 
     return (
         <div className={[
             css.container,
-            empty ? '' : valid ? css.valid : css.noValid
+            empty ? '' : valid ? css.valid : css.noValid,
+            props.className ? props.className : ''
         ].join(' ')}>
             <input
+                ref={reff}
                 className={css.input}
                 type={props.type || 'text'}
                 value={value}

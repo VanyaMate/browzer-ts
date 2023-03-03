@@ -26,8 +26,24 @@ export const blocksApi = createApi({
                     blockIndex, name, type
                 }
             })
+        }),
+        deleteComponent: build.query<
+            { error: boolean, success?: boolean, message?: string },
+            { auth: string, blockIndex: number, id: string }
+        >({
+            query: ({auth, blockIndex, id}) => ({
+                url: 'delete',
+                method: 'post',
+                headers: {
+                    'auth': auth,
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+                body: {
+                    blockIndex, id
+                }
+            })
         })
     })
 })
 
-export const {useLazyAddComponentQuery} = blocksApi;
+export const {useLazyAddComponentQuery, useLazyDeleteComponentQuery} = blocksApi;

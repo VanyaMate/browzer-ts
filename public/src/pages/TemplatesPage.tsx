@@ -1,7 +1,7 @@
 import React, {ChangeEvent, useEffect, useState} from 'react';
 import Button from "../components/UI/Buttons/Button/Button";
 import {useLazyAuthPassQuery} from "../store/auth/auth.api";
-import Input from "../components/UI/Inputs/Input";
+import Input from "../components/UI/Inputs/Input/Input";
 import {validLogin, validPassword} from "../../../utils/validationMethods";
 import {useInputValue} from "../hooks/useInputValue";
 import {authActions} from "../store/auth/auth.slice";

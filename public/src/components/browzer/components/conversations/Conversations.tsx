@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import Input from "../../../UI/Inputs/Input";
+import Input from "../../../UI/Inputs/Input/Input";
 import {useInputValue} from "../../../../hooks/useInputValue";
 import {IComponent} from "../../../../../../interfaces/block";
 import BigButton from "../../../UI/Buttons/BigButton/BigButton";

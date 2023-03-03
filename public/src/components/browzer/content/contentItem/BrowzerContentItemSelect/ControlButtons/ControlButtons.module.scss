@@ -1,0 +1,11 @@
+@import './src/common/consts';
+
+.container {
+    & > * {
+        margin-right: $smallOffset;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}

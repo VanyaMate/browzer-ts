@@ -1,0 +1,20 @@
+@import "./src/common/consts";
+
+.container {
+    position: absolute;
+    box-shadow: $defaultBoxShadow;
+    overflow: hidden;
+    padding: $smallOffset;
+    height: auto;
+    opacity: 1;
+    background: $darkGray;
+    transition: .05s all;
+    min-width: auto;
+    max-width: none;
+
+    &.hidden {
+        opacity: 0;
+        padding: 0 $smallOffset;
+        height: 0;
+    }
+}

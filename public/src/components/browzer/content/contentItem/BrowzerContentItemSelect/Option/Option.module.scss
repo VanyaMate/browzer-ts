@@ -1,0 +1,10 @@
+@import "src/common/consts";
+
+.removeFetch {
+    opacity: .4;
+    pointer-events: none;
+}
+
+.addFetch {
+    color: green !important;
+}

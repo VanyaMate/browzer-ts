@@ -10,6 +10,9 @@ export default class SocketClientManager {
     private _url: string;
     private _handlers: ([handlerType: string, handler: (data: any) => void])[] = [];
 
+    private _pingTimeout: number = 5000;
+    private _reconnectTimeout: number = 5000;
+
     constructor(url: string) {
         this._url = url;
         this._socket = io(this._url, {});
@@ -63,7 +66,7 @@ export default class SocketClientManager {
         console.log('_authHandler: ', status);
         if (status) {
             clearTimeout(this._reconnectTimer);
-            this._timer = setInterval(() => this._ping(this._auth[0]), 1000);
+            this._timer = setInterval(() => this._ping(this._auth[0]), this._pingTimeout);
         } else {
             this._auth = ['', ''];
         }
@@ -84,7 +87,7 @@ export default class SocketClientManager {
             setTimeout(() => {
                 this._socket.connect();
                 this.auth(this._auth);
-                this._reconnectTimer = setTimeout(() => this._serverErrorDisconnect(), 5000);
+                this._reconnectTimer = setTimeout(() => this._serverErrorDisconnect(), this._reconnectTimeout);
             }, 0);
         }
     }

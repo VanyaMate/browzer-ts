@@ -1,0 +1,19 @@
+@import './src/common/consts';
+
+.container {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: $darkGray;
+    border-radius: 50%;
+    transition: .1s;
+    font-size: 10px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+        background: $orange;
+    }
+}

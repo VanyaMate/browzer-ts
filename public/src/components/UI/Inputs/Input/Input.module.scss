@@ -1,10 +1,10 @@
-@import 'src/common/consts';
+@import './src/common/consts';
 
 .container {
     width: 100%;
     height: $mediumRowHeight;
     background: $darkGray;
-    border: 2px solid $darkGray;
+    border: 2px solid transparent;
     transition: .1s;
     padding: 0px 7px;
 

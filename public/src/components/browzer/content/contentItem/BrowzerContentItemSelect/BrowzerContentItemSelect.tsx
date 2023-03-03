@@ -1,41 +1,46 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useState} from 'react';
 import {IBlock, IComponent} from "../../../../../../../interfaces/block";
-import Button from "../../../../UI/Buttons/Button/Button";
 import css from './BrowzerContentItemSelect.module.scss';
-import IconButton from "../../../../UI/Buttons/IconButton/IconButton";
 import {useBrowzerBlocks} from "../../../../../hooks/useBrowzerBlocks";
-import {ComponentType} from "../../../../../../../enums/blocks";
+import ShowedOptions from "./ShowedOptions/ShowedOptions";
+import ControlButtons from "./ControlButtons/ControlButtons";
+import HiddenOptions from "./HiddenOptions/HiddenOptions";
 
 const BrowzerContentItemSelect = (props: { block: IBlock, index: number, active: string, setActive: (id: string) => void }) => {
     const blocks = useBrowzerBlocks();
-    const [showedBlocks, hiddenBlocks] = useMemo(() => {
-        const blocks = [[], []] as IComponent[][];
+    const [showedOptions, hiddenOptions] = useMemo(() => {
+        const components = [[], []] as IComponent[][];
 
         for (let i = 0; i < props.block.components.length; i++) {
-            blocks[i < 3 ? 0 : 1].push(props.block.components[i]);
+            components[i < 3 ? 0 : 1].push(props.block.components[i]);
         }
 
-        return blocks;
+        return components;
     }, [props.block.components])
+    const [dropdownHidden, setDropdownHidden] = useState(true);
 
     return (
         <div className={css.container}>
+            <ShowedOptions
+                showedOptions={showedOptions}
+                active={props.active}
+                setActive={props.setActive}
+                index={props.index}
+            />
+            <ControlButtons
+                index={props.index}
+                setDropdownHidden={setDropdownHidden}
+                componentsAmount={props.block.components.length}
+            />
             {
-                showedBlocks.map((component) => {
-                    return <Button
-                        key={component.id}
-                        onClick={() => props.setActive(component.id)}
-                        active={props.active !== component.id}
-                    >
-                        {component.name}
-                    </Button>
-                })
-            }
-            <IconButton active onClick={() => {
-                blocks.addComponent(props.index, 'Component', ComponentType.CONVERSATIONS)
-            }}>+</IconButton>
-            {
-                props.block.components.length > 3 ? <IconButton>=</IconButton> : ''
+                props.block.components.length > 3 ? <HiddenOptions
+                    dropdownHidden={dropdownHidden}
+                    hiddenOptions={hiddenOptions}
+                    setDropdownHidden={setDropdownHidden}
+                    index={props.index}
+                    active={props.active}
+                    setActive={props.setActive}
+                /> : ''
             }
         </div>
     );

@@ -2,8 +2,9 @@ import React, {useState} from 'react';
 import css from './BrowzerContentItem.module.scss';
 import {IBlock} from "../../../../../../interfaces/block";
 import BrowzerContentItemsList from '../../../../common/BrowzerContentItemsList';
-import NoComponentsContent from "../../components/noComponents/NoComponentsContent";
 import BrowzerContentItemSelect from "./BrowzerContentItemSelect/BrowzerContentItemSelect";
+import ComponentSelector from "../../UI/ComponentSelector";
+import NoComponentsContent from "../../components/noComponents/NoComponentsContent";
 
 
 const BrowzerContentItem = (props: { block: IBlock, index: number }) => {
@@ -22,7 +23,7 @@ const BrowzerContentItem = (props: { block: IBlock, index: number }) => {
                             })
                         }
                     </> :
-                    <NoComponentsContent/>
+                    <NoComponentsContent index={props.index}/>
             }
         </div>
     );

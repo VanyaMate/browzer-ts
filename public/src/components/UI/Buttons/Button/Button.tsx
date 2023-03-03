@@ -2,16 +2,18 @@ import React, {memo} from 'react';
 import css from './Button.module.scss';
 
 const Button = memo((props: any) => {
-    console.log(props.css?.active);
+    const {css: usedCss, active, always, loading, className, ...other} = props;
 
     return (
         <div
             className={[
-                props.css ? props.css.button : css.button,
-                props.active ? (props.css?.active || css.active) : '',
-                props.always ? (props.css?.always || css.always) : '',
-            ].join(' ')}
-            onClick={props.onClick}
+                usedCss ? usedCss.button : css.button,
+                active ? (usedCss?.active || css.active) : '',
+                always ? (usedCss?.always || css.always) : '',
+                loading ? (usedCss?.loading || css.loading) : '',
+                className ? className : ''
+            ].flat().join(' ')}
+            {...other}
         >
             {props.children}
         </div>

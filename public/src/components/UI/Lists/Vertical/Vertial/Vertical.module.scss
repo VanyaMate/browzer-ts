@@ -1,0 +1,31 @@
+@import "./src/common/consts";
+
+.container {
+    display: flex;
+    flex-direction: column;
+
+    & > * {
+        width: 100%;
+        transition: .1s;
+    }
+
+    &.top {
+        & > * {
+            margin-top: $smallOffset;
+
+            &:first-child {
+                margin-top: 0;
+            }
+        }
+    }
+
+    &.bottom {
+        & > * {
+            margin-bottom: $smallOffset;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+}

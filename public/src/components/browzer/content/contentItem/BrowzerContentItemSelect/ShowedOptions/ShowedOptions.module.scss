@@ -1,0 +1,19 @@
+@import "./src/common/consts";
+
+$containerWidth: calc(#{$contentBlockWidth} - 10px - #{$smallRowHeight * 2});
+$optionWidth: calc((#{$containerWidth} - 10px) / 3);
+
+.container {
+    margin-right: $smallOffset;
+    max-width: $containerWidth;
+
+    & > * {
+        margin-right: $smallOffset;
+        min-width: $optionWidth;
+        max-width: $optionWidth;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}

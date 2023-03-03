@@ -61,3 +61,20 @@ export const validName = function (name: string): boolean {
 
     return true;
 }
+
+export const validComponentName = function (name: string): boolean {
+    if (name === undefined || name === null) {
+        return false;
+    }
+
+    if (name.length > 10 || name.length < 2) {
+        return false;
+    }
+
+    if (name.match(/^[а-яa-z\d_<>\s.\+!()/\\\[\]]+$/i)?.join('') !== name) {
+    //if (name.match(/^[а-яa-z\d()]+$/i)?.join('') !== name) {
+        return false;
+    }
+
+    return true;
+}
