@@ -7,6 +7,8 @@ import {useBrowzerBlocks} from "../../../../../../hooks/useBrowzerBlocks";
 const ControlButtons = memo((props: {
     index: number,
     setDropdownHidden: (v: boolean | ((prev: boolean) => boolean) ) => void,
+    setAddComponentMenuHidden: (v: boolean | ((prev: boolean) => boolean) ) => void,
+    activeHiddenOption: boolean,
     componentsAmount: number
 }) => {
     const blocks = useBrowzerBlocks();
@@ -18,11 +20,8 @@ const ControlButtons = memo((props: {
                 active
                 loading={adding}
                 onClick={() => {
-                    setAdding(true);
-                    blocks.addComponent(props.index, 'Component', ComponentType.CONVERSATIONS, (error) => {
-                        setAdding(false);
-                    })
-                    props.setDropdownHidden(false);
+                    props.setAddComponentMenuHidden(prev => !prev);
+                    props.setDropdownHidden(true);
                 }}
             >
                 +
@@ -30,8 +29,10 @@ const ControlButtons = memo((props: {
             {
                 props.componentsAmount > 3 ? <IconButton
                     active
+                    always={props.activeHiddenOption}
                     onClick={() => {
                         props.setDropdownHidden(prev => !prev);
+                        props.setAddComponentMenuHidden(true);
                     }}
                 >
                     =

@@ -22,9 +22,9 @@ import {getUserDataByLogin} from "../databaseMethods/users";
 const members = express.Router();
 
 /**
- *  @api {post} /api/conversations/change/members/role Изменение роли члена беседы
+ *  @api {post} /api/ConversationComponent/change/members/role Изменение роли члена беседы
  *  @apiName ChangeConversationMemberRole
- *  @apiGroup conversations/change/members
+ *  @apiGroup ConversationComponent/change/members
  *  @apiVersion 0.0.0
  *
  *  @apiExample {String} Роли
@@ -95,9 +95,9 @@ members.post('/role', (req: Request, res: Response) => {
 })
 
 /**
- *  @api {post} /api/conversations/change/members/remove Удаление пользователя из беседы
+ *  @api {post} /api/ConversationComponent/change/members/remove Удаление пользователя из беседы
  *  @apiName RemoveUserFromConversation
- *  @apiGroup conversations/change/members
+ *  @apiGroup ConversationComponent/change/members
  *  @apiVersion 0.0.0
  *
  *  @apiUse authSession
@@ -169,9 +169,9 @@ members.post('/remove', (req: Request, res: Response) => {
 })
 
 /**
- *  @api {post} /api/conversations/change/members/add Добавление пользователя в беседу
+ *  @api {post} /api/ConversationComponent/change/members/add Добавление пользователя в беседу
  *  @apiName AddUserToConversation
- *  @apiGroup conversations/change/members
+ *  @apiGroup ConversationComponent/change/members
  *  @apiVersion 0.0.0
  *
  *  @apiUse authSession

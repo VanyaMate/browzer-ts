@@ -16,6 +16,8 @@ export const useSocketAuth = function () {
         connectConversationsSocket();
         connectMessagesSocket();
 
+        console.log('connect sockets');
+
         socketClientManager.auth([auth.login, auth.sessionKey]);
     };
 }
@@ -103,18 +105,21 @@ export const userMessagesSocket = function () {
 
     return () => {
         socketClientManager.addHandlerOnSocket(NotificationType.NEW_MESSAGE, (data: unknown) => {
+            console.log('NEW_MESSAGE', data);
             const message = data as { message: IMessage, notification: INotification<string> };
             addMessage(message.message);
             addNotification(message.notification);
         })
 
         socketClientManager.addHandlerOnSocket(NotificationType.MESSAGE_REMOVED, (data: unknown) => {
+            console.log('MESSAGE_REMOVED', data);
             const message = data as { message: IMessage, notification: INotification<string> };
             removeMessage(message.message);
             addNotification(message.notification);
         })
 
         socketClientManager.addHandlerOnSocket(NotificationType.MESSAGE_CHANGED, (data: unknown) => {
+            console.log('MESSAGE_CHANGED', data);
             const message = data as { message: IMessage, notification: INotification<string> };
             changeMessage(message.message);
             addNotification(message.notification);

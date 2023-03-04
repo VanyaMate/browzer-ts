@@ -5,6 +5,7 @@ import Input from "../components/UI/Inputs/Input/Input";
 import {validLogin, validPassword} from "../../../utils/validationMethods";
 import {useInputValue} from "../hooks/useInputValue";
 import {authActions} from "../store/auth/auth.slice";
+/*
 
 const TemplatesPage = () => {
     const [dispatchAuthPass, { isLoading, isError, data: authResponse }] = useLazyAuthPassQuery();
@@ -61,4 +62,4 @@ const TemplatesPage = () => {
     );
 };
 
-export default TemplatesPage;
+export default TemplatesPage;*/

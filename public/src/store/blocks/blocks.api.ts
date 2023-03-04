@@ -42,8 +42,24 @@ export const blocksApi = createApi({
                     blockIndex, id
                 }
             })
+        }),
+        renameComponent: build.query<
+            {error: boolean, success: boolean},
+            {auth: string, blockIndex: number, id: string, name: string}
+        >({
+            query: ({blockIndex, id, name, auth}) => ({
+                url: 'rename',
+                method: 'post',
+                headers: {
+                    'auth': auth,
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+                body: {
+                    blockIndex, id, name
+                }
+            })
         })
     })
 })
 
-export const {useLazyAddComponentQuery, useLazyDeleteComponentQuery} = blocksApi;
+export const {useLazyAddComponentQuery, useLazyDeleteComponentQuery, useLazyRenameComponentQuery} = blocksApi;

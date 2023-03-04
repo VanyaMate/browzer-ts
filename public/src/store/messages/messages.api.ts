@@ -30,8 +30,30 @@ export const messagesApi = createApi({
                 if (response.error) return false;
                 return response.messages;
             },
+        }),
+        sendMessage: build.query<
+            { message: IMessage, tempId?: string } | false,
+            { auth: string, conversationId: string, text: string, tempId?: string }
+        >({
+            query: (props) => ({
+                url: 'create',
+                method: 'post',
+                headers: {
+                    'auth': props.auth,
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+                body: {
+                    conversationId: props.conversationId,
+                    text: props.text,
+                    tempId: props.tempId || null
+                }
+            }),
+            transformResponse: (response: { error: boolean, message: IMessage, tempId?: string }) => {
+                if (response.error) return false;
+                return { message: response.message, tempId: response.tempId };
+            },
         })
     })
 });
 
-export const {useLazyGetFromConversationQuery} = messagesApi;
+export const {useLazyGetFromConversationQuery, useLazySendMessageQuery} = messagesApi;

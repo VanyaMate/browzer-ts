@@ -1,20 +1,9 @@
 @import "./src/common/consts";
 
-@keyframes OpacityChanger {
-    0% {
-        opacity: .8;
-    }
-    50% {
-        opacity: .3;
-    }
-    100% {
-        opacity: .8;
-    }
-}
-
 .button {
     display: inline-flex;
-    background: $darkGray;
+    background: transparent;
+    border: 2px dotted $gray;
     transition: .1s;
     padding: 0 10px;
     width: $smallRowHeight;
@@ -26,12 +15,15 @@
     pointer-events: none;
 
     &.active {
-        color: $white;
+        color: $gray;
+        font-weight: bold;
         cursor: pointer;
         pointer-events: auto;
 
         &:hover {
+            color: $white;
             background: $blue;
+            border: 2px dotted transparent;
         }
     }
 
@@ -39,6 +31,7 @@
         background: $blue;
         cursor: pointer;
         color: $white;
+        border: 2px dotted transparent;;
 
         &:hover {
             box-shadow: $defaultBoxShadow;

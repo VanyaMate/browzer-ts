@@ -9,21 +9,23 @@ import {validComponentName} from "../../../../../utils/validationMethods";
 import Button from "../../UI/Buttons/Button/Button";
 import {useBrowzerBlocks} from "../../../hooks/useBrowzerBlocks";
 import SmallDottedSeparator from "../../UI/Separators/SmallDottedSeparator";
+import BigButton from "../../UI/Buttons/BigButton/BigButton";
+import SmallTitle from "../../UI/Titles/SmallTitle/SmallTitle";
 
-const ComponentSelector = (props: { hide: boolean, index: number }) => {
+const ComponentSelector = (props: { hide: boolean, index: number, successHandler?: () => void, errorHandler?: () => void}) => {
     const blocks = useBrowzerBlocks();
     const input = useInputValue('', validComponentName);
     const [selectedComponent, setSelectedComponent] = useState<any>();
+    const [loading, setLoading] = useState(false)
 
     return (
         <DropdownAbsolute
             hide={props.hide}
-            style={{top: 0, left: 0, width: '100%'}}
+            style={{top: '100%', left: 0, width: '100%', marginTop: 5}}
             className={[css.dropdown]}
         >
             <Vertical>
-                <Input hook={input} placeholder={'Имя компонента'} className={css.inputName}/>
-                <SmallDottedSeparator/>
+                <SmallTitle>Выберите компонент</SmallTitle>
                 <Vertical>
                     {
                         Object.keys(BrowzerContentItemsList).map((key) => {
@@ -43,13 +45,28 @@ const ComponentSelector = (props: { hide: boolean, index: number }) => {
                     }
                 </Vertical>
                 <SmallDottedSeparator/>
-                <Button
+                <SmallTitle>Название компонента</SmallTitle>
+                <Input hook={input} placeholder={'Имя компонента'} className={css.inputName}/>
+                <SmallDottedSeparator/>
+                <BigButton
                     active={input.valid && selectedComponent}
+                    loading={loading}
                     onClick={() => {
-                        blocks.addComponent(props.index, input.value, selectedComponent, (error) => {})
+                        setLoading(true);
+                        blocks.addComponent(props.index, input.value, selectedComponent, (error) => {
+                            setLoading(false);
+                            setSelectedComponent('');
+                            input.setValue('');
+
+                            if (!error) {
+                                props.successHandler && props.successHandler();
+                            } else {
+                                props.errorHandler && props.errorHandler();
+                            }
+                        })
                     }}
                     className={css.addComponentButton}
-                >Добавить</Button>
+                >Добавить</BigButton>
             </Vertical>
         </DropdownAbsolute>
     );

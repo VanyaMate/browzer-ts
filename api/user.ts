@@ -13,7 +13,7 @@ user.use('/security', security);
 user.use('/personalInfo', personalInfo);
 user.use('/preference', preference);
 user.use('/photo', photo);
-user.use('/music', music);
+user.use('/MusicComponent', music);
 user.use('/notification', notification);
 user.use('/block', block);
 

@@ -31,4 +31,9 @@
             box-shadow: $defaultBoxShadow;
         }
     }
+
+    &.loading {
+        animation: OpacityChanger .5s Infinite ease-in-out;
+        pointer-events: none;
+    }
 }

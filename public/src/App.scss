@@ -1,10 +1,28 @@
 @import "/src/common/consts";
 
+$scrollWidth: 4;
+
 * {
     margin: 0px;
     padding: 0px;
     box-sizing: border-box;
     font-family: "Trebuchet MS", "Courier New", "Trebuchet MS";
+
+    &::-webkit-scrollbar {
+        position: absolute;
+        width: #{$scrollWidth}px;
+        height: #{$scrollWidth}px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: $darkGray;
+        border-radius: calc(#{$scrollWidth}px / 2);
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: $blue;
+        border-radius: calc(#{$scrollWidth}px / 2);
+    }
 }
 
 body {

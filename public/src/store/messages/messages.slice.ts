@@ -1,6 +1,7 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {IMessage} from "../../../../interfaces/messages";
 import {IConversation} from "../../../../interfaces/conversations";
+import messages from "../../../../api/messages";
 
 export interface IMessagesData {
     end: boolean,
@@ -68,6 +69,20 @@ export const messagesSlice = createSlice({
                     }
                     return true;
                 })
+            }
+        },
+        setMessageStatus: (state, action: PayloadAction<{id: string, conversationId: string, error: boolean, loading?: boolean}>) => {
+            const messagesData = state[action.payload.conversationId];
+
+            if (messagesData) {
+                for (let i = 0; i < messagesData.messages.length; i++) {
+                    const message = messagesData.messages[i];
+                    if (message.id === action.payload.id) {
+                        message.error = action.payload.error;
+                        message.loading = action.payload.loading ?? true;
+                        break;
+                    }
+                }
             }
         },
         resetMessages: (state) => {

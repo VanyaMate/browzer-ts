@@ -6,7 +6,7 @@ preference.post('/friends', (req: Request, res: Response) => {
 
 })
 
-preference.post('/conversations', (req: Request, res: Response) => {
+preference.post('/ConversationComponent', (req: Request, res: Response) => {
 
 })
 

@@ -18,10 +18,13 @@ export interface IMessage {
     additional?: IMessageAdditional[],
     creationTime: number,
     changed: boolean,
+    error?: boolean,
+    loading?: boolean
 }
 
 export interface IMessageCreateData {
     conversationId: string,
     text: string,
-    additional?: IMessageAdditional[]
+    additional?: IMessageAdditional[],
+    tempId?: string
 }

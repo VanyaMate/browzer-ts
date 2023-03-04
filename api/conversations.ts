@@ -23,9 +23,9 @@ import {IPublicUserData} from "../interfaces/users";
 const conversations = express.Router();
 
 /**
- *  @api {post} /api/conversations/create Создание беседы
+ *  @api {post} /api/ConversationComponent/create Создание беседы
  *  @apiName CreateConversation
- *  @apiGroup conversations
+ *  @apiGroup ConversationComponent
  *  @apiVersion 0.0.0
  *
  *  @apiExample {String} Типы бесед
@@ -41,11 +41,11 @@ const conversations = express.Router();
  *
  *
  *  @apiSuccess {Boolean} error Статус запроса
- *  @apiSuccess {Object} conversations беседа
+ *  @apiSuccess {Object} ConversationComponent беседа
  *  @apiSuccessExample {json} Response-Body
  *  {
  *      "error": false,
- *      "conversations": {
+ *      "ConversationComponent": {
  *          // ... данные беседы
  *      }
  *  }
@@ -104,9 +104,9 @@ conversations.post('/create', (req: Request, res: Response) => {
 })
 
 /**
- *  @api {post} /api/conversations/get Получить информацию о беседе
+ *  @api {post} /api/ConversationComponent/get Получить информацию о беседе
  *  @apiName getConversation
- *  @apiGroup conversations
+ *  @apiGroup ConversationComponent
  *  @apiVersion 0.0.0
  *
  *  @apiUse authSession
@@ -114,11 +114,11 @@ conversations.post('/create', (req: Request, res: Response) => {
  *  @apiBody {String} id id беседы
  *
  *  @apiSuccess {Boolean} error Статус запроса
- *  @apiSuccess {Object} conversations беседа
+ *  @apiSuccess {Object} ConversationComponent беседа
  *  @apiSuccessExample {json} Response-Body
  *  {
  *      "error": false,
- *      "conversations": {
+ *      "ConversationComponent": {
  *          // ... данные беседы
  *      }
  *  }
@@ -143,19 +143,19 @@ conversations.post('/get', (req: Request, res: Response) => {
 })
 
 /**
- *  @api {post} /api/conversations/getAll Получить информацию о беседах пользователя
+ *  @api {post} /api/ConversationComponent/getAll Получить информацию о беседах пользователя
  *  @apiName getConversations
- *  @apiGroup conversations
+ *  @apiGroup ConversationComponent
  *  @apiVersion 0.0.0
  *
  *  @apiUse authSession
  *
  *  @apiSuccess {Boolean} error Статус запроса
- *  @apiSuccess {Object[]} conversations Беседы
+ *  @apiSuccess {Object[]} ConversationComponent Беседы
  *  @apiSuccessExample {json} Response-Body
  *  {
  *      "error": false,
- *      "conversations": [
+ *      "ConversationComponent": [
  *          // ... данные беседы
  *      ]
  *  }
@@ -192,9 +192,9 @@ conversations.post('/getFullInfoAll', (req: Request, res: Response) => {
 });
 
 /**
- *  @api {post} /api/conversations/delete Удалить беседу
+ *  @api {post} /api/ConversationComponent/delete Удалить беседу
  *  @apiName deleteConversations
- *  @apiGroup conversations
+ *  @apiGroup ConversationComponent
  *  @apiVersion 0.0.0
  *
  *  @apiUse authSession

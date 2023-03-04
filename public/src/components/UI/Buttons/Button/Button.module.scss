@@ -3,7 +3,7 @@
 .button {
     display: inline-flex;
     font-size: $mediumFontSize;
-    color: $whiteGray;
+    color: $gray;
     background: $darkGray;
     transition: .1s;
     padding: 0 10px;
@@ -14,11 +14,12 @@
     position: relative;
 
     &.active {
-        color: $white;
+        color: $whiteGray;
         cursor: pointer;
         pointer-events: auto;
 
         &:hover {
+            color: $white;
             background: $blue;
         }
     }
@@ -29,6 +30,7 @@
         color: $white;
 
         &:hover {
+            color: $white;
             box-shadow: $defaultBoxShadow;
         }
     }

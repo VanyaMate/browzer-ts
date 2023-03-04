@@ -3,21 +3,14 @@
 .container {
     width: 100%;
     height: 100%;
-    border: 2px dotted $darkGray;
+    // border: 2px dotted $darkGray;
 
-    .button {
-        width: calc(100% - #{$bigOffset} * 2);
-        height: 100px;
-        margin-top: $bigOffset;
-        background: transparent;
-        border: 2px dotted $darkGray;
-        color: $darkGray !important;
-        font-size: 18px;
+    & .button {
 
-        &:hover {
-            color: $white !important;
-            border: 2px dotted transparent;
-            box-shadow: $defaultBoxShadow;
-        }
+    }
+
+    & .relative {
+        position: absolute;
+        width: 100%;
     }
 }

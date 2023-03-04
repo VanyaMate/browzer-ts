@@ -8,4 +8,5 @@ $buttonWidth: calc(#{$contentBlockWidth - 20px - $smallRowHeight * 2}/3);
     width: 100%;
     position: relative;
     margin-bottom: $smallOffset;
+    z-index: 1;
 }

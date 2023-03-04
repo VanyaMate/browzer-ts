@@ -15,3 +15,16 @@ export const addUniqueValueTo = function<T> (to: T[], value: T): T[] {
     uniqueList.add(value);
     return [...uniqueList];
 }
+
+export const getRandomInt = function (min: number, max: number) {
+    return Math.floor(Math.random() * (max - min) + min);
+}
+
+export const getRandomID = function () {
+    const keyList = 'abcdefghijklmnopqrstuvwxyz1234567890';
+    let id = '';
+    for (let i = 0; i < 10; i++) {
+        id += keyList[getRandomInt(0, keyList.length)];
+    }
+    return id;
+}

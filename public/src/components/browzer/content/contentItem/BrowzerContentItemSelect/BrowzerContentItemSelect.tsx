@@ -1,13 +1,12 @@
 import React, {useMemo, useState} from 'react';
 import {IBlock, IComponent} from "../../../../../../../interfaces/block";
 import css from './BrowzerContentItemSelect.module.scss';
-import {useBrowzerBlocks} from "../../../../../hooks/useBrowzerBlocks";
 import ShowedOptions from "./ShowedOptions/ShowedOptions";
 import ControlButtons from "./ControlButtons/ControlButtons";
 import HiddenOptions from "./HiddenOptions/HiddenOptions";
+import ComponentSelector from "../../../UI/ComponentSelector";
 
 const BrowzerContentItemSelect = (props: { block: IBlock, index: number, active: string, setActive: (id: string) => void }) => {
-    const blocks = useBrowzerBlocks();
     const [showedOptions, hiddenOptions] = useMemo(() => {
         const components = [[], []] as IComponent[][];
 
@@ -17,7 +16,11 @@ const BrowzerContentItemSelect = (props: { block: IBlock, index: number, active:
 
         return components;
     }, [props.block.components])
+    const activeHiddenOption = useMemo(() => {
+        return hiddenOptions.some((option) => option.id === props.active);
+    }, [hiddenOptions, props.active])
     const [dropdownHidden, setDropdownHidden] = useState(true);
+    const [addComponentMenuHidden, setAddComponentMenuHidden] = useState(true);
 
     return (
         <div className={css.container}>
@@ -30,7 +33,9 @@ const BrowzerContentItemSelect = (props: { block: IBlock, index: number, active:
             <ControlButtons
                 index={props.index}
                 setDropdownHidden={setDropdownHidden}
+                setAddComponentMenuHidden={setAddComponentMenuHidden}
                 componentsAmount={props.block.components.length}
+                activeHiddenOption={activeHiddenOption}
             />
             {
                 props.block.components.length > 3 ? <HiddenOptions
@@ -42,6 +47,15 @@ const BrowzerContentItemSelect = (props: { block: IBlock, index: number, active:
                     setActive={props.setActive}
                 /> : ''
             }
+            <ComponentSelector
+                hide={addComponentMenuHidden}
+                index={props.index}
+                successHandler={() => {
+                    setAddComponentMenuHidden(true);
+                    setDropdownHidden(false);
+                }}
+                errorHandler={() => {}}
+            />
         </div>
     );
 };

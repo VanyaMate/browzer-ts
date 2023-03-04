@@ -34,7 +34,7 @@ messages.post('/create', (req: Request, res: Response) => {
                             const members = conversation.members.filter((member) => member.login !== userData.login);
                             addAsyncMessageNotification(db, userData, message, members.map((m) => m.login), NotificationType.NEW_MESSAGE);
 
-                            res.status(200).send({error: false, message})
+                            res.status(200).send({error: false, message, tempId: body.tempId || null })
                         })
                         .catch((error: IError) => {
                             res.status(200).send({error: true, message: error.message})

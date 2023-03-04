@@ -1,29 +1,33 @@
 import {ComponentType} from "../../../enums/blocks";
-import Conversations from "../components/browzer/components/conversations/Conversations";
+import ConversationComponent from "../components/browzer/components/ConversationComponent/ConversationComponent";
 import {JSXElementConstructor} from "react";
+import IFrameComponent from "../components/browzer/components/IFrameComponent/IFrameComponent";
+import MusicComponent from "../components/browzer/components/MusicComponent/MusicComponent";
+import ProfileComponent from "../components/browzer/components/ProfileComponent/ProfileComponent";
+import SettingsComponent from "../components/browzer/components/SettingsComponent/SettingsComponent";
 
 type ComponentItemType = { [type: string]: { defaultTitle: string, Component: JSXElementConstructor<any> } };
 
 const BrowzerContentItemsList: ComponentItemType = {
     [ComponentType.CONVERSATIONS]: {
         defaultTitle: 'Сообщения',
-        Component: Conversations
+        Component: ConversationComponent
     },
     [ComponentType.IFRAME]: {
         defaultTitle: 'IFrame',
-        Component: Conversations
+        Component: IFrameComponent
     },
     [ComponentType.MUSIC]: {
         defaultTitle: 'Музыка',
-        Component: Conversations
+        Component: MusicComponent
     },
     [ComponentType.PROFILE]: {
         defaultTitle: 'Профиль',
-        Component: Conversations
+        Component: ProfileComponent
     },
     [ComponentType.SETTINGS]: {
         defaultTitle: 'Настройки',
-        Component: Conversations
+        Component: SettingsComponent
     },
 
 };

@@ -17,14 +17,19 @@ const Option = (props: {
 
     return (
         <Button
-            key={props.option.id}
             onClick={() => props.setActive(props.option.id)}
             active
             always={props.active === props.option.id}
             style={{position: 'relative'}}
             className={removeFetching ? css.removeFetch : ''}
         >
-            <ClickInput value={props.option.name}/>
+            <ClickInput
+                value={props.option.name}
+                successHandler={(name: string) => {
+                    blocks.renameComponent(props.index, props.option.id, name);
+                }}
+                errorHandler={() => {}}
+            />
             <AbsoluteButton
                 onClick={(e: Event) => {
                     e.preventDefault();

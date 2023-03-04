@@ -1,7 +1,8 @@
 @import 'src/common/consts';
 
 .container {
-    width: $contentBlockWidth;
+    min-width: $contentBlockWidth;
+    max-width: $contentBlockWidth;
     height: 100%;
     background: $darkGray;
 
