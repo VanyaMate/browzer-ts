@@ -3,10 +3,13 @@ import css from './Vertical.module.scss';
 
 const Vertical = (props: any) => {
     return (
-        <div className={[
-            css.container,
-            props.type === 'bottom' ? css.bottom : css.top
-        ].join(' ')}>
+        <div
+            className={[
+                css.container,
+                props.type === 'bottom' ? css.bottom : css.top
+            ].join(' ')}
+             style={props.style}
+        >
             {props.children}
         </div>
     );

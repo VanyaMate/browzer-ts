@@ -9,7 +9,7 @@ const ConversationComponent = (props: { active: string, componentData: IComponen
     const [activeConversation, setActiveConversation] = useState<string>('');
 
     return (
-        <div>
+        <div className={css.container}>
             <MessagesContainer activeConversation={activeConversation}/>
             <ConversationsContainer
                 activeConversation={activeConversation}

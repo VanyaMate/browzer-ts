@@ -18,6 +18,15 @@ const Input = memo((props: any) => {
                 value={value}
                 onChange={e => setValue(e.target.value)}
                 placeholder={props.placeholder}
+                onFocus={props.onFocus}
+                onBlur={props.onBlur}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                        setTimeout(() => {
+                            props.onSubmit && props.onSubmit();
+                        });
+                    }
+                }}
             />
         </div>
     );

@@ -67,7 +67,7 @@ export const validComponentName = function (name: string): boolean {
         return false;
     }
 
-    if (name.length > 10 || name.length < 2) {
+    if (name.trim().length > 10 || name.trim().length < 2) {
         return false;
     }
 

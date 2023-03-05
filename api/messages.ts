@@ -14,10 +14,11 @@ import {
     getMessagesFromConversation,
     updateMessage
 } from "./databaseMethods/messages";
-import {getConversationData} from "./databaseMethods/conversations";
+import {createAsyncNotifications, getConversationData} from "./databaseMethods/conversations";
 import {getMemberDataByLogin} from "./methods/conversation";
 import {SourceType} from "../enums/messages";
 import {NotificationType} from "../enums/notifications";
+import {getWithoutValue} from "../utils/helpers";
 
 const messages = express.Router();
 
@@ -54,10 +55,25 @@ messages.post('/change', (req: Request, res: Response) => {
     validateRequestWithAccess<{ messageId: string, text?: string, additional?: IMessageAdditional[] }>(req, res, db, AuthType.SESSION_KEY)
         .then(async ({ userData, body }) => {
             const message: IMessage = await getMessage(db, body.messageId);
-            if (message.from.name === userData.login) {
+            const oldText = message.text;
+
+            if (message?.from.name === userData.login) {
                 message.text = body.text || message.text;
                 message.additional = body.additional || message.additional;
                 message.changed = true;
+
+                const conversation = await getConversationData(db, message.conversationId, userData.login);
+                const conversationMembers = conversation.members.map((member) => member.login);
+                const notificationMember = getWithoutValue(conversationMembers, userData.login);
+
+                createAsyncNotifications(userData, notificationMember, {
+                    type: NotificationType.MESSAGE_CHANGED,
+                    text: 'Изменил сообщение',
+                    data: {
+                        name: 'message',
+                        value: { oldText, message: message }
+                    }
+                })
 
                 return await updateMessage(db, message)
                     .then(() => res.status(200).send({ error: false, success: true }))

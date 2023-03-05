@@ -1,16 +1,16 @@
 import React, {memo, useEffect, useRef, useState} from 'react';
-import css from './ClickInput.module.scss';
+import css from './ClickTextarea.module.scss';
 import {useInputValue} from "../../../../hooks/useInputValue";
-import Input from "../Input/Input";
+import TextArea from "../Textarea/TextArea";
 
-const ClickInput = memo((props: {
+const ClickTextarea = memo((props: {
     value: string,
     successHandler?: (value: string) => void,
     errorHandler?: () => void,
     className?: string[],
     validator?: (v: string) => boolean
 }) => {
-    const inputName = useInputValue(props.value, props.validator);
+    const inputValue = useInputValue(props.value, props.validator);
     const [redactMod, setRedactMod] = useState(false);
     const [previousTimer, setPreviousTimer] = useState(Date.now());
     const [previousName, setPreviousName] = useState(props.value);
@@ -19,11 +19,11 @@ const ClickInput = memo((props: {
 
     useEffect(() => {
         if (!redactMod && makeHandler) {
-            if (inputName.valid) {
-                setPreviousName(inputName.value);
-                props.successHandler && props.successHandler(inputName.value);
+            if (inputValue.valid) {
+                setPreviousName(inputValue.value);
+                props.successHandler && props.successHandler(inputValue.value);
             } else {
-                inputName.setValue(previousName);
+                inputValue.setValue(previousName);
                 props.errorHandler && props.errorHandler();
             }
 
@@ -32,7 +32,7 @@ const ClickInput = memo((props: {
     }, [redactMod]);
 
     const enterHandler = function (e: KeyboardEvent) {
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter' && !e.shiftKey) {
             setRedactMod(false);
             window.removeEventListener('keydown', enterHandler);
         }
@@ -44,7 +44,7 @@ const ClickInput = memo((props: {
         setPreviousTimer(prev => {
             if ((Date.now() - prev) < 300 && !redactMod) {
                 setRedactMod(true);
-                setPreviousName(inputName.value);
+                setPreviousName(inputValue.value);
                 setMakeHandler(true);
                 window.addEventListener('keydown', enterHandler);
                 setTimeout(() => {
@@ -59,14 +59,14 @@ const ClickInput = memo((props: {
     return (
         <div className={css.container} onClick={() => clickHandler()}>
             {
-                redactMod ? <Input
+                redactMod ? <TextArea
                     reff={inputRef}
-                    hook={inputName}
+                    hook={inputValue}
                     className={[css.input, props.className ?? ''].flat().join(' ')}
-                /> : <div>{ previousName }</div>
+                /> : <div className={css.value} dangerouslySetInnerHTML={{__html: previousName.replace(/\n/g, '<br>')}}/>
             }
         </div>
     );
 });
 
-export default ClickInput;
+export default ClickTextarea;

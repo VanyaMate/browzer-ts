@@ -1,0 +1,19 @@
+@import './src/common/consts';
+
+.container {
+    min-width: 130px;
+    max-width: 130px;
+    margin-left: $smallOffset;
+    transition: .1s;
+    overflow: hidden;
+
+    &.hide {
+        min-width: calc(#{$mediumRowHeight});
+        max-width: calc(#{$mediumRowHeight});
+    }
+
+    & .button {
+        width: 130px;
+        padding: 0;
+    }
+}

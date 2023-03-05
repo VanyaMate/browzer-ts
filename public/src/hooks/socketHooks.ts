@@ -120,8 +120,8 @@ export const userMessagesSocket = function () {
 
         socketClientManager.addHandlerOnSocket(NotificationType.MESSAGE_CHANGED, (data: unknown) => {
             console.log('MESSAGE_CHANGED', data);
-            const message = data as { message: IMessage, notification: INotification<string> };
-            changeMessage(message.message);
+            const message = data as { message: { oldText: string, message: IMessage }, notification: INotification<string> };
+            changeMessage(message.message.message);
             addNotification(message.notification);
         })
     }

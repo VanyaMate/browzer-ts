@@ -1,0 +1,17 @@
+@import "./src/common/consts";
+
+.container {
+    display: flex;
+    flex-direction: row;
+
+    & .button {
+        min-width: $mediumRowHeight;
+        max-width: $mediumRowHeight;
+        height: $mediumRowHeight;
+        margin-right: $smallOffset;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}

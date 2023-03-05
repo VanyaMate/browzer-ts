@@ -28,3 +28,34 @@ export const getRandomID = function () {
     }
     return id;
 }
+
+export const getStringDate = function (dateMS: number) {
+    const monthNames: { [num: number]: string } = {
+        0: "Январь",
+        1: "Февраль",
+        2: "Март",
+        3: "Апрель",
+        4: "Май",
+        5: "Июнь",
+        6: "Июль",
+        7: "Август",
+        8: "Сентябрь",
+        9: "Октябрь",
+        10: "Ноябрь",
+        11: "Декабрь",
+    }
+
+    const date = new Date(dateMS);
+    const year = date.getFullYear();
+    const month = monthNames[date.getMonth()];
+    const day = date.getDate();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
+
+    const showedHours = hours > 9 ? hours : `0${hours}`;
+    const showedMinutes = minutes > 9 ? minutes : `0${minutes}`;
+    const showedSeconds = seconds > 9 ? seconds : `0${seconds}`;
+
+    return `${year} / ${day} ${month} / ${showedHours}:${showedMinutes}:${showedSeconds}`;
+}

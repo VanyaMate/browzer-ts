@@ -5,6 +5,7 @@ import Button from "../../../../../UI/Buttons/Button/Button";
 import {IComponent} from "../../../../../../../../interfaces/block";
 import {useBrowzerBlocks} from "../../../../../../hooks/useBrowzerBlocks";
 import css from './Option.module.scss';
+import {validComponentName} from "../../../../../../../../utils/validationMethods";
 
 const Option = (props: {
     option: IComponent,
@@ -29,6 +30,7 @@ const Option = (props: {
                     blocks.renameComponent(props.index, props.option.id, name);
                 }}
                 errorHandler={() => {}}
+                validator={validComponentName}
             />
             <AbsoluteButton
                 onClick={(e: Event) => {

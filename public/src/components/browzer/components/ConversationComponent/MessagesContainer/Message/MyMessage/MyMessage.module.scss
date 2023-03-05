@@ -1,0 +1,68 @@
+@import "src/common/consts";
+
+.container {
+    width: 84% !important;
+    display: flex;
+    justify-content: right;
+    display: flex;
+    align-self: end;
+    position: relative;
+    transition: .1s;
+    text-align: right;
+
+    &.loading {
+        animation: OpacityChanger .5s Infinite ease-in-out;
+    }
+
+    &.error {
+        background: blue;
+    }
+
+    & .info {
+        padding: $smallOffset $smallOffset 0;
+        width: 100%;
+
+        & .headerInfo {
+            font-size: 12px;
+            display: flex;
+            flex-direction: row;
+            justify-content: right;
+
+            & > * {
+                margin-right: $smallOffset;
+
+                &:last-child {
+                    margin-right: 0;
+                }
+            }
+
+            & .time {
+                color: $gray;
+            }
+
+            & .changed {
+                color: $gray;
+            }
+
+            & .name {
+                color: $gray;
+            }
+        }
+
+        & .message {
+            color: $white;
+            word-break: break-word;
+            text-align: left;
+            background: $darkGray;
+            padding: $mediumOffset calc(#{$mediumOffset} - 4px) $mediumOffset $mediumOffset;
+
+            & .input {
+                background: $darkGray;
+
+                input {
+                    text-align: left;
+                }
+            }
+        }
+    }
+}

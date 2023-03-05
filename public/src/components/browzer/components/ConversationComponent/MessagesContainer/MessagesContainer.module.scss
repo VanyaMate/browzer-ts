@@ -1,1 +1,27 @@
+@import "./src/common/consts";
 
+.container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    & .messageInput {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0 $mediumOffset;
+        //margin-top: $smallOffset;
+    }
+
+    & .header {
+        display: flex;
+
+        & .button {
+            max-width: $mediumRowHeight;
+            min-width: $mediumRowHeight;
+            margin-left: 5px;
+        }
+    }
+}

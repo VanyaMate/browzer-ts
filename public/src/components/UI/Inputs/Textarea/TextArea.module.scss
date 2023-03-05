@@ -1,0 +1,33 @@
+@import './src/common/consts';
+
+.container {
+    width: 100%;
+    max-width: 100%;
+    // max-height: calc(#{$mediumRowHeight * 2} + 10px);
+    background: $darkGray;
+    border: 0 solid transparent;
+    border-bottom: 2px solid transparent;
+    overflow: hidden;
+    overflow-y: auto;
+
+    .textarea {
+        border: none;
+        outline: none;
+        max-width: 100%;
+        min-width: 100%;
+        height: auto;
+        // min-height: calc(#{$mediumRowHeight * 2});
+        color: $white;
+        background: transparent;
+        resize: none;
+        font-size: 16px;
+    }
+
+    &.valid {
+        border-bottom: 2px solid $blue;
+    }
+
+    &.noValid {
+        border-bottom: 2px solid $orange;
+    }
+}

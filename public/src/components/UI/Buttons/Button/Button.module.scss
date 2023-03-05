@@ -12,6 +12,7 @@
     justify-content: center;
     pointer-events: none;
     position: relative;
+    user-select: none;
 
     &.active {
         color: $whiteGray;

@@ -5,6 +5,9 @@ import messages from "../../../../api/messages";
 
 export interface IMessagesData {
     end: boolean,
+    loading: boolean,
+    firstLoad: boolean,
+    error: boolean,
     offset: number,
     additionalLimit: number,
     defaultLimit: number,
@@ -14,6 +17,9 @@ export interface IMessagesData {
 const getMessagesData = (message?: IMessage): IMessagesData => {
     return {
         end: false,
+        loading: false,
+        firstLoad: false,
+        error: false,
         offset: 0,
         additionalLimit: 0,
         defaultLimit: 20,
@@ -38,8 +44,8 @@ export const messagesSlice = createSlice({
             }
         },
         addMessagesToEnd: (state, action: PayloadAction<IMessage[]>) => {
-            const conversationId = action.payload[0].conversationId;
-            if (action.payload) {
+            const conversationId = action.payload[0]?.conversationId;
+            if (conversationId) {
                 const messages = [...action.payload];
                 messages.reverse();
                 state[conversationId].messages = [...messages, ...state[conversationId].messages];
@@ -65,24 +71,45 @@ export const messagesSlice = createSlice({
                     if (m.id === action.payload.id) {
                         m.text = action.payload.text;
                         m.changed = true;
-                        return true;
+                        return false;
                     }
                     return true;
                 })
             }
         },
-        setMessageStatus: (state, action: PayloadAction<{id: string, conversationId: string, error: boolean, loading?: boolean}>) => {
+        setMessageStatus: (state, action: PayloadAction<{
+            id: string,
+            conversationId: string,
+            error?: boolean,
+            loading?: boolean
+        }>) => {
             const messagesData = state[action.payload.conversationId];
 
             if (messagesData) {
                 for (let i = 0; i < messagesData.messages.length; i++) {
                     const message = messagesData.messages[i];
                     if (message.id === action.payload.id) {
-                        message.error = action.payload.error;
-                        message.loading = action.payload.loading ?? true;
+                        message.error = action.payload.error ?? message.error;
+                        message.loading = action.payload.loading ?? message.loading;
                         break;
                     }
                 }
+            }
+        },
+        setConversationMessagesStatus: (state, action: PayloadAction<{
+            conversationId: string,
+            end?: boolean,
+            loading?: boolean,
+            firstLoad?: boolean,
+            error?: boolean,
+        }>) => {
+            const messagesData = state[action.payload.conversationId];
+
+            if (messagesData) {
+                messagesData.end = action.payload.end ?? messagesData.end;
+                messagesData.loading = action.payload.loading ?? messagesData.loading;
+                messagesData.firstLoad = action.payload.firstLoad ?? messagesData.firstLoad;
+                messagesData.error = action.payload.error ?? messagesData.error;
             }
         },
         resetMessages: (state) => {
