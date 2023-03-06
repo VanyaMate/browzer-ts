@@ -1,0 +1,71 @@
+@import '../../../../../../../common/consts';
+
+.container {
+    width: 130px;
+    height: 100%;
+    padding: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    position: relative;
+
+    &.loading {
+        animation: OpacityChanger .5s Infinite ease-in-out;
+    }
+
+    &:hover,
+    &.always {
+        & .info {
+            & .name,
+            & .message {
+                color: $white;
+            }
+        }
+        & .icon {
+            opacity: 1;
+        }
+    }
+
+    & .info {
+        display: flex;
+        justify-content: left;
+        align-self: center;
+        flex-direction: column;
+        margin-left: $smallOffset;
+        width: calc(100% - #{$mediumRowHeight});
+
+        & .name {
+            color: $gray;
+            transition: .1s;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        & .message {
+            color: $whiteGray;
+            transition: .1s;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+    }
+
+    & .icon {
+        display: flex;
+        justify-self: center;
+        align-items: center;
+        transition: .1s;
+        opacity: .6;
+    }
+
+    & .closeButton {
+        top: 0;
+        right: 0;
+        font-size: 8px;
+
+        &:hover {
+            background: $red;
+        }
+    }
+}

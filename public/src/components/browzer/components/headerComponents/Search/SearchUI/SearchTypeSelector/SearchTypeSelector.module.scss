@@ -1,0 +1,21 @@
+@import './src/common/consts';
+
+.container {
+    min-width: $mediumRowHeight;
+    max-width: $mediumRowHeight;
+    height: $mediumRowHeight;
+
+    &:hover {
+        & .icon {
+            filter: invert(1);
+        }
+    }
+
+    & .icon {
+        width: 15px;
+        height: 15px;
+
+        filter: invert(.4);
+        transition: .1s;
+    }
+}

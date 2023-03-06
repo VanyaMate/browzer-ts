@@ -1,14 +1,15 @@
 import React, {memo, useState} from 'react';
 import css from './ControlButtons.module.scss';
 import IconButton from "../../../../../UI/Buttons/IconButton/IconButton";
-import {ComponentType} from "../../../../../../../../enums/blocks";
 import {useBrowzerBlocks} from "../../../../../../hooks/useBrowzerBlocks";
+import SmallIcon from "../../../../../UI/Icons/SmallIcon/SmallIcon";
 
 const ControlButtons = memo((props: {
     index: number,
     setDropdownHidden: (v: boolean | ((prev: boolean) => boolean) ) => void,
     setAddComponentMenuHidden: (v: boolean | ((prev: boolean) => boolean) ) => void,
     activeHiddenOption: boolean,
+    addComponentMenuHidden: boolean,
     componentsAmount: number
 }) => {
     const blocks = useBrowzerBlocks();
@@ -18,6 +19,7 @@ const ControlButtons = memo((props: {
         <div className={css.container}>
             <IconButton
                 active
+                always={!props.addComponentMenuHidden}
                 loading={adding}
                 onClick={() => {
                     props.setAddComponentMenuHidden(prev => !prev);
@@ -35,7 +37,10 @@ const ControlButtons = memo((props: {
                         props.setAddComponentMenuHidden(true);
                     }}
                 >
-                    =
+                    <SmallIcon
+                        src={'http://localhost:3000/assets/icons/list.png'}
+                        className={[css.icon, props.activeHiddenOption ? css.active : '']}
+                    />
                 </IconButton> : ''
             }
         </div>

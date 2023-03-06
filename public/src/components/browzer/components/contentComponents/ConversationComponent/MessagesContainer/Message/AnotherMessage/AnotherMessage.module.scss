@@ -1,0 +1,62 @@
+@import "../../../../../../../../common/consts";
+
+.container {
+    width: 90% !important;
+    min-width: 255px;
+    display: flex;
+    justify-content: right;
+    display: flex;
+    align-self: start;
+    position: relative;
+    transition: .1s;
+    text-align: right;
+
+    &.loading {
+        animation: OpacityChanger .5s Infinite ease-in-out;
+    }
+
+    &.error {
+        background: $red;
+        color: $darkGray;
+    }
+
+    & .info {
+        padding: $smallOffset $smallOffset 0;
+        width: 100%;
+
+        & .headerInfo {
+            font-size: 12px;
+            display: flex;
+            flex-direction: row;
+            justify-content: left;
+
+            & > * {
+                margin-right: $smallOffset;
+
+                &:last-child {
+                    margin-right: 0;
+                }
+            }
+
+            & .time {
+                color: $gray;
+            }
+
+            & .changed {
+                color: $gray;
+            }
+
+            & .name {
+                color: $gray;
+            }
+        }
+
+        & .message {
+            color: $white;
+            word-break: break-word;
+            text-align: left;
+            background: $darkGray;
+            padding: $mediumOffset;
+        }
+    }
+}

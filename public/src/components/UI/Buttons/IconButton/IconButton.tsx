@@ -4,7 +4,7 @@ import Button from "../Button/Button";
 
 const IconButton = memo((props: any) => {
     return (
-        <Button css={css} {...props}>{props.children}</Button>
+        <Button css={css} {...props}>{ props.children }</Button>
     );
 });
 

@@ -1,7 +1,7 @@
 import React, {memo, useState} from 'react';
 import css from './DropdownAbsolute.module.scss';
 
-const DropdownAbsolute = memo((props: { hide: boolean, children: any, style: any, className?: string[] }) => {
+const DropdownAbsolute = memo((props: { hide: boolean, children: any, style?: any, className?: string[] }) => {
     const { hide, className, ...other } = props;
 
     return (

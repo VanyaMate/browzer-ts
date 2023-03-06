@@ -3,8 +3,8 @@ import css from './BrowzerContentItem.module.scss';
 import {IBlock} from "../../../../../../interfaces/block";
 import BrowzerContentItemsList from '../../../../common/BrowzerContentItemsList';
 import BrowzerContentItemSelect from "./BrowzerContentItemSelect/BrowzerContentItemSelect";
-import NoComponentsContent from "../../components/noComponents/NoComponentsContent";
-import Component from "../../components/Component";
+import NoComponentsContent from "../../components/contentComponents/noComponents/NoComponentsContent";
+import Component from "../../components/contentComponents/Component";
 
 
 const BrowzerContentItem = (props: { block: IBlock, index: number }) => {

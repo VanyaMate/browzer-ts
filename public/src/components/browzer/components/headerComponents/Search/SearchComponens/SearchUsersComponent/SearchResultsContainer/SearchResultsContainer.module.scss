@@ -1,0 +1,9 @@
+@import './src/common/consts';
+
+.container {
+    transition: .1s;
+
+    &.loading {
+        animation: $loadingAnimation;
+    }
+}

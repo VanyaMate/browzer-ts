@@ -34,6 +34,7 @@ const BrowzerContentItemSelect = (props: { block: IBlock, index: number, active:
                 index={props.index}
                 setDropdownHidden={setDropdownHidden}
                 setAddComponentMenuHidden={setAddComponentMenuHidden}
+                addComponentMenuHidden={addComponentMenuHidden}
                 componentsAmount={props.block.components.length}
                 activeHiddenOption={activeHiddenOption}
             />

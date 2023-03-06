@@ -10,12 +10,14 @@ import {messagesApi} from "./messages/messages.api";
 import {messagesReducer} from "./messages/messages.slice";
 import {blocksReducer} from "./blocks/blocks.slice";
 import {blocksApi} from "./blocks/blocks.api";
+import {conversationsApi} from "./conversations/conversations.api";
 
 export const store = configureStore({
     reducer: {
         [authApi.reducerPath]: authApi.reducer,
         [usersApi.reducerPath]: usersApi.reducer,
         [messagesApi.reducerPath]: messagesApi.reducer,
+        [conversationsApi.reducerPath]: conversationsApi.reducer,
         [blocksApi.reducerPath]: blocksApi.reducer,
         auth: authReducer,
         conversations: conversationsReducer,
@@ -25,7 +27,11 @@ export const store = configureStore({
         blocks: blocksReducer
     },
     middleware: getDefaultMiddleware => getDefaultMiddleware().concat([
-        authApi.middleware, usersApi.middleware, messagesApi.middleware, blocksApi.middleware
+        authApi.middleware,
+        usersApi.middleware,
+        messagesApi.middleware,
+        blocksApi.middleware,
+        conversationsApi.middleware,
     ])
 })
 

@@ -1,10 +1,10 @@
 import {ComponentType} from "../../../enums/blocks";
-import ConversationComponent from "../components/browzer/components/ConversationComponent/ConversationComponent";
+import ConversationComponent from "../components/browzer/components/contentComponents/ConversationComponent/ConversationComponent";
 import {JSXElementConstructor} from "react";
-import IFrameComponent from "../components/browzer/components/IFrameComponent/IFrameComponent";
-import MusicComponent from "../components/browzer/components/MusicComponent/MusicComponent";
-import ProfileComponent from "../components/browzer/components/ProfileComponent/ProfileComponent";
-import SettingsComponent from "../components/browzer/components/SettingsComponent/SettingsComponent";
+import IFrameComponent from "../components/browzer/components/contentComponents/IFrameComponent/IFrameComponent";
+import MusicComponent from "../components/browzer/components/contentComponents/MusicComponent/MusicComponent";
+import ProfileComponent from "../components/browzer/components/contentComponents/ProfileComponent/ProfileComponent";
+import SettingsComponent from "../components/browzer/components/contentComponents/SettingsComponent/SettingsComponent";
 
 type ComponentItemType = { [type: string]: { defaultTitle: string, Component: JSXElementConstructor<any> } };
 

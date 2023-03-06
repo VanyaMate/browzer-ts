@@ -7,5 +7,22 @@
         &:last-child {
             margin-right: 0;
         }
+
+        &:hover {
+            & .icon {
+                filter: invert(1);
+            }
+        }
+    }
+
+    & .icon {
+        width: 10px;
+        height: 10px;
+        filter: invert(.4);
+        transition: .1s;
+
+        &.active {
+            filter: invert(1);
+        }
     }
 }

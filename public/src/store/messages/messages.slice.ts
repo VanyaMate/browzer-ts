@@ -77,9 +77,28 @@ export const messagesSlice = createSlice({
                 })
             }
         },
+        changeMessageText: (state, action: PayloadAction<{
+            conversationId: string,
+            messageId: string,
+            text: string
+        }>) => {
+            const messagesData = state[action.payload.conversationId];
+
+            if (messagesData) {
+                messagesData.messages.every((m) => {
+                    if (m.id === action.payload.messageId) {
+                        m.text = action.payload.text;
+                        m.changed = true;
+                        return false;
+                    }
+                    return true;
+                })
+            }
+        },
         setMessageStatus: (state, action: PayloadAction<{
             id: string,
             conversationId: string,
+            newId?: string,
             error?: boolean,
             loading?: boolean
         }>) => {
@@ -91,6 +110,7 @@ export const messagesSlice = createSlice({
                     if (message.id === action.payload.id) {
                         message.error = action.payload.error ?? message.error;
                         message.loading = action.payload.loading ?? message.loading;
+                        message.id = action.payload.newId ?? message.id;
                         break;
                     }
                 }

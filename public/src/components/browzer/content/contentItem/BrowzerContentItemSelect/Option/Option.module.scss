@@ -8,3 +8,13 @@
 .addFetch {
     color: green !important;
 }
+
+.deleteButton {
+    top: -5px;
+    right: -5px;
+
+    &:hover {
+        background: $red;
+        color: $white;
+    }
+}

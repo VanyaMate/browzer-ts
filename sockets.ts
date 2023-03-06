@@ -81,7 +81,7 @@ export default class SocketManager {
         if (this.connections[login] && this.connections[login][id]) {
             clearTimeout(this.connections[login][id].timer);
             setTimeout(() => {
-                if (this.connections[login]) {
+                if (this.connections[login] && this.connections[login][id]) {
                     this.connections[login][id].timer = this._removeConnectionTimer(login, id, 50000);
                 }
             }, 0);

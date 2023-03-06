@@ -1,0 +1,62 @@
+@import "./src/common/consts";
+
+.container {
+    display: flex;
+    align-items: center;
+
+    & > * {
+        margin-right: $smallOffset;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+
+    & .avatar {
+        min-width: 30px;
+        height: 30px;
+    }
+
+    & .login {
+        min-width: 220px;
+        max-width: 220px;
+        color: $white;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    & .control {
+        width: 100%;
+        display: flex;
+        justify-content: end;
+
+        & .button {
+            width: $mediumRowHeight;
+            height: $mediumRowHeight;
+            margin-left: $smallOffset;
+
+            & .buttonIcon {
+                filter: invert(.4);
+                transition: .1s;
+            }
+
+            &:hover {
+                & .buttonIcon {
+                    filter: invert(1);
+                }
+            }
+
+            &:first-child {
+                margin-left: 0;
+            }
+        }
+
+        & .message {
+
+        }
+
+        & .addFriend {
+
+        }
+    }
+}

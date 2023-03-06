@@ -2,9 +2,11 @@ import React from 'react';
 import css from './AbsoluteButton.module.scss';
 
 const AbsoluteButton = (props: any) => {
+    const { className, children, ...other } = props;
+
     return (
-        <div {...props} className={css.container}>
-            { props.children }
+        <div {...other} className={[css.container, className].join(' ')}>
+            { children }
         </div>
     );
 };

@@ -33,13 +33,13 @@ const Option = (props: {
                 validator={validComponentName}
             />
             <AbsoluteButton
+                className={css.deleteButton}
                 onClick={(e: Event) => {
                     e.preventDefault();
                     e.stopPropagation();
                     setRemoveFetching(true);
                     blocks.removeComponent(props.index, props.option.id)
                 }}
-                style={{ top: -5, right: -5, }}
             >
                 X
             </AbsoluteButton>

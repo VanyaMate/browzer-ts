@@ -1,0 +1,16 @@
+@import "../../../../../common/consts";
+
+.container {
+    width: 100%;
+    height: 100%;
+    // border: 2px dotted $darkGray;
+
+    & .button {
+
+    }
+
+    & .relative {
+        position: absolute;
+        width: 100%;
+    }
+}

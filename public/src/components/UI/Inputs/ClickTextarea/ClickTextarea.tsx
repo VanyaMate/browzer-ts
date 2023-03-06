@@ -13,17 +13,19 @@ const ClickTextarea = memo((props: {
     const inputValue = useInputValue(props.value, props.validator);
     const [redactMod, setRedactMod] = useState(false);
     const [previousTimer, setPreviousTimer] = useState(Date.now());
-    const [previousName, setPreviousName] = useState(props.value);
+    const [previousText, setPreviousText] = useState(props.value);
+    const [showedText, setShowedText] = useState(props.value);
     const inputRef = useRef<HTMLInputElement>();
     const [makeHandler, setMakeHandler] = useState(false);
 
     useEffect(() => {
         if (!redactMod && makeHandler) {
-            if (inputValue.valid) {
-                setPreviousName(inputValue.value);
+            if (inputValue.valid && !inputValue.empty) {
+                setPreviousText(inputValue.value);
                 props.successHandler && props.successHandler(inputValue.value);
             } else {
-                inputValue.setValue(previousName);
+                inputValue.setValue(previousText);
+                setShowedText(previousText);
                 props.errorHandler && props.errorHandler();
             }
 
@@ -44,7 +46,7 @@ const ClickTextarea = memo((props: {
         setPreviousTimer(prev => {
             if ((Date.now() - prev) < 300 && !redactMod) {
                 setRedactMod(true);
-                setPreviousName(inputValue.value);
+                setPreviousText(inputValue.value);
                 setMakeHandler(true);
                 window.addEventListener('keydown', enterHandler);
                 setTimeout(() => {
@@ -63,7 +65,8 @@ const ClickTextarea = memo((props: {
                     reff={inputRef}
                     hook={inputValue}
                     className={[css.input, props.className ?? ''].flat().join(' ')}
-                /> : <div className={css.value} dangerouslySetInnerHTML={{__html: previousName.replace(/\n/g, '<br>')}}/>
+                    onChange={setShowedText}
+                /> : <div className={css.value} dangerouslySetInnerHTML={{__html: showedText.replace(/\n/g, '<br>')}}/>
             }
         </div>
     );

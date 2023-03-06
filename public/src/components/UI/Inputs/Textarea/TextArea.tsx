@@ -3,7 +3,6 @@ import css from "./TextArea.module.scss";
 
 const TextArea = memo((props: any) => {
     const { value, setValue, valid, empty } = props.hook;
-    const { reff } = props;
     const textarea = useRef<HTMLTextAreaElement>(null);
 
     const authHeight = function (element: HTMLElement) {
@@ -12,7 +11,8 @@ const TextArea = memo((props: any) => {
     }
 
     useEffect(() => {
-        authHeight(textarea.current as HTMLElement)
+        authHeight(textarea.current as HTMLElement);
+        textarea.current!.focus()
     }, [value])
 
     return (
@@ -28,23 +28,16 @@ const TextArea = memo((props: any) => {
                 placeholder={props.placeholder}
                 onChange={e => {
                     setValue(e.target.value)
-                    setTimeout(() => {
-                        authHeight(e.target as HTMLElement);
-                    }, 10)
+                    props.onChange && props.onChange(e.target.value);
                 }}
                 onInput={e => authHeight(e.target as HTMLElement)}
-                onFocus={(e) => {
-                    authHeight(e.target as HTMLElement);
-                    props.onFocus && props.onFocus();
-                }}
+                onFocus={props.onFocus}
                 onBlur={props.onBlur}
                 onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
                         setTimeout(() => {
                             if (value.trim().length !== 0) {
                                 props.onSubmit && props.onSubmit();
-                            } else {
-                                setValue('');
                             }
                         });
                     }

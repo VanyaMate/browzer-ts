@@ -6,8 +6,9 @@ const Vertical = (props: any) => {
         <div
             className={[
                 css.container,
+                props.className || '',
                 props.type === 'bottom' ? css.bottom : css.top
-            ].join(' ')}
+            ].flat().join(' ')}
              style={props.style}
         >
             {props.children}

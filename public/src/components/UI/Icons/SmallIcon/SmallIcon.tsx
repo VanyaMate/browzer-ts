@@ -1,10 +1,10 @@
 import React from 'react';
 import css from './SmallIcon.module.scss';
 
-const SmallIcon = (props: {src: string, br?: boolean, alt?: string}) => {
+const SmallIcon = (props: {src: string, br?: boolean, alt?: string, className?: string[]}) => {
     return (
         <img
-            className={[css.img, props.br ? css.br : ''].join(' ')}
+            className={[css.img, props.br ? css.br : '', props.className].flat().join(' ')}
             src={props.src}
             alt={props.alt ?? ''}
         />

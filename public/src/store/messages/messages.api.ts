@@ -52,8 +52,52 @@ export const messagesApi = createApi({
                 if (response.error) return false;
                 return { message: response.message, tempId: response.tempId };
             },
-        })
+        }),
+        changeMessage: build.query<
+            boolean,
+            { auth: string, text: string, messageId: string}
+        >({
+            query: (props) => ({
+                url: 'change',
+                method: 'post',
+                headers: {
+                    'auth': props.auth,
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+                body: {
+                    text: props.text,
+                    messageId: props.messageId
+                }
+            }),
+            transformResponse: (response: { error: boolean, message: IMessage, tempId?: string }) => {
+                return response.error;
+            },
+        }),
+        deleteMessage: build.query<
+            boolean,
+            { auth: string, messageId: string}
+            >({
+            query: (props) => ({
+                url: 'delete',
+                method: 'post',
+                headers: {
+                    'auth': props.auth,
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+                body: {
+                    messageId: props.messageId
+                }
+            }),
+            transformResponse: (response: { error: boolean, message: IMessage, tempId?: string }) => {
+                return response.error;
+            },
+        }),
     })
 });
 
-export const {useLazyGetFromConversationQuery, useLazySendMessageQuery} = messagesApi;
+export const {
+    useLazyGetFromConversationQuery,
+    useLazySendMessageQuery,
+    useLazyChangeMessageQuery,
+    useLazyDeleteMessageQuery
+} = messagesApi;

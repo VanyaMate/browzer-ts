@@ -1,0 +1,42 @@
+@import './src/common/consts';
+
+.container {
+    position: relative;
+    z-index: 2;
+    min-width: $mediumRowHeight;
+    max-width: $mediumRowHeight;
+    height: $mediumRowHeight;
+
+    .button {
+        min-width: $mediumRowHeight;
+        max-width: $mediumRowHeight;
+        height: $mediumRowHeight;
+
+        &:hover {
+            & .icon {
+                filter: invert(1);
+            }
+        }
+
+        &.opened {
+            background: $blue;
+
+            & .icon {
+                filter: invert(1);
+                transform: rotate(270deg);
+            }
+        }
+
+        & .icon {
+            filter: invert(.4);
+            transform: rotate(90deg);
+            transition: .1s;
+        }
+    }
+
+    .dropdown {
+        top: calc(100% + #{$smallOffset});
+        right: 0;
+        width: $contentBlockWidth;
+    }
+}
