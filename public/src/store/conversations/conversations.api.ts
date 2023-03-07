@@ -1,6 +1,12 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
 import {fetchBaseQuery} from "@reduxjs/toolkit/dist/query/react";
 import {serverUrl} from "../../common/consts";
+import {IConversation} from "../../../../interfaces/conversations";
+import {IPublicUserData} from "../../../../interfaces/users";
+import {ConversationType} from "../../../../enums/conversations";
+import {Simulate} from "react-dom/test-utils";
+import error = Simulate.error;
+import conversations from "../../../../api/conversations";
 
 export const conversationsApi = createApi({
     reducerPath: 'conversations/api',
@@ -8,7 +14,10 @@ export const conversationsApi = createApi({
         baseUrl: `${serverUrl}/api/conversations/`
     }),
     endpoints: (build) => ({
-        createConversation: build.query({
+        createConversation: build.query<
+            IConversation<IPublicUserData<string>> | false,
+            { auth: string, type: ConversationType, members: string[] }
+        >({
             query: (props) => ({
                 url: 'create',
                 method: "POST",
@@ -18,7 +27,11 @@ export const conversationsApi = createApi({
                 },
                 body: {
                     type: props.type,
-                    members: props.member,
+                    members: props.members,
+                },
+                transformResponse: (response: { error: boolean, conversation?: IConversation<IPublicUserData<string>> }) => {
+                    if (response.error) { return false; }
+                    return response.conversation;
                 }
             })
         }),

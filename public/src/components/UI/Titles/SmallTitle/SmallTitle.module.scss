@@ -1,3 +1,7 @@
-.title {
+@import "./src/common/consts";
 
+.title {
+    font-size: $mediumFontSize;
+    padding-bottom: $smallOffset;
+    border-bottom: 4px dotted $darkBlue;
 }

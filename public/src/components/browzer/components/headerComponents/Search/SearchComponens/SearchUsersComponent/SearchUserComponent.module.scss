@@ -1,3 +1,5 @@
-.container {
+@import './src/common/consts';
 
+.container {
+    padding: $smallOffset;
 }

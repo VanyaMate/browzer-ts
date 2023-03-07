@@ -19,7 +19,7 @@ const LoginForm = () => {
     const logOut = useLogOut();
 
     useEffect(() => {
-        setValid(!!login.value && !!pass.value && !login.empty && !pass.empty);
+        setValid(!!login.value && !!pass.value);
     }, [login.value, pass.value]);
 
     useEffect(() => {

@@ -2,6 +2,7 @@ import React, {useEffect, useMemo} from 'react';
 import SmallTitle from "../../../../../../UI/Titles/SmallTitle/SmallTitle";
 import {useLazyGetUsersListQuery} from "../../../../../../../store/users/users.api";
 import SearchResultsContainer from "./SearchResultsContainer/SearchResultsContainer";
+import css from './SearchUserComponent.module.scss';
 
 const SearchUserComponent = (props: {
     value: string,
@@ -28,7 +29,7 @@ const SearchUserComponent = (props: {
     }, [usersList])
 
     return (
-        <div>
+        <div className={css.container}>
             <SmallTitle>Пользователи</SmallTitle>
             <SearchResultsContainer isFetching={isFetching} result={result}/>
         </div>

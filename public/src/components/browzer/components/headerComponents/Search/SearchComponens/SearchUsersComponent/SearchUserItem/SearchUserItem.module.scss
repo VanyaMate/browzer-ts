@@ -35,6 +35,10 @@
             height: $mediumRowHeight;
             margin-left: $smallOffset;
 
+            &.loading {
+                animation: $loadingAnimation;
+            }
+
             & .buttonIcon {
                 filter: invert(.4);
                 transition: .1s;

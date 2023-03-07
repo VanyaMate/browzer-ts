@@ -14,7 +14,13 @@
         color: $white;
         border: none;
         outline: none;
-        background: transparent;
+        background-color: transparent;
+        transition: .1s;
+
+        &:-webkit-autofill,
+        &:-webkit-autofill:focus  {
+            transition: background-color 600000s 0s, color 600000s 0s;
+        }
     }
 
     &.valid {
