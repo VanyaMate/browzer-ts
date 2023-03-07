@@ -5,6 +5,7 @@ import SmallIcon from "../../../../../../UI/Icons/SmallIcon/SmallIcon";
 import DropdownAbsolute from "../../../../../../UI/Dropdowns/DropdownAbsolute";
 import {SearchType} from "../../../../../../../../../enums/searchTypes";
 import {searchComponentsList} from "../../SearchComponens/searchComponentsList";
+import {serverUrl} from "../../../../../../../common/consts";
 
 const SearchResult = (props: {
     value: string,
@@ -25,7 +26,7 @@ const SearchResult = (props: {
             >
                 <SmallIcon
                     className={[css.icon]}
-                    src={'http://localhost:3000/assets/icons/right-arrow.png'}
+                    src={`${serverUrl}/assets/icons/right-arrow.png`}
                 />
             </BigButton>
             <DropdownAbsolute hide={!props.opened} className={[css.dropdown]}>

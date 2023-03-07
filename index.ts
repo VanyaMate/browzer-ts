@@ -20,7 +20,8 @@ export const socketManager = new SocketManager(httpServer, db);
 
 app.use(cors());
 app.use(express.json());
-app.use('/', express.static(__dirname + '/public'));
+app.use('/', express.static(__dirname + '/public/build'));
+app.use('/assets', express.static(__dirname + '/public/assets'))
 app.use('/api/doc', express.static(__dirname + '/api/doc'));
 app.use('/api', router);
 

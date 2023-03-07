@@ -8,6 +8,7 @@ import {useActions, useMySelector} from "../../../../../../../../hooks/redux";
 import {AccessType} from "../../../../../../../../../../enums/user";
 import {IConversation} from "../../../../../../../../../../interfaces/conversations";
 import {ConversationType} from "../../../../../../../../../../enums/conversations";
+import {serverUrl} from "../../../../../../../../common/consts";
 
 const canCreateConversation = function (user: IPublicUserData<string>, myFriends: IPublicUserData<string>[]) {
     const conversationPref = user.preferences.conversations;
@@ -89,7 +90,7 @@ const SearchUserItem = memo((props: { user: IPublicUserData<string> }) => {
                     }}
                 >
                     <SmallIcon
-                        src={'http://localhost:3000/assets/icons/messenger.png'}
+                        src={`${serverUrl}/assets/icons/messenger.png`}
                         className={[css.buttonIcon]}
                     />
                 </BigButton>
@@ -101,7 +102,7 @@ const SearchUserItem = memo((props: { user: IPublicUserData<string> }) => {
                     }}
                 >
                     <SmallIcon
-                        src={'http://localhost:3000/assets/icons/high-five.png'}
+                        src={`${serverUrl}/assets/icons/high-five.png`}
                         className={[css.buttonIcon]}
                     />
                 </BigButton>

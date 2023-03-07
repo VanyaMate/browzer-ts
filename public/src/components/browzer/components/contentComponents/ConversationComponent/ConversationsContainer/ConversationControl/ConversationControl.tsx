@@ -2,6 +2,7 @@ import React from 'react';
 import BigButton from "../../../../../../UI/Buttons/BigButton/BigButton";
 import css from "./ConversationControl.module.scss";
 import SmallIcon from "../../../../../../UI/Icons/SmallIcon/SmallIcon";
+import {serverAssetsUrl} from "../../../../../../../common/consts";
 
 const ConversationControl = (props: { open: boolean, setOpen: (v: any) => void }) => {
     return (
@@ -16,7 +17,7 @@ const ConversationControl = (props: { open: boolean, setOpen: (v: any) => void }
                 style={{marginBottom: 5}}
             >
                 <SmallIcon
-                    src={'http://localhost:3000/assets/icons/right-arrow.png'}
+                    src={`${serverAssetsUrl}/icons/right-arrow.png`}
                     className={[css.icon, css.iconRotate, props.open ? css.active : '']}
                 />
             </BigButton>
@@ -24,7 +25,7 @@ const ConversationControl = (props: { open: boolean, setOpen: (v: any) => void }
                 className={css.button}
             >
                 <SmallIcon
-                    src={'http://localhost:3000/assets/icons/clipboard.png'}
+                    src={`${serverAssetsUrl}/icons/clipboard.png`}
                     className={[css.icon]}
                 />
             </BigButton>
@@ -32,7 +33,7 @@ const ConversationControl = (props: { open: boolean, setOpen: (v: any) => void }
                 className={css.button}
             >
                 <SmallIcon
-                    src={'http://localhost:3000/assets/icons/inbox.png'}
+                    src={`${serverAssetsUrl}/icons/inbox.png`}
                     className={[css.icon]}
                 />
             </BigButton>

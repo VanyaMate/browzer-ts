@@ -11,6 +11,7 @@ import TextArea from "../../../../../UI/Inputs/Textarea/TextArea";
 import SmallIcon from "../../../../../UI/Icons/SmallIcon/SmallIcon";
 import MessagesList from "./MessagesList/MessagesList";
 import NotifyContent from "./MessagesList/NotifyContent/NotifyContent";
+import {serverUrl} from "../../../../../../common/consts";
 
 const MessagesContainer = (props: { activeConversation: string }) => {
     const auth = useMySelector((state) => state.auth);
@@ -86,7 +87,7 @@ const MessagesContainer = (props: { activeConversation: string }) => {
                             >
                                 <SmallIcon
                                     className={[css.icon]}
-                                    src={'http://localhost:3000/assets/icons/clip.png'}
+                                    src={`${serverUrl}/assets/icons/clip.png`}
                                 />
                             </BigButton>
                         </div>
