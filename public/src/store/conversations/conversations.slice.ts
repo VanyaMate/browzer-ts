@@ -10,7 +10,7 @@ export const conversationsSlice = createSlice({
     } as { list: IConversation<IPublicUserData<string>>[] },
     reducers: {
         setConversations: (state, action: PayloadAction<IConversation<IPublicUserData<string>>[]>) => {
-            state.list = action.payload;
+            state.list = [...action.payload].reverse() || [];
         },
         addConversation: (state, action: PayloadAction<IConversation<IPublicUserData<string>>>) => {
             state.list.push(action.payload);

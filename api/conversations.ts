@@ -67,7 +67,7 @@ conversations.post('/create', (req: Request, res: Response) => {
         name?: string
     }>(req, res, db, AuthType.SESSION_KEY).then(async ({ userData, body }) => {
         if (checkConversationType(body.type)) {
-            const membersToConversation = await checkMembersToCreateConversation(db, body.members, userData.login);
+            const membersToConversation = await checkMembersToCreateConversation(db, body.members, userData.login, body.type);
 
             if (membersToConversation) {
                 membersToConversation.push({

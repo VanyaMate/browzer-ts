@@ -10,6 +10,7 @@ import BigButton from "../../../../../UI/Buttons/BigButton/BigButton";
 import TextArea from "../../../../../UI/Inputs/Textarea/TextArea";
 import SmallIcon from "../../../../../UI/Icons/SmallIcon/SmallIcon";
 import MessagesList from "./MessagesList/MessagesList";
+import NotifyContent from "./MessagesList/NotifyContent/NotifyContent";
 
 const MessagesContainer = (props: { activeConversation: string }) => {
     const auth = useMySelector((state) => state.auth);
@@ -68,25 +69,31 @@ const MessagesContainer = (props: { activeConversation: string }) => {
 
     return (
         <div className={css.container}>
-            <div className={css.header}>
-                <TextArea
-                    hook={messageInput}
-                    placeholder={'Сообщение'}
-                    onSubmit={sendMessage}
-                    className={css.messageInput}
-                />
-                <BigButton
-                    active
-                    className={css.button}
-                    onClick={sendMessage}
-                >
-                    <SmallIcon
-                        className={[css.icon]}
-                        src={'http://localhost:3000/assets/icons/clip.png'}
-                    />
-                </BigButton>
-            </div>
-            <MessagesList activeConversation={props.activeConversation}/>
+            {
+                props.activeConversation ?
+                    <>
+                        <div className={css.header}>
+                            <TextArea
+                                hook={messageInput}
+                                placeholder={'Сообщение'}
+                                onSubmit={sendMessage}
+                                className={css.messageInput}
+                            />
+                            <BigButton
+                                active
+                                className={css.button}
+                                onClick={sendMessage}
+                            >
+                                <SmallIcon
+                                    className={[css.icon]}
+                                    src={'http://localhost:3000/assets/icons/clip.png'}
+                                />
+                            </BigButton>
+                        </div>
+                        <MessagesList activeConversation={props.activeConversation}/>
+                    </> :
+                    <NotifyContent hide={props.activeConversation !== ''}>Беседа не выбрана ლ(ಠ_ಠ ლ)</NotifyContent>
+            }
         </div>
     );
 };

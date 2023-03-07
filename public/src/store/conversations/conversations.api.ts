@@ -28,12 +28,12 @@ export const conversationsApi = createApi({
                 body: {
                     type: props.type,
                     members: props.members,
-                },
-                transformResponse: (response: { error: boolean, conversation?: IConversation<IPublicUserData<string>> }) => {
-                    if (response.error) { return false; }
-                    return response.conversation;
                 }
-            })
+            }),
+            transformResponse: (response: { error: boolean, conversation: IConversation<IPublicUserData<string>> }) => {
+                if (response.error) { return false; }
+                return response.conversation;
+            }
         }),
         deleteConversation: build.query<
             boolean,

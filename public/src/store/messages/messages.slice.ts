@@ -33,7 +33,7 @@ export const messagesSlice = createSlice({
     reducers: {
         setMessages: (state, action: PayloadAction<IConversation<any>[]>) => {
             for (let i = 0; i < action.payload.length; i++) {
-                state[action.payload[i].id] = getMessagesData(action.payload[i].messages[0]);
+                state[action.payload[i].id] = getMessagesData(action.payload[i].messages[0] || null);
             }
         },
         addMessage: (state, action: PayloadAction<IMessage>) => {

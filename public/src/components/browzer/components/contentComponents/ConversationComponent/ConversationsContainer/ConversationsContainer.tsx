@@ -17,7 +17,7 @@ const ConversationsContainer = (props: {
     const {conversations, auth, messages} = useMySelector(state => state);
     const [dispatchMessageLoading] = useLazyGetFromConversationQuery();
     const {setConversationMessagesStatus, addMessagesToEnd} = useActions();
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(props.activeConversation === '');
 
     const setConversation = function (conversation: IConversation<any>) {
         props.setActiveConversation(conversation.id);
@@ -71,6 +71,7 @@ const ConversationsContainer = (props: {
                             <ConversationItem
                                 always={conversation.id === props.activeConversation}
                                 conversation={conversation}
+                                setActiveConversation={props.setActiveConversation}
                             />
                         </BigButton>
                     )

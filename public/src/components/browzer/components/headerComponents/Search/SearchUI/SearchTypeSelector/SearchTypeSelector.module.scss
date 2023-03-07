@@ -1,21 +1,35 @@
 @import './src/common/consts';
 
 .container {
-    min-width: $mediumRowHeight;
-    max-width: $mediumRowHeight;
-    height: $mediumRowHeight;
+    position: relative;
 
-    &:hover {
-        & .icon {
-            filter: invert(1);
+    .button {
+        min-width: 80px;
+        max-width: 80px;
+        height: $mediumRowHeight;
+
+        &:hover {
+            background: $darkGray !important;
+
+            & .text {
+                color: $white;
+            }
+        }
+
+        & .text {
+            transition: .1s;
+            color: $gray;
         }
     }
 
-    & .icon {
-        width: 15px;
-        height: 15px;
+    & .dropdown {
+        width: 90px;
+        top: calc(100% + #{$smallOffset});
+        left: 0;
+        z-index: 3;
 
-        filter: invert(.4);
-        transition: .1s;
+        & .dropButton {
+
+        }
     }
 }

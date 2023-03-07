@@ -11,7 +11,8 @@ import {
 
 const ConversationItem = (props: {
     conversation: IConversation<IPublicUserData<string>>,
-    always: boolean
+    always: boolean,
+    setActiveConversation: (id: string) => void,
 }) => {
     const {auth, messages} = useMySelector(state => state);
     const {name, icon} = useMemo(() => {
@@ -66,8 +67,9 @@ const ConversationItem = (props: {
                         id: props.conversation.id
                     })
                     .then((status) => {
-                        if (status) {
+                        if (!status) {
                             removeConversation(props.conversation.id);
+                            props.setActiveConversation('');
                         }
                     })
                 }}

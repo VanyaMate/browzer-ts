@@ -1,7 +1,7 @@
 import {firestore} from "firebase-admin";
 import {ConversationMemberRole, ConversationType} from "../../enums/conversations";
 import {IConversation, IConversationMember} from "../../interfaces/conversations";
-import {CONVERSATIONS, MESSAGES, USERS} from "./COLLECTION_NAMES";
+import {CONVERSATIONS, USERS} from "./COLLECTION_NAMES";
 import * as crypto from "crypto";
 import {ResponseError} from "../../enums/responses";
 import {IPublicUserData, IUserData} from "../../interfaces/users";
@@ -17,12 +17,10 @@ import {
 import {db, socketManager} from "../../index";
 import {getPublicUserDataByLoginList, getUserDataByLogin} from "./users";
 import {checkIsFriendOf, getPublicUserData} from "../methods/user";
-import Firestore = firestore.Firestore;
-import QuerySnapshot = firestore.QuerySnapshot;
 import {addNotification} from "./notifications";
 import {NotificationType} from "../../enums/notifications";
-import {IMessage} from "../../interfaces/messages";
 import {getMessagesFromConversation} from "./messages";
+import Firestore = firestore.Firestore;
 
 export const createConversation = function (
     db: Firestore,
@@ -56,7 +54,8 @@ export const createConversation = function (
 export const checkMembersToCreateConversation = async function (
     db: Firestore,
     members: string[],
-    withLogin: string
+    withLogin: string,
+    type: ConversationType
 ): Promise<IConversationMember<IPublicUserData<string>>[] | false> {
     const conversationMembers: (IConversationMember<any>|boolean)[] = await Promise.all(members.map(async (login: string) => {
         const document = await db.collection(USERS).doc(login).get();
@@ -68,7 +67,7 @@ export const checkMembersToCreateConversation = async function (
         }
         return {
             login: user.login,
-            role: ConversationMemberRole.SIMPLE,
+            role: type === ConversationType.SINGLE ? ConversationMemberRole.OWNER : ConversationMemberRole.SIMPLE,
             data: getPublicUserData(user)
         };
     }));
@@ -169,16 +168,18 @@ export const deleteConversation = function (
             const conversation = await getConversationData(db, conversationId, ownerLogin);
             const owner = getMemberDataByLogin(conversation.members, ownerLogin);
 
-            if ( owner && (
-                owner.role === ConversationMemberRole.OWNER ||
-                checkGrossRole(owner.role, conversation.preferences.delete)
-            )
+            if (
+                owner && (
+                    owner.role === ConversationMemberRole.OWNER ||
+                    checkGrossRole(owner.role, conversation.preferences.delete)
+                )
             ) {
                 await deleteConversationFromAllMembers(db, conversation.members, conversationId);
                 await db.collection(CONVERSATIONS).doc(conversationId).delete();
                 resolve(conversation.members.map((member) => member.login));
                 return;
             }
+            reject();
         } catch (_) {
             reject();
         }
@@ -280,6 +281,7 @@ export const getFullConversationsData = function (
             while (conversationsList.length) {
                 const batch = conversationsList.splice(0, 10);
                 conversationsBatches.push(conversationsCollection
+                    .orderBy('creationTime', 'desc')
                     .where('id', 'in', batch)
                     .get()
                     .then((result) => result.docs.map((conv) => conv.data() as IConversation<IPublicUserData<string>>))
@@ -295,15 +297,18 @@ export const getFullConversationsData = function (
             const messagesData = await Promise.all(messagesPromises).then(batches => batches.flat());
 
             for (let i = 0; i < conversationsData.length; i++) {
-                const message = messagesData[i];
-                if (message) {
-                    conversationsData[i].messages.push(message);
+                const conversation = conversationsData[i];
+                for (let j = 0; j < messagesData.length; j++) {
+                    const message = messagesData[j];
+
+                    if (conversation.id === message.conversationId) {
+                        conversation.messages.push(message);
+                        break;
+                    }
                 }
             }
 
-            const loginList = [...new Set(...conversationsData.map(
-                (conversation) => conversation.members.map((member) => member.login))
-            )]
+            const loginList = [...new Set(conversationsData.map((c) => c.members).flat().map((m) => m.login))];
             const usersPublicData = await getPublicUserDataByLoginList(db, loginList);
 
             for (let j = 0; j < conversationsData.length; j++) {

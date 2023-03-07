@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useInputValue} from "../../../../../hooks/useInputValue";
 import css from './Search.module.scss';
 import Input from "../../../../UI/Inputs/Input/Input";
@@ -14,9 +14,10 @@ const Search = () => {
     const [openTypeDrop, setOpenTypeDrop] = useState(false);
     const searchValue = useDebounce(searchInput.value, 450);
     const [type, setType] = useState<SearchType>(SearchType.ALL);
+    const input = useRef<HTMLInputElement>();
 
     useEffect(() => {
-        if (searchInput.value.trim().length > 1) {
+        if (searchInput.value.trim().length > 0) {
             setOpenResultDrop(true);
             setOpenTypeDrop(false);
         } else {
@@ -26,8 +27,15 @@ const Search = () => {
 
     return (
         <div className={css.container}>
-            <SearchTypeSelector/>
-            <Input hook={searchInput}/>
+            <SearchTypeSelector
+                activeType={type}
+                setType={setType}
+                openTypeDrop={openTypeDrop}
+                setOpenTypeDrop={setOpenTypeDrop}
+                setOpenResultDrop={setOpenResultDrop}
+                inputRef={input}
+            />
+            <Input reff={input} hook={searchInput} placeholder={'Поиск'}/>
             <SearchResult
                 value={searchValue}
                 type={type}
