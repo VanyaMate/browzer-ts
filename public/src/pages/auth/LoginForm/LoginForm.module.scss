@@ -1,5 +1,17 @@
 @import 'src/common/consts';
 
 .container {
+    position: relative;
 
+    .error {
+        width: 100%;
+        background: $red;
+        color: $white;
+        height: $smallRowHeight;
+        font-size: 12px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 }

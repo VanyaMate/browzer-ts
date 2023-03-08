@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useEffect, useState} from 'react';
+import React, {ChangeEvent, memo, useEffect, useState} from 'react';
 import css from './LoginForm.module.scss';
 import MedTitle from "../../../components/UI/Titles/MedTitle/MedTitle";
 import {IUserInputValue, useInputValue} from "../../../hooks/useInputValue";
@@ -9,8 +9,9 @@ import {useLazyAuthPassQuery} from "../../../store/auth/auth.api";
 import SmallDottedSeparator from "../../../components/UI/Separators/SmallDottedSeparator";
 import {useActions} from "../../../hooks/redux";
 import {useLogIn, useLogOut} from "../../../hooks/authHooks";
+import DropdownAbsolute from "../../../components/UI/Dropdowns/DropdownAbsolute";
 
-const LoginForm = () => {
+const LoginForm = memo(() => {
     const login: IUserInputValue = useInputValue('', validLogin);
     const pass: IUserInputValue = useInputValue('', validPassword);
     const [valid, setValid] = useState(false);
@@ -37,13 +38,16 @@ const LoginForm = () => {
             <Input hook={pass} placeholder={"Пароль"} type={"password"}/>
             <SmallDottedSeparator/>
             <BigButton
-                active={valid}
+                active={valid && !isFetching}
                 always={valid}
                 loading={isFetching}
                 onClick={() => !isFetching && authPass(login.value + ':' + pass.value)}
             >Вход</BigButton>
+            <DropdownAbsolute hide={userData ? !!userData : userData ?? true} className={[css.error]}>
+                Ошибка вход
+            </DropdownAbsolute>
         </div>
     );
-};
+});
 
 export default LoginForm;
