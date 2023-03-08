@@ -6,7 +6,7 @@ import admin from 'firebase-admin';
 import SocketManager from "./sockets";
 const perm = require('./perm-json.json');
 
-const port: number = 3000;
+const port: number = +process.env.PORT! || 3000;
 const app: Express = express();
 const httpServer = http.createServer(app);
 

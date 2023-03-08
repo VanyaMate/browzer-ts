@@ -10,7 +10,6 @@ const ServerConnectionStatus = memo(() => {
     const [timer, setTimer] = useState<number>(0);
 
     useEffect(() => {
-        console.log(checkResponse);
         if (!isFetching && !isError) {
             setServerStatus({
                 message: 'Успешное подключение'
