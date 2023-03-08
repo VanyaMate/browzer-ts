@@ -18,7 +18,7 @@ admin.initializeApp({
 export const db = admin.firestore();
 export const socketManager = new SocketManager(httpServer, db);
 
-app.use(cors({ origin: true }));
+app.use(cors());
 app.use(express.json());
 app.use('/', express.static(__dirname + '/public/build'));
 app.use('/assets', express.static(__dirname + '/public/assets'))

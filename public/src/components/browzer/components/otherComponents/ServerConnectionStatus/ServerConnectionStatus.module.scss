@@ -5,13 +5,17 @@
     bottom: $smallOffset;
     right: $smallOffset;
     padding: $mediumOffset;
-    background: $darkGray;
+    background: $green;
     color: $white;
-    transition: .1s;
-    transform: translateX(calc(100% + 10px));
+    transition: .2s;
+    transform: translateX(calc(100% + 100px));
 
     &.opened {
         transform: translateX(0);
+    }
+
+    &.fetching {
+        background: $darkGray;
     }
 
     &.warning {

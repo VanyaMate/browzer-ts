@@ -5,14 +5,15 @@ import {useActions} from "./hooks/redux";
 
 export default class SocketClientManager {
     private _socket: Socket;
-    private _timer: NodeJS.Timer | undefined = undefined;
-    private _reconnectTimer: NodeJS.Timer | undefined = undefined;
+    private _timer: number = 0;
+    private _reconnectTimer: number = 0;
     private _auth: [string, string] = ['', ''];
     private _url: string;
     private _handlers: ([handlerType: string, handler: (data: any) => void])[] = [];
 
     private _pingTimeout: number = 5000;
     private _reconnectTimeout: number = 5000;
+    private _reAuth: boolean = false;
 
     constructor(url: string) {
         this._url = url;
@@ -57,6 +58,7 @@ export default class SocketClientManager {
     private _resetTimer () {
         console.log('_resetTimer');
         clearInterval(this._timer);
+        clearTimeout(this._reconnectTimer);
     }
 
     private _pongHandler (data: any): void {
@@ -67,7 +69,7 @@ export default class SocketClientManager {
         console.log('_authHandler: ', status);
         if (status) {
             clearTimeout(this._reconnectTimer);
-            this._timer = setInterval(() => this._ping(this._auth[0]), this._pingTimeout);
+            this._timer = window.setInterval(() => this._ping(this._auth[0]), this._pingTimeout);
         } else {
             this._auth = ['', ''];
         }
@@ -82,13 +84,17 @@ export default class SocketClientManager {
 
     private _serverErrorDisconnect () {
         console.log('_serverErrorDisconnect: ', this._auth);
-        if (this._auth[0] !== '') {
+        if (this._auth[0] !== '' && !this._reAuth) {
             this._onDisconnect();
+            this._reAuth = true;
 
             setTimeout(() => {
                 this._socket.connect();
                 this.auth(this._auth);
-                this._reconnectTimer = setTimeout(() => this._serverErrorDisconnect(), this._reconnectTimeout);
+                this._reconnectTimer = window.setTimeout(() => {
+                    this._reAuth = false;
+                    this._serverErrorDisconnect();
+                }, this._reconnectTimeout);
             }, 0);
         }
     }
