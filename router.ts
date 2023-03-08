@@ -6,6 +6,7 @@ import user from "./api/user";
 import conversations from "./api/conversations";
 import messages from "./api/messages";
 import friends from "./api/friends";
+import server from "./api/server";
 
 const router = express.Router();
 
@@ -15,6 +16,7 @@ router.use('/user', user);
 router.use('/conversations', conversations);
 router.use('/messages', messages);
 router.use('/friends', friends);
+router.use('/server', server);
 router.get('/doc', doc);
 
 export default router;

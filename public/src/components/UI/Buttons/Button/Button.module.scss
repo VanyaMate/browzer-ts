@@ -37,7 +37,7 @@
     }
 
     &.loading {
-        opacity: .4;
+        animation: OpacityChanger .5s Infinite ease-in-out;
         pointer-events: none;
     }
 }

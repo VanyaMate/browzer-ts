@@ -5,6 +5,8 @@ import {useMySelector} from "./hooks/redux";
 import Browzer from "./pages/browzer/Browzer";
 import {useAuthSessionKeyQuery} from "./store/auth/auth.api";
 import {useLogIn, useLogOut} from "./hooks/authHooks";
+import ServerConnectionStatus
+    from "./components/browzer/components/otherComponents/ServerConnectionStatus/ServerConnectionStatus";
 
 const App = () => {
     const auth = useMySelector((state) => state.auth);
@@ -26,7 +28,12 @@ const App = () => {
         }
     }, [isFetching, isError])
 
-    return auth.authKey ? <Browzer/> : <Auth/>;
+    return <>
+        <ServerConnectionStatus/>
+        {
+            auth.authKey ? <Browzer/> : <Auth/>
+        }
+    </>
 };
 
 export default App;

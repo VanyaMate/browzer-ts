@@ -3,6 +3,7 @@ import css from './ControlButtons.module.scss';
 import IconButton from "../../../../../UI/Buttons/IconButton/IconButton";
 import {useBrowzerBlocks} from "../../../../../../hooks/useBrowzerBlocks";
 import SmallIcon from "../../../../../UI/Icons/SmallIcon/SmallIcon";
+import {serverAssetsUrl} from "../../../../../../common/consts";
 
 const ControlButtons = memo((props: {
     index: number,
@@ -38,7 +39,7 @@ const ControlButtons = memo((props: {
                     }}
                 >
                     <SmallIcon
-                        src={'http://localhost:3000/assets/icons/list.png'}
+                        src={`${serverAssetsUrl}/icons/list.png`}
                         className={[css.icon, props.activeHiddenOption ? css.active : '']}
                     />
                 </IconButton> : ''

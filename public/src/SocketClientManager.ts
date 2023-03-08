@@ -1,6 +1,7 @@
 import io, {Socket} from "socket.io-client";
 import {SocketMessageType} from "../../enums/sockets";
 import {NotificationType} from "../../enums/notifications";
+import {useActions} from "./hooks/redux";
 
 export default class SocketClientManager {
     private _socket: Socket;

@@ -7,6 +7,7 @@ import AbsoluteButton from "../../../../../../../UI/Buttons/AbsoluteButton/Absol
 import SmallIcon from "../../../../../../../UI/Icons/SmallIcon/SmallIcon";
 import {useLazyChangeMessageQuery, useLazyDeleteMessageQuery} from "../../../../../../../../store/messages/messages.api";
 import {useActions, useMySelector} from "../../../../../../../../hooks/redux";
+import {serverAssetsUrl} from "../../../../../../../../common/consts";
 
 const MyMessage = memo((props: { message: IMessage }) => {
     const auth = useMySelector(state => state.auth);
@@ -51,7 +52,7 @@ const MyMessage = memo((props: { message: IMessage }) => {
                             }}
                         >
                             <SmallIcon
-                                src={'http://localhost:3000/assets/icons/reload.png'}
+                                src={`${serverAssetsUrl}/icons/reload.png`}
                                 className={[css.reloadIcon]}
                             />
                         </AbsoluteButton> : ''

@@ -11,6 +11,8 @@ import {messagesReducer} from "./messages/messages.slice";
 import {blocksReducer} from "./blocks/blocks.slice";
 import {blocksApi} from "./blocks/blocks.api";
 import {conversationsApi} from "./conversations/conversations.api";
+import {serverConnectionReducer} from "./serverConnection/serverConnection.slice";
+import {serverApi} from "./serverConnection/serverConnection.api";
 
 export const store = configureStore({
     reducer: {
@@ -19,12 +21,14 @@ export const store = configureStore({
         [messagesApi.reducerPath]: messagesApi.reducer,
         [conversationsApi.reducerPath]: conversationsApi.reducer,
         [blocksApi.reducerPath]: blocksApi.reducer,
+        [serverApi.reducerPath]: serverApi.reducer,
         auth: authReducer,
         conversations: conversationsReducer,
         friends: friendsReducer,
         notifications: notificationsReducer,
         messages: messagesReducer,
-        blocks: blocksReducer
+        blocks: blocksReducer,
+        serverStatus: serverConnectionReducer
     },
     middleware: getDefaultMiddleware => getDefaultMiddleware().concat([
         authApi.middleware,
@@ -32,6 +36,7 @@ export const store = configureStore({
         messagesApi.middleware,
         blocksApi.middleware,
         conversationsApi.middleware,
+        serverApi.middleware,
     ])
 })
 

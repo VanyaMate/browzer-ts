@@ -61,8 +61,8 @@ const RegistrationForm = () => {
         <div className={css.container}>
             <MedTitle>Регистрация</MedTitle>
             <Input hook={login} placeholder={"Логин"}/>
-            <Input hook={pass} placeholder={"Пароль"}/>
-            <Input hook={samePass} placeholder={"Повторный пароль"}/>
+            <Input hook={pass} placeholder={"Пароль"} type={"password"}/>
+            <Input hook={samePass} placeholder={"Повторный пароль"} type={"password"}/>
             <SmallDottedSeparator/>
             <Input hook={firstName} placeholder={"Имя"}/>
             <Input hook={lastName} placeholder={"Фамилия"}/>
@@ -70,6 +70,7 @@ const RegistrationForm = () => {
             <BigButton
                 active={valid}
                 always={valid}
+                loading={isFetching}
                 onClick={registration}
             >Регистрация</BigButton>
         </div>

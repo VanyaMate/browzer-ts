@@ -7,6 +7,7 @@ import {conversationsActions} from "../store/conversations/conversations.slice";
 import {notificationsActions} from "../store/notifications/notifications.slice";
 import {messagesActions} from "../store/messages/messages.slice";
 import {blocksActions} from "../store/blocks/blocks.slice";
+import {serverConnectionActions} from "../store/serverConnection/serverConnection.slice";
 
 const actions = {
     ...authActions,
@@ -14,7 +15,8 @@ const actions = {
     ...conversationsActions,
     ...notificationsActions,
     ...messagesActions,
-    ...blocksActions
+    ...blocksActions,
+    ...serverConnectionActions
 }
 
 export const useMySelector: TypedUseSelectorHook<StoreType> = useSelector;

@@ -39,6 +39,7 @@ const LoginForm = () => {
             <BigButton
                 active={valid}
                 always={valid}
+                loading={isFetching}
                 onClick={() => !isFetching && authPass(login.value + ':' + pass.value)}
             >Вход</BigButton>
         </div>

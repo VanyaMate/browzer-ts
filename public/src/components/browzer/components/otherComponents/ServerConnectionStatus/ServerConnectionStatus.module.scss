@@ -1,0 +1,24 @@
+@import "./src/common/consts";
+
+.container {
+    position: fixed;
+    bottom: $smallOffset;
+    right: $smallOffset;
+    padding: $mediumOffset;
+    background: $darkGray;
+    color: $white;
+    transition: .1s;
+    transform: translateX(calc(100% + 10px));
+
+    &.opened {
+        transform: translateX(0);
+    }
+
+    &.warning {
+        background: $orange;
+    }
+
+    &.error {
+        background: $red;
+    }
+}
