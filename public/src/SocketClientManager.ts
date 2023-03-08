@@ -17,7 +17,10 @@ export default class SocketClientManager {
 
     constructor(url: string) {
         this._url = url;
-        this._socket = io(this._url, {});
+        this._socket = io(this._url, {
+            transports: ["websocket", "polling"],
+            withCredentials: true
+        });
         this._pongHandler = this._pongHandler.bind(this);
         this._authHandler = this._authHandler.bind(this);
         this._disconnectHandler = this._disconnectHandler.bind(this);

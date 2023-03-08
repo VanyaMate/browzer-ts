@@ -8,11 +8,14 @@ export const serverApi = createApi({
         baseUrl: `${serverUrl}/api/server/`
     }),
     endpoints: (build) => ({
-        serverCheck: build.query({
+        serverCheck: build.query<boolean, null>({
             query: (props) => ({
                 url: 'check',
                 method: 'get',
-                mode: 'cors'
+                mode: 'cors',
+                headers: {},
+                credentials: 'omit',
+                referrerPolicy: "origin-when-cross-origin"
             })
         })
     })

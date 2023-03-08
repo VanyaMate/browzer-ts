@@ -6,17 +6,18 @@ import {useServerCheckQuery} from "../../../../../store/serverConnection/serverC
 const ServerConnectionStatus = memo(() => {
     const serverStatus = useMySelector(state => state.serverStatus);
     const { setServerStatus } = useActions();
-    const { isError, isFetching } = useServerCheckQuery(null, { pollingInterval: 4000 });
+    const { isError, isFetching, data: checkResponse } = useServerCheckQuery(null, { pollingInterval: 4000 });
     const [timer, setTimer] = useState<number>(0);
 
     useEffect(() => {
+        console.log(checkResponse);
         if (!isFetching && !isError) {
             setServerStatus({
                 message: 'Успешное подключение'
             })
 
             clearTimeout(timer);
-            setTimer(window.setTimeout(() => setServerStatus({ opened: false }), 500));
+            setTimer(window.setTimeout(() => setServerStatus({ opened: false })));
         } else if (!isFetching && isError) {
             clearTimeout(timer);
             setTimer(window.setTimeout(() => setServerStatus({
