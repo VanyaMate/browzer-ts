@@ -23,9 +23,9 @@ export default class SocketManager {
         this._db = db;
         this._io = new socket.Server(httpServer, {
             cors: {
-                origin: '*',
+                origin: true,
                 methods: ["GET", "POST"],
-                allowedHeaders: ["user-data"]
+                credentials: true
             }
         });
 
