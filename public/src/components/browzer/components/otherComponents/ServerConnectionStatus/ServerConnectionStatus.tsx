@@ -7,23 +7,29 @@ const ServerConnectionStatus = () => {
     const serverStatus = useMySelector(state => state.serverStatus);
     const { setServerStatus } = useActions();
     const { isError, isFetching } = useServerCheckQuery(null, { pollingInterval: 4000 });
+    const [timer, setTimer] = useState<number>(0);
 
     useEffect(() => {
         if (!isFetching && isError) {
-            setTimeout(() => {
+            clearTimeout(timer);
+            setTimer(window.setTimeout(() => {
                 setServerStatus({
                     opened: true,
                     error: true,
                     message: 'Попытка подключения к серверу'
                 })
-            }, 1000)
+            }, 1000))
         } else if (isFetching) {
-            setServerStatus({
-                opened: true,
-                error: false,
-                message: 'Подключение к серверу..'
-            })
+            clearTimeout(timer);
+            setTimer(window.setTimeout(() => {
+                setServerStatus({
+                    opened: true,
+                    error: false,
+                    message: 'Подключение к серверу..'
+                })
+            }, 500));
         } else {
+            clearTimeout(timer);
             setServerStatus({
                 opened: false,
                 error: false

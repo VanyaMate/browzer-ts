@@ -11,7 +11,7 @@ export const serverApi = createApi({
         serverCheck: build.query({
             query: (props) => ({
                 url: 'check',
-                method: 'post'
+                method: 'get'
             })
         })
     })

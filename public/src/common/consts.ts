@@ -1,5 +1,5 @@
-export const serverUrl: string = 'http://localhost:3000';
-//export const serverUrl: string = 'https://browzer-ts.onrender.com';
+//export const serverUrl: string = 'http://localhost:3000';
+export const serverUrl: string = 'https://browzer-ts.onrender.com';
 export const storagePrefix: string = 'browzer__';
 
 
